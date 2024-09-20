@@ -204,7 +204,8 @@ void render(t_canvas *canvas, scene *scene)
     //double viewport_size = 1.0;
     double viewport_size = 2 * tan(camera->fov * M_PI / 360.0);
     double projection_plane_d = viewport_size;//1.0; should be same as vp size, otherwise a fisheye effect
-    vector camera_position = {0, 0, 0};
+    //vector camera_position = {0, 0, -5}; // change to camera stuct
+    vector camera_position = scene->camera.position;
 
     for (int x = -canvas->win_width / 2; x < canvas->win_width / 2; x++) {
         for (int y = -canvas->win_height / 2; y < canvas->win_height / 2; y++) {
@@ -245,7 +246,7 @@ scene create_scene() {
    // scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
 
      // Initialize camera (you will replace these values after reading the .rt file)
-    scene.camera.position = (vector){-50.0, 0.0, 20.0}; // Example values
+    scene.camera.position = (vector){0, 0, -5}; // Example values
     scene.camera.orientation = (vector){0.0, 0.0, 0.0}; // Example values
     scene.camera.fov = 100.0; // Example value
 
