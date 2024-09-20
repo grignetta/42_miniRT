@@ -38,7 +38,7 @@ sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, dou
     return closest_sphere;
 }
 
-// Function to compute lighting at a point P with normal N
+/* // Function to compute lighting at a point P with normal N
 double compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
 {
     double intensity = 0.0;
@@ -83,6 +83,70 @@ double compute_lighting(scene *scene, vector P, vector N, vector V, int specular
     }
 
     return intensity;
+} */
+
+color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
+{
+    color result = {0.0, 0.0, 0.0};
+
+    for (int i = 0; i < scene->light_count; i++)
+	{
+        light light = scene->lights[i];
+
+        if (light.type == 0) // Ambient
+        {
+            result.red += light.intensity * light.red / 255.0;
+            result.green += light.intensity * light.green / 255.0;
+            result.blue += light.intensity * light.blue / 255.0;
+        }
+        else
+        {
+            vector L;
+            double t_max;
+            if (light.type == 1)
+			{ // Point
+                L = vector_sub(light.position, P);
+                t_max = 1.0;
+            }
+			else
+			{ // Directional
+                L = light.direction;
+                t_max = INFINITY;
+            }
+            // Check for shadows
+            double shadow_t;
+            sphere *shadow_sphere = closest_intersection(scene, P, L, 0.001, t_max, &shadow_t);
+            if (shadow_sphere != NULL) continue;
+            // Diffuse lighting
+            double n_dot_l = vector_dot(N, L);
+            if (n_dot_l > 0)
+            {
+                double diffuse_intensity = light.intensity * n_dot_l / (vector_length(N) * vector_length(L));
+                result.red += diffuse_intensity * light.red / 255.0;
+                result.green += diffuse_intensity * light.green / 255.0;
+                result.blue += diffuse_intensity * light.blue / 255.0;
+            }
+            // Specular reflection
+            if (specular != -1) {
+                vector R = vector_reflect(L, N);
+                double r_dot_v = vector_dot(R, V);
+                if (r_dot_v > 0)
+                {
+                    double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(R) * vector_length(V)), specular);
+                    result.red += specular_intensity * light.red / 255.0;
+                    result.green += specular_intensity * light.green / 255.0;
+                    result.blue += specular_intensity * light.blue / 255.0;
+                }
+            }
+        }
+    }
+
+    // Ensure the values are within the 0-1 range
+    result.red = result.red > 1.0 ? 1.0 : result.red;
+    result.green = result.green > 1.0 ? 1.0 : result.green;
+    result.blue = result.blue > 1.0 ? 1.0 : result.blue;
+
+    return result;
 }
 
 // Function to trace a ray
@@ -96,17 +160,15 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max)//, i
     vector P = vector_add(O, vector_scale(D, closest_t)); // Intersection point
     vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
     vector V = vector_scale(D, -1); // View direction
-    double lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
+    //double lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
+    color lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
 
-   //printf ("lighting %f: ", lighting);
-    // Combine lighting with the sphere's color
-    // int r = ((closest_sphere->color >> 16) & 0xFF) * lighting;
-    // int g = ((closest_sphere->color >> 8) & 0xFF) * lighting;
-    // int b = (closest_sphere->color & 0xFF) * lighting;
-
-    int r = closest_sphere->red * lighting;
-    int g = closest_sphere->green * lighting;
-    int b = closest_sphere->blue * lighting;
+    // int r = closest_sphere->red * lighting;
+    // int g = closest_sphere->green * lighting;
+    // int b = closest_sphere->blue * lighting;
+    int r = (int)closest_sphere->red * lighting.red;
+    int g = (int)closest_sphere->green * lighting.green;
+    int b = (int)closest_sphere->blue * lighting.blue;
 
     // Ensure the values are within the 0-255 range
     r = (r > 255) ? 255 : r;
@@ -154,9 +216,9 @@ scene create_scene() {
     // Red sphere
     scene.spheres[0] = (sphere){{0, -1, 3}, 1, 255, 0, 0, 500, 0.2};
     // Blue sphere
-    scene.spheres[1] = (sphere){{0.5, 1, 5}, 1, 0, 0, 255, 500, 0.3};
+    scene.spheres[1] = (sphere){{0.5, 1, 5}, 1, 0, 255, 0, 500, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{-0.5, 1, 5}, 1, 0, 255, 0, 10, 0.4};
+    scene.spheres[2] = (sphere){{-0.5, 1, 5}, 1, 0, 0, 255, 10, 0.4};
     // Yellow large sphere (floor)
     scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
@@ -164,11 +226,11 @@ scene create_scene() {
     scene.lights = malloc(sizeof(light) * scene.light_count);
 
     // Ambient
-	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}};
+	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}, 245, 144, 144};
     // Point light
-    scene.lights[1] = (light){1, 0.6, {2, 1, 0}, {0, 0, 0}};
+    scene.lights[1] = (light){1, 0.6, {2, 1, 0}, {0, 0, 0}, 245, 144, 144};//last 3 values should be set as of ambient
     // Directional light
-    scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}};
+    scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//last 3 values should be set as of ambient
 
      // Initialize camera (you will replace these values after reading the .rt file)
     scene.camera.position = (vector){-50.0, 0.0, 20.0}; // Example values

@@ -20,6 +20,13 @@
 #define T_MIN 1.0
 
 // Structs for vectors, spheres, lights, and the scene
+
+typedef struct {
+    double red;
+    double green;
+    double blue;
+} color;
+
 typedef struct
 {
 	double x, y, z;
@@ -49,6 +56,9 @@ typedef struct
 	double intensity;
 	vector position;
 	vector direction;
+	int red;
+    int green;
+    int blue;
 } light;
 
 typedef struct
@@ -100,7 +110,8 @@ vector vector_reflect(vector R, vector N);
 //rest.c
 int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *t2);
 sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
-double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
+//double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
+color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max);
 void put_pixel(t_canvas *app, int x, int y, int color);
 void render(t_canvas *app, scene *scene);
