@@ -45,7 +45,7 @@ double compute_lighting(scene *scene, vector P, vector N, vector V, int specular
 
     for (int i = 0; i < scene->light_count; i++)
 	{
-        Light light = scene->lights[i];
+        light light = scene->lights[i];
 
         if (light.type == 0) // Ambient
             intensity += light.intensity;
@@ -106,23 +106,27 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max)//, i
 }
 
 // Function to draw pixels on the canvas
-void put_pixel(t_canvas *app, int x, int y, int color)
+void put_pixel(t_canvas *canvas, int x, int y, int color)
 {
-    char *dst = app->addr + (y * app->line_length + x * (app->bits_per_pixel / 8));
+    char *dst = canvas->addr + (y * canvas->line_length + x * (canvas->bits_per_pixel / 8));
     *(unsigned int *)dst = color;
 }
 
 // Main rendering loop
 void render(t_canvas *canvas, scene *scene)
 {
-    double viewport_size = 1.0;
-    double projection_plane_d = 1.0;
+    camera *camera = &scene->camera;
+    //double viewport_size = 1.0;
+    double viewport_size = 2 * tan(camera->fov * M_PI / 360.0);
+    double projection_plane_d = viewport_size;//1.0; should be same as vp size, otherwise a fisheye effect
     vector camera_position = {0, 0, 0};
 
     for (int x = -canvas->win_width / 2; x < canvas->win_width / 2; x++) {
         for (int y = -canvas->win_height / 2; y < canvas->win_height / 2; y++) {
             vector D = {x * viewport_size / canvas->win_width, y * viewport_size / canvas->win_height, projection_plane_d};
-            D = vector_normalize(D);
+            D = vector_normalize(D); // Normalize the ray direction
+            // Adjust ray direction based on camera's orientation
+            D = vector_add(D, camera->orientation);  // Align with camera's orientation
             int color = trace_ray(scene, camera_position, D, 1.0, INFINITY);
             put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
         }
@@ -139,21 +143,26 @@ scene create_scene() {
     // Red sphere
     scene.spheres[0] = (sphere){{0, -1, 3}, 1, 0xFF0000, 500, 0.2};
     // Blue sphere
-    scene.spheres[1] = (sphere){{-2, 1, 3}, 1, 0x0000FF, 500, 0.3};
+    scene.spheres[1] = (sphere){{-2, 1, 5}, 1, 0x0000FF, 500, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{2, 1, 3}, 1, 0x00FF00, 10, 0.4};
+    scene.spheres[2] = (sphere){{2, 1, 10}, 1, 0x00FF00, 10, 0.4};
     // Yellow large sphere (floor)
     scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 0xFFFF00, 1000, 0.5};
 
     scene.light_count = 3;
-    scene.lights = malloc(sizeof(Light) * scene.light_count);
+    scene.lights = malloc(sizeof(light) * scene.light_count);
 
     // Ambient
-	scene.lights[0] = (Light){0, 0.2, {0, 0, 0}, {0, 0, 0}};
+	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}};
     // Point light
-    scene.lights[1] = (Light){1, 0.6, {2, 1, 0}, {0, 0, 0}};
+    scene.lights[1] = (light){1, 0.6, {2, 1, 0}, {0, 0, 0}};
     // Directional light
-    scene.lights[2] = (Light){2, 0.2, {0, 0, 0}, {1, 4, 4}};
+    scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}};
+
+     // Initialize camera (you will replace these values after reading the .rt file)
+    scene.camera.position = (vector){-50.0, 0.0, 20.0}; // Example values
+    scene.camera.orientation = (vector){0.0, 0.0, 0.0}; // Example values
+    scene.camera.fov = 100.0; // Example value
 
     return scene;
 }

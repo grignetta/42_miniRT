@@ -1,5 +1,7 @@
 #include "minirt.h"
 
+//don't forget to take into account: any number more than 255, will be still 255, less than 0 will be still 0!!
+
 // Helper functions for vector operations
 vector vector_sub(vector v1, vector v2)
 {
@@ -11,7 +13,7 @@ vector vector_add(vector v1, vector v2)
     return (vector){v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
 }
 
-vector vector_scale(vector v, double scalar)
+vector vector_scale(vector v, double scalar)//ex: color intensity
 {
     return (vector){v.x * scalar, v.y * scalar, v.z * scalar};
 }

@@ -8,15 +8,29 @@
 # include <unistd.h>
 # include "./libft/libft.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-#define BACKGROUND_COLOR 0x000000 // Black background
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
+
+# define WIDTH 800
+# define HEIGHT 600
+# define BACKGROUND_COLOR 0x000000 // Black background
+
+// from: P = O + t(V - O), taking t only from the scene to infinity
+#define T_MIN 1.0
 
 // Structs for vectors, spheres, lights, and the scene
 typedef struct
 {
 	double x, y, z;
 } vector;
+
+typedef struct
+{
+    vector position;       // Camera position (x, y, z)
+    vector orientation;    // Camera direction (normalized vector)
+    double fov;            // Field of view in degrees
+} camera;
 
 typedef struct
 {
@@ -33,14 +47,15 @@ typedef struct
 	double intensity;
 	vector position;
 	vector direction;
-} Light;
+} light;
 
 typedef struct
 {
-	sphere *spheres;
-	int sphere_count;
-	Light *lights;
-	int light_count;
+	sphere	*spheres;
+	int		sphere_count;
+	light	*lights;
+	int		light_count;
+	camera	camera;
 } scene;
 
 typedef struct s_canvas
