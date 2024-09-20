@@ -9,7 +9,7 @@ int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *
     double c = vector_dot(CO, CO) - sphere.radius * sphere.radius;
 
     double discriminant = b * b - 4 * a * c;
-    if (discriminant < 0) return 0; // No intersection
+    if (discriminant < 0) return 0; // No intersection (return inf, inf)?
 
     *t1 = (-b + sqrt(discriminant)) / (2 * a);
     *t2 = (-b - sqrt(discriminant)) / (2 * a);
@@ -98,11 +98,22 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max)//, i
     vector V = vector_scale(D, -1); // View direction
     double lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
 
+   //printf ("lighting %f: ", lighting);
     // Combine lighting with the sphere's color
-    int r = ((closest_sphere->color >> 16) & 0xFF) * lighting;
-    int g = ((closest_sphere->color >> 8) & 0xFF) * lighting;
-    int b = (closest_sphere->color & 0xFF) * lighting;
-    return (r << 16) | (g << 8) | b;
+    // int r = ((closest_sphere->color >> 16) & 0xFF) * lighting;
+    // int g = ((closest_sphere->color >> 8) & 0xFF) * lighting;
+    // int b = (closest_sphere->color & 0xFF) * lighting;
+
+    int r = closest_sphere->red * lighting;
+    int g = closest_sphere->green * lighting;
+    int b = closest_sphere->blue * lighting;
+
+    // Ensure the values are within the 0-255 range
+    r = (r > 255) ? 255 : r;
+    g = (g > 255) ? 255 : g;
+    b = (b > 255) ? 255 : b;
+
+    return ((r << 16) | (g << 8) | b);
 }
 
 // Function to draw pixels on the canvas
@@ -141,13 +152,13 @@ scene create_scene() {
     scene.spheres = malloc(sizeof(sphere) * scene.sphere_count);
 
     // Red sphere
-    scene.spheres[0] = (sphere){{0, -1, 3}, 1, 0xFF0000, 500, 0.2};
+    scene.spheres[0] = (sphere){{0, -1, 3}, 1, 255, 0, 0, 500, 0.2};
     // Blue sphere
-    scene.spheres[1] = (sphere){{-2, 1, 5}, 1, 0x0000FF, 500, 0.3};
+    scene.spheres[1] = (sphere){{0.5, 1, 5}, 1, 0, 0, 255, 500, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{2, 1, 10}, 1, 0x00FF00, 10, 0.4};
+    scene.spheres[2] = (sphere){{-0.5, 1, 5}, 1, 0, 255, 0, 10, 0.4};
     // Yellow large sphere (floor)
-    scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 0xFFFF00, 1000, 0.5};
+    scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
     scene.light_count = 3;
     scene.lights = malloc(sizeof(light) * scene.light_count);
