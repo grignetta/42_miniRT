@@ -46,13 +46,13 @@ typedef struct
 	int red;
     int green;
     int blue;
-	int specular;
+	int specular;//when low 0 or 1 the picture is very bad
 	double reflective;
 } sphere;
 
 typedef struct
 {
-	int type; // 0 for ambient, 1 for point, 2 for directional
+	int type; // 0 for ambient, 1 for point, 2 for directional - no directional
 	double intensity;
 	vector position;
 	vector direction;
@@ -112,7 +112,7 @@ int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *
 sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
 //double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max);
+int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
 void put_pixel(t_canvas *app, int x, int y, int color);
 void render(t_canvas *app, scene *scene);
 scene create_scene();
