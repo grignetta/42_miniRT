@@ -1,12 +1,12 @@
 #include "minirt.h"
 
 // Function to calculate the intersection of a ray with a sphere
-int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *t2)
+int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2)
 {
-    vector CO = vector_sub(O, sphere.center);
+    vector CO = vector_sub(O, sphere->center);
     double a = vector_dot(D, D);
     double b = 2 * vector_dot(CO, D);
-    double c = vector_dot(CO, CO) - sphere.radius * sphere.radius;
+    double c = vector_dot(CO, CO) - sphere->radius * sphere->radius;
 
     double discriminant = b * b - 4 * a * c;
     if (discriminant < 0) return 0; // No intersection (return inf, inf)?
@@ -16,8 +16,48 @@ int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *
     return 1;
 }
 
+int intersect_ray_cylinder(vector O, vector D, cylinder *cyl, double *t1, double *t2)
+{
+    // Translate the ray and cylinder to a common origin, typically the cylinder's center
+    vector CO = vector_sub(O, cyl->center);
+
+    // Coefficients for the quadratic equation
+    double a = D.x * D.x + D.z * D.z;
+    double b = 2 * (CO.x * D.x + CO.z * D.z);
+    double c = CO.x * CO.x + CO.z * CO.z - cyl->radius * cyl->radius;
+
+    // Discriminant
+    double discriminant = b * b - 4 * a * c;
+    if (discriminant < 0)
+        return 0; // No intersection
+
+    *t1 = (-b + sqrt(discriminant)) / (2 * a);
+    *t2 = (-b - sqrt(discriminant)) / (2 * a);
+
+    // Check if the intersection points are within the cylinder's height
+    double y1 = O.y + *t1 * D.y;
+    double y2 = O.y + *t2 * D.y;
+    if (y1 < cyl->center.y || y1 > cyl->center.y + cyl->height)
+        *t1 = INFINITY;
+    if (y2 < cyl->center.y || y2 > cyl->center.y + cyl->height)
+        *t2 = INFINITY;
+
+    return 1;
+}
+
+int intersect_ray_plane(vector O, vector D, plane *pl, double *t)
+{
+    double denom = vector_dot(pl->normal, D);
+    if (fabs(denom) > 1e-6) { // Avoid division by zero and small values that might cause numerical instability
+        vector P0L0 = vector_sub(pl->point, O);
+        *t = vector_dot(P0L0, pl->normal) / denom;
+        return (*t >= 0);
+    }
+    return 0; // No intersection
+}
+
 // Closest intersection function
-sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t)
+/* sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t)
 {
     *closest_t = t_max;
     sphere *closest_sphere = NULL;
@@ -36,6 +76,60 @@ sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, dou
         }
     }
     return closest_sphere;
+} */
+
+intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max)
+{
+    intersection_result result = {0};
+    result.t = t_max;
+
+    // Check spheres
+    for (int i = 0; i < scene->sphere_count; i++) {
+        double t1, t2;
+        if (intersect_ray_sphere(O, D, &scene->spheres[i], &t1, &t2)) {
+            if (t1 < result.t && t1 > t_min) {
+                result.t = t1;
+                result.type = SHAPE_SPHERE;
+                result.object = &scene->spheres[i];
+            }
+            if (t2 < result.t && t2 > t_min) {
+                result.t = t2;
+                result.type = SHAPE_SPHERE;
+                result.object = &scene->spheres[i];
+            }
+        }
+    }
+
+    // Check cylinders
+    for (int i = 0; i < scene->cylinder_count; i++) {
+        double t1, t2;
+        if (intersect_ray_cylinder(O, D, &scene->cylinders[i], &t1, &t2)) {
+            if (t1 < result.t && t1 > t_min) {
+                result.t = t1;
+                result.type = SHAPE_CYLINDER;
+                result.object = &scene->cylinders[i];
+            }
+            if (t2 < result.t && t2 > t_min) {
+                result.t = t2;
+                result.type = SHAPE_CYLINDER;
+                result.object = &scene->cylinders[i];
+            }
+        }
+    }
+
+    // Check planes
+    for (int i = 0; i < scene->plane_count; i++) {
+        double t;
+        if (intersect_ray_plane(O, D, &scene->planes[i], &t)) {
+            if (t < result.t && t > t_min) {
+                result.t = t;
+                result.type = SHAPE_PLANE;
+                result.object = &scene->planes[i];
+            }
+        }
+    }
+
+    return result;
 }
 
 color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
@@ -67,9 +161,12 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
             //    t_max = INFINITY;
             //}
             // Check for shadows
-            double shadow_t;
-            sphere *shadow_sphere = closest_intersection(scene, P, L, 0.001, t_max, &shadow_t);
-            if (shadow_sphere != NULL) continue;
+            //double shadow_t;
+            //sphere *shadow_sphere =
+            intersection_result shadow_result = closest_intersection(scene, P, L, 0.001, t_max);//, &shadow_t);
+            //if (shadow_sphere != NULL) continue;
+            if (shadow_result.t < t_max)
+                continue; // In shadow, skip this light
             // Diffuse lighting
             double n_dot_l = vector_dot(N, L);
             if (n_dot_l > 0)
@@ -103,36 +200,112 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
     return result;
 }
 
-// Function to trace a ray
-/* int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max)//, int depth)
+// Function to compute the normal at a point on the cylinder
+vector cyl_normal(vector p, cylinder *cyl)
 {
-    double closest_t;
-    sphere *closest_sphere = closest_intersection(scene, O, D, t_min, t_max, &closest_t);
-    if (closest_sphere == NULL)
-        return BACKGROUND_COLOR; // Background color
-    // Compute local color at the intersection point
-    vector P = vector_add(O, vector_scale(D, closest_t)); // Intersection point
-    vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
-    vector V = vector_scale(D, -1); // View direction - not found in pseudocode !!!!!!!!!!!!!!
-    //double lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
-    color lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
-
-    // int r = closest_sphere->red * lighting;
-    // int g = closest_sphere->green * lighting;
-    // int b = closest_sphere->blue * lighting;
-    int r = (int)closest_sphere->red * lighting.red;
-    int g = (int)closest_sphere->green * lighting.green;
-    int b = (int)closest_sphere->blue * lighting.blue;
-
-    // Ensure the values are within the 0-255 range
-    r = (r > 255) ? 255 : r;
-    g = (g > 255) ? 255 : g;
-    b = (b > 255) ? 255 : b;
-
-    return ((r << 16) | (g << 8) | b);
-} */
+    vector base = compute_base(cyl);
+    vector top = compute_top(cyl);
+    vector pa = vector_sub(p, base);  // pa = p - base
+    vector ba = vector_sub(top, base);  // ba = top - base
+    double baba = vector_dot(ba, ba);
+    double h = vector_dot(pa, ba) / baba;
+    vector normal = vector_sub(pa, vector_scale(ba, h));
+    return vector_normalize(vector_scale(normal, 1.0 / cyl->radius));
+}
 
 int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
+{
+    intersection_result result = closest_intersection(scene, O, D, t_min, t_max);
+    if (result.t == t_max)
+        return BACKGROUND_COLOR;// Background color
+
+    // Compute local color at the intersection point
+    vector P = vector_add(O, vector_scale(D, result.t)); // Intersection point
+    vector N = {0, 0, 0};
+    //vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
+    if (result.type == SHAPE_SPHERE)
+        N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
+    else if (result.type == SHAPE_CYLINDER) {
+        cylinder *c = (cylinder *)result.object;
+        // Compute normal for cylinder (more complex)
+        // ...
+        N = cyl_normal(P, c); //??
+    } else if (result.type == SHAPE_PLANE)
+        N = ((plane *)result.object)->normal;
+
+    vector V = vector_scale(D, -1); // View direction
+
+    //color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
+     color lighting = compute_lighting(scene, P, N, V, result.type == SHAPE_SPHERE ? ((sphere *)result.object)->specular : ((result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->specular : 500)); // Handle different shapes
+
+    color local_color;
+    // local_color.red = (closest_sphere->red / 255.0) * local_lighting.red;
+    // local_color.green = (closest_sphere->green / 255.0) * local_lighting.green;
+    // local_color.blue = (closest_sphere->blue / 255.0) * local_lighting.blue;
+
+    if (result.type == SHAPE_SPHERE)
+    {
+        sphere *s = (sphere *)result.object;
+        local_color.red = (s->red / 255.0) * lighting.red;
+        local_color.green = (s->green / 255.0) * lighting.green;
+        local_color.blue = (s->blue / 255.0) * lighting.blue;
+    }
+    else if (result.type == SHAPE_CYLINDER)
+    {
+        cylinder *c = (cylinder *)result.object;
+        local_color.red = (c->red / 255.0) * lighting.red;
+        local_color.green = (c->green / 255.0) * lighting.green;
+        local_color.blue = (c->blue / 255.0) * lighting.blue;
+    }
+    else if (result.type == SHAPE_PLANE)
+    {
+        plane *pl = (plane *)result.object;
+        local_color.red = (pl->red / 255.0) * lighting.red;
+        local_color.green = (pl->green / 255.0) * lighting.green;
+        local_color.blue = (pl->blue / 255.0) * lighting.blue;
+    }
+
+    //double r = closest_sphere->reflective;
+    double r = (result.type == SHAPE_SPHERE) ? ((sphere *)result.object)->reflective : (result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->reflective : 0.0;
+    if (depth <= 0 || r <= 0) {
+        int final_red = (int)(local_color.red * 255);
+        int final_green = (int)(local_color.green * 255);
+        int final_blue = (int)(local_color.blue * 255);
+
+        final_red = (final_red > 255) ? 255 : final_red;
+        final_green = (final_green > 255) ? 255 : final_green;
+        final_blue = (final_blue > 255) ? 255 : final_blue;
+
+        return (final_red << 16) | (final_green << 8) | final_blue;
+    }
+
+    // Compute reflection vector
+    vector R = vector_reflect(V, N);
+
+    // Trace the reflected ray
+    int reflected_color_int = trace_ray(scene, P, R, 0.001, INFINITY, depth - 1);
+
+    color reflected_color = {(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
+    // Combine local color and reflected color based on reflectivity
+
+    color final_color;
+
+    final_color.red = local_color.red * (1 - r) + reflected_color.red * r;
+    final_color.green = local_color.green * (1 - r) + reflected_color.green * r;
+    final_color.blue = local_color.blue * (1 - r) + reflected_color.blue * r;
+
+    int final_red = (int)(final_color.red * 255);
+    int final_green = (int)(final_color.green * 255);
+    int final_blue = (int)(final_color.blue * 255);
+
+    final_red = (final_red > 255) ? 255 : final_red;
+    final_green = (final_green > 255) ? 255 : final_green;
+    final_blue = (final_blue > 255) ? 255 : final_blue;
+
+    return (final_red << 16) | (final_green << 8) | final_blue;
+}
+
+/* int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
 {
     double closest_t;
     sphere *closest_sphere = closest_intersection(scene, O, D, t_min, t_max, &closest_t);
@@ -188,7 +361,7 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int 
     final_blue = (final_blue > 255) ? 255 : final_blue;
 
     return (final_red << 16) | (final_green << 8) | final_blue;
-}
+} */
 
 // Function to draw pixels on the canvas
 void put_pixel(t_canvas *canvas, int x, int y, int color)
@@ -229,11 +402,23 @@ scene create_scene() {
     // Red sphere
     scene.spheres[0] = (sphere){{0, -1, 3}, 1, 255, 0, 0, 500, 0.2};
     // Blue sphere
-    scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
+   // scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
     // Green sphere
     scene.spheres[2] = (sphere){{2, 0, 4}, 1, 0, 255, 0, 10, 0.4};
     // Yellow large sphere (floor)
-    scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
+    //scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
+
+    // Example plane
+    scene.plane_count = 1;
+    scene.planes = malloc(sizeof(plane) * scene.plane_count);
+    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, 500, 0.1, 255, 255, 0};
+
+    scene.cylinder_count = 1;
+    scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
+
+    // Example cylinder
+    scene.cylinders[0] = (cylinder){{-1, -1, 4}, 1, 2, 500, {0, 1, 0}, 0.3, 0, 0, 255};
+
 
     scene.light_count = 3;
     scene.lights = malloc(sizeof(light) * scene.light_count);
@@ -246,8 +431,8 @@ scene create_scene() {
    // scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
 
      // Initialize camera (you will replace these values after reading the .rt file)
-    scene.camera.position = (vector){0, 0, -5}; // Example values
-    scene.camera.orientation = (vector){0.0, 0.0, 0.0}; // Example values
+    scene.camera.position = (vector){-4, 2, -5}; // Example values
+    scene.camera.orientation = (vector){0.5, -0.3, 0.0}; // Example values
     scene.camera.fov = 100.0; // Example value
 
     return scene;

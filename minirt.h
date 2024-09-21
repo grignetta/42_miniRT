@@ -61,14 +61,51 @@ typedef struct
     int blue;
 } light;
 
-typedef struct
-{
-	sphere	*spheres;
-	int		sphere_count;
-	light	*lights;
-	int		light_count;
-	camera	camera;
+typedef struct {
+    vector center;
+    double radius;
+    double height;
+    int specular;
+	vector axis;
+    double reflective;
+    int red;
+    int green;
+    int blue;
+} cylinder;
+
+typedef struct {
+    vector point;
+    vector normal;
+    int specular;
+    double reflective;
+    int red;
+    int green;
+    int blue;
+} plane;
+
+typedef struct {
+    sphere *spheres;
+    int sphere_count;
+    cylinder *cylinders;
+    int cylinder_count;
+    plane *planes;
+    int plane_count;
+    light *lights;
+    int light_count;
+    camera camera;
 } scene;
+
+typedef enum {
+    SHAPE_SPHERE,
+    SHAPE_CYLINDER,
+    SHAPE_PLANE
+} shape_type;
+
+typedef struct {
+    shape_type type;
+    void *object;
+    double t;
+} intersection_result;
 
 typedef struct s_canvas
 {
@@ -106,10 +143,13 @@ double vector_dot(vector v1, vector v2);
 double vector_length(vector v);
 vector vector_normalize(vector v);
 vector vector_reflect(vector R, vector N);
+vector compute_base(cylinder *cyl);
+vector compute_top(cylinder *cyl);
 
 //rest.c
-int intersect_ray_sphere(vector O, vector D, sphere sphere, double *t1, double *t2);
-sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
+int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
+//sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
+intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max);
 //double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);

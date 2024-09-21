@@ -38,3 +38,13 @@ vector vector_reflect(vector R, vector N)
 {
     return vector_sub(vector_scale(N, 2 * vector_dot(N, R)), R);
 }
+
+vector compute_base(cylinder *cyl)
+{
+    return vector_sub(cyl->center, vector_scale(cyl->axis, cyl->height / 2.0));
+}
+
+vector compute_top(cylinder *cyl)
+{
+    return vector_add(cyl->center, vector_scale(cyl->axis, cyl->height / 2.0));
+}
