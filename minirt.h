@@ -185,9 +185,9 @@ void render(t_canvas *app, scene *scene);
 scene create_scene();
 
 //intersection.c
-int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
-int intersect_ray_cylinder(vector O, vector D, cylinder *cyl, double *t1, double *t2);
-int intersect_ray_plane(vector O, vector D, plane *pl, double *t);
+// int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
+// int intersect_ray_cylinder(vector O, vector D, cylinder *cyl, double *t1, double *t2);
+// int intersect_ray_plane(vector O, vector D, plane *pl, double *t);
 
 
 #endif
