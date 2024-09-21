@@ -212,6 +212,24 @@ vector compute_normal(intersection_result result, vector P)
     return (N);
 }
 
+int color_to_int(color local_color)
+{
+    int final_red;
+    int final_green;
+    int final_blue;
+
+    final_red = (int)(local_color.red * 255);
+    final_green = (int)(local_color.green * 255);
+    final_blue = (int)(local_color.blue * 255);
+    if (final_red > 255)
+        final_red = 255;
+    if (final_green > 255)
+        final_green = 255;
+    if (final_blue > 255)
+        final_blue = 255;
+    return ((final_red << 16) | (final_green << 8) | final_blue);
+}
+
 int trace_ray(scene *scene, ray_params params, int depth)
 {
     intersection_result result = closest_intersection(scene, params);//params.O, params.D, params.t_min, params.t_max);
@@ -239,71 +257,16 @@ int trace_ray(scene *scene, ray_params params, int depth)
     local_color.red = (shape->red / 255.0) * lighting.red;
     local_color.green = (shape->green / 255.0) * lighting.green;
     local_color.blue = (shape->blue / 255.0) * lighting.blue;
-
-    /*  color lighting = compute_lighting(scene, P, N, V, result.type == SHAPE_SPHERE ? ((sphere *)result.object)->specular : ((result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->specular : 0)); // Handle different shapes
-
-    color local_color;
-    // local_color.red = (closest_sphere->red / 255.0) * local_lighting.red;
-    // local_color.green = (closest_sphere->green / 255.0) * local_lighting.green;
-    // local_color.blue = (closest_sphere->blue / 255.0) * local_lighting.blue;
-
-    if (result.type == SHAPE_SPHERE)
-    {
-        sphere *s = (sphere *)result.object;
-        local_color.red = (s->red / 255.0) * lighting.red;
-        local_color.green = (s->green / 255.0) * lighting.green;
-        local_color.blue = (s->blue / 255.0) * lighting.blue;
-    }
-    else if (result.type == SHAPE_CYLINDER)
-    {
-        cylinder *c = (cylinder *)result.object;
-        local_color.red = (c->red / 255.0) * lighting.red;
-        local_color.green = (c->green / 255.0) * lighting.green;
-        local_color.blue = (c->blue / 255.0) * lighting.blue;
-    }
-    else if (result.type == SHAPE_PLANE)
-    {
-        plane *pl = (plane *)result.object;
-        local_color.red = (pl->red / 255.0) * lighting.red;
-        local_color.green = (pl->green / 255.0) * lighting.green;
-        local_color.blue = (pl->blue / 255.0) * lighting.blue;
-    } */
-
-    //double r = closest_sphere->reflective;
-    /* double r = (result.type == SHAPE_SPHERE) ? ((sphere *)result.object)->reflective : (result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->reflective : 0.0;
-    if (depth <= 0 || r <= 0) {
-        int final_red = (int)(local_color.red * 255);
-        int final_green = (int)(local_color.green * 255);
-        int final_blue = (int)(local_color.blue * 255);
-
-        final_red = (final_red > 255) ? 255 : final_red;
-        final_green = (final_green > 255) ? 255 : final_green;
-        final_blue = (final_blue > 255) ? 255 : final_blue;
-
-        return (final_red << 16) | (final_green << 8) | final_blue;
-    } */
     double r = shape->reflective;
-
-    if (depth <= 0 || r <= 0) {
-        int final_red = (int)(local_color.red * 255);
-        int final_green = (int)(local_color.green * 255);
-        int final_blue = (int)(local_color.blue * 255);
-
-        final_red = (final_red > 255) ? 255 : final_red;
-        final_green = (final_green > 255) ? 255 : final_green;
-        final_blue = (final_blue > 255) ? 255 : final_blue;
-
-        return (final_red << 16) | (final_green << 8) | final_blue;
-    }
+    if (depth <= 0 || r <= 0)
+        return color_to_int(local_color);
 
     // Compute reflection vector
     vector R = vector_reflect(V, N);
-
     params.O = P;
     params.D = R;
     params.t_min = 0.001;
     params.t_max = INFINITY;
-
     // Trace the reflected ray
     int reflected_color_int = trace_ray(scene, params, depth - 1);
 
@@ -311,20 +274,10 @@ int trace_ray(scene *scene, ray_params params, int depth)
     // Combine local color and reflected color based on reflectivity
 
     color final_color;
-
     final_color.red = local_color.red * (1 - r) + reflected_color.red * r;
     final_color.green = local_color.green * (1 - r) + reflected_color.green * r;
     final_color.blue = local_color.blue * (1 - r) + reflected_color.blue * r;
-
-    int final_red = (int)(final_color.red * 255);
-    int final_green = (int)(final_color.green * 255);
-    int final_blue = (int)(final_color.blue * 255);
-
-    final_red = (final_red > 255) ? 255 : final_red;
-    final_green = (final_green > 255) ? 255 : final_green;
-    final_blue = (final_blue > 255) ? 255 : final_blue;
-
-    return (final_red << 16) | (final_green << 8) | final_blue;
+    return color_to_int(final_color);
 }
 
 // Function to draw pixels on the canvas
@@ -380,7 +333,7 @@ scene create_scene() {
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, {255, 255, 0, 500, 0.1}};
+    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, {255, 255, 0, 500, 0.5}};
 
     scene.cylinder_count = 1;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
@@ -400,8 +353,8 @@ scene create_scene() {
    // scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
 
      // Initialize camera (you will replace these values after reading the .rt file)
-    scene.camera.position = (vector){-4, 2, -5}; // Example values
-    scene.camera.orientation = (vector){0.5, -0.3, 0.0}; // Example values
+    scene.camera.position = (vector){0, 0, -5}; // Example values
+    scene.camera.orientation = (vector){0.0, 0.0, 0.0}; // Example values
     scene.camera.fov = 100.0; // Example value
 
     return scene;
