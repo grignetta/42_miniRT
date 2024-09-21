@@ -154,6 +154,15 @@ typedef struct {
     double r;
 } trace;
 
+typedef struct
+{
+    vector CO;
+    double a;
+	double b;
+	double c;
+    double discriminant;
+} intersection;
+
 //Vector operations
 vector vector_sub(vector v1, vector v2);
 vector vector_add(vector v1, vector v2);
