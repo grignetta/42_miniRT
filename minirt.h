@@ -135,6 +135,13 @@ typedef struct s_canvas
 	int		endian;
 }	t_canvas;
 
+typedef struct {
+    vector O;
+    vector D;
+    double t_min;
+    double t_max;
+} ray_params;
+
 //Vector operations
 vector vector_sub(vector v1, vector v2);
 vector vector_add(vector v1, vector v2);
@@ -149,10 +156,12 @@ vector compute_top(cylinder *cyl);
 //rest.c
 int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
 //sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
-intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max);
+//intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max);
+intersection_result closest_intersection(scene *scene, ray_params params);
 //double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
+//int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
+int trace_ray(scene *scene, ray_params params, int depth);
 void put_pixel(t_canvas *app, int x, int y, int color);
 void render(t_canvas *app, scene *scene);
 scene create_scene();

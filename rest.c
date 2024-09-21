@@ -57,42 +57,21 @@ int intersect_ray_plane(vector O, vector D, plane *pl, double *t)
 }
 
 // Closest intersection function
-/* sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t)
-{
-    *closest_t = t_max;
-    sphere *closest_sphere = NULL;
-
-    for (int i = 0; i < scene->sphere_count; i++) {
-        double t1, t2;
-        if (intersect_ray_sphere(O, D, scene->spheres[i], &t1, &t2)) {
-            if (t1 >= t_min && t1 <= t_max && t1 < *closest_t) {
-                *closest_t = t1;
-                closest_sphere = &scene->spheres[i];
-            }
-            if (t2 >= t_min && t2 <= t_max && t2 < *closest_t) {
-                *closest_t = t2;
-                closest_sphere = &scene->spheres[i];
-            }
-        }
-    }
-    return closest_sphere;
-} */
-
-intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max)
+intersection_result closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)
 {
     intersection_result result = {0};
-    result.t = t_max;
+    result.t = params.t_max;
 
     // Check spheres
     for (int i = 0; i < scene->sphere_count; i++) {
         double t1, t2;
-        if (intersect_ray_sphere(O, D, &scene->spheres[i], &t1, &t2)) {
-            if (t1 < result.t && t1 > t_min) {
+        if (intersect_ray_sphere(params.O, params.D, &scene->spheres[i], &t1, &t2)) {
+            if (t1 < result.t && t1 > params.t_min) {
                 result.t = t1;
                 result.type = SHAPE_SPHERE;
                 result.object = &scene->spheres[i];
             }
-            if (t2 < result.t && t2 > t_min) {
+            if (t2 < result.t && t2 > params.t_min) {
                 result.t = t2;
                 result.type = SHAPE_SPHERE;
                 result.object = &scene->spheres[i];
@@ -103,13 +82,13 @@ intersection_result closest_intersection(scene *scene, vector O, vector D, doubl
     // Check cylinders
     for (int i = 0; i < scene->cylinder_count; i++) {
         double t1, t2;
-        if (intersect_ray_cylinder(O, D, &scene->cylinders[i], &t1, &t2)) {
-            if (t1 < result.t && t1 > t_min) {
+        if (intersect_ray_cylinder(params.O, params.D, &scene->cylinders[i], &t1, &t2)) {
+            if (t1 < result.t && t1 > params.t_min) {
                 result.t = t1;
                 result.type = SHAPE_CYLINDER;
                 result.object = &scene->cylinders[i];
             }
-            if (t2 < result.t && t2 > t_min) {
+            if (t2 < result.t && t2 > params.t_min) {
                 result.t = t2;
                 result.type = SHAPE_CYLINDER;
                 result.object = &scene->cylinders[i];
@@ -120,8 +99,8 @@ intersection_result closest_intersection(scene *scene, vector O, vector D, doubl
     // Check planes
     for (int i = 0; i < scene->plane_count; i++) {
         double t;
-        if (intersect_ray_plane(O, D, &scene->planes[i], &t)) {
-            if (t < result.t && t > t_min) {
+        if (intersect_ray_plane(params.O, params.D, &scene->planes[i], &t)) {
+            if (t < result.t && t > params.t_min) {
                 result.t = t;
                 result.type = SHAPE_PLANE;
                 result.object = &scene->planes[i];
@@ -134,6 +113,8 @@ intersection_result closest_intersection(scene *scene, vector O, vector D, doubl
 
 color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
 {
+    ray_params shadow_params;
+
     color result = {0.0, 0.0, 0.0};
 
     for (int i = 0; i < scene->light_count; i++)
@@ -153,7 +134,7 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
             //if (light.type == 1)
 			//{ // Point
                 L = vector_sub(light.position, P);
-                t_max = 1.0;
+                t_max = 1.0; //left in case we add directional light
             //}
 			//else
 			//{ // Directional
@@ -163,9 +144,14 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
             // Check for shadows
             //double shadow_t;
             //sphere *shadow_sphere =
-            intersection_result shadow_result = closest_intersection(scene, P, L, 0.001, t_max);//, &shadow_t);
+            shadow_params.O = P;
+            shadow_params.D = L;
+            shadow_params.t_min = 0.001;
+            shadow_params.t_max = t_max;
+
+            intersection_result shadow_result = closest_intersection(scene, shadow_params);//P, L, 0.001, t_max);//, &shadow_t);
             //if (shadow_sphere != NULL) continue;
-            if (shadow_result.t < t_max)
+            if (shadow_result.t < shadow_params.t_max)
                 continue; // In shadow, skip this light
             // Diffuse lighting
             double n_dot_l = vector_dot(N, L);
@@ -213,27 +199,25 @@ vector cyl_normal(vector p, cylinder *cyl)
     return vector_normalize(vector_scale(normal, 1.0 / cyl->radius));
 }
 
-int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
+//int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
+int trace_ray(scene *scene, ray_params params, int depth)
 {
-    intersection_result result = closest_intersection(scene, O, D, t_min, t_max);
-    if (result.t == t_max)
+    intersection_result result = closest_intersection(scene, params);//params.O, params.D, params.t_min, params.t_max);
+    if (result.t == params.t_max)
         return BACKGROUND_COLOR;// Background color
 
     // Compute local color at the intersection point
-    vector P = vector_add(O, vector_scale(D, result.t)); // Intersection point
+    vector P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
     vector N = {0, 0, 0};
     //vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
     if (result.type == SHAPE_SPHERE)
         N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
-    else if (result.type == SHAPE_CYLINDER) {
-        cylinder *c = (cylinder *)result.object;
-        // Compute normal for cylinder (more complex)
-        // ...
-        N = cyl_normal(P, c); //??
-    } else if (result.type == SHAPE_PLANE)
+    else if (result.type == SHAPE_CYLINDER)
+        N = cyl_normal(P, (cylinder *)result.object);
+    else if (result.type == SHAPE_PLANE)
         N = ((plane *)result.object)->normal;
 
-    vector V = vector_scale(D, -1); // View direction
+    vector V = vector_scale(params.D, -1); // View direction
 
     //color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
      color lighting = compute_lighting(scene, P, N, V, result.type == SHAPE_SPHERE ? ((sphere *)result.object)->specular : ((result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->specular : 500)); // Handle different shapes
@@ -282,8 +266,13 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int 
     // Compute reflection vector
     vector R = vector_reflect(V, N);
 
+    params.O = P;
+    params.D = R;
+    params.t_min = 0.001;
+    params.t_max = INFINITY;
+
     // Trace the reflected ray
-    int reflected_color_int = trace_ray(scene, P, R, 0.001, INFINITY, depth - 1);
+    int reflected_color_int = trace_ray(scene, params, depth - 1);
 
     color reflected_color = {(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
     // Combine local color and reflected color based on reflectivity
@@ -304,64 +293,6 @@ int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int 
 
     return (final_red << 16) | (final_green << 8) | final_blue;
 }
-
-/* int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
-{
-    double closest_t;
-    sphere *closest_sphere = closest_intersection(scene, O, D, t_min, t_max, &closest_t);
-    if (closest_sphere == NULL)
-        return BACKGROUND_COLOR; // Background color
-
-    // Compute local color at the intersection point
-    vector P = vector_add(O, vector_scale(D, closest_t)); // Intersection point
-    vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
-    vector V = vector_scale(D, -1); // View direction
-
-    color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
-
-    color local_color;
-    local_color.red = (closest_sphere->red / 255.0) * local_lighting.red;
-    local_color.green = (closest_sphere->green / 255.0) * local_lighting.green;
-    local_color.blue = (closest_sphere->blue / 255.0) * local_lighting.blue;
-
-    double r = closest_sphere->reflective;
-    if (depth <= 0 || r <= 0) {
-        int final_red = (int)(local_color.red * 255);
-        int final_green = (int)(local_color.green * 255);
-        int final_blue = (int)(local_color.blue * 255);
-
-        final_red = (final_red > 255) ? 255 : final_red;
-        final_green = (final_green > 255) ? 255 : final_green;
-        final_blue = (final_blue > 255) ? 255 : final_blue;
-
-        return (final_red << 16) | (final_green << 8) | final_blue;
-    }
-
-    // Compute reflection vector
-    vector R = vector_reflect(V, N);
-
-    // Trace the reflected ray
-    int reflected_color_int = trace_ray(scene, P, R, 0.001, INFINITY, depth - 1);
-
-    color reflected_color = {(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
-    // Combine local color and reflected color based on reflectivity
-
-    color final_color;
-
-    final_color.red = local_color.red * (1 - r) + reflected_color.red * r;
-    final_color.green = local_color.green * (1 - r) + reflected_color.green * r;
-    final_color.blue = local_color.blue * (1 - r) + reflected_color.blue * r;
-
-    int final_red = (int)(final_color.red * 255);
-    int final_green = (int)(final_color.green * 255);
-    int final_blue = (int)(final_color.blue * 255);
-
-    final_red = (final_red > 255) ? 255 : final_red;
-    final_green = (final_green > 255) ? 255 : final_green;
-    final_blue = (final_blue > 255) ? 255 : final_blue;
-
-    return (final_red << 16) | (final_green << 8) | final_blue;
-} */
 
 // Function to draw pixels on the canvas
 void put_pixel(t_canvas *canvas, int x, int y, int color)
@@ -373,6 +304,7 @@ void put_pixel(t_canvas *canvas, int x, int y, int color)
 // Main rendering loop
 void render(t_canvas *canvas, scene *scene)
 {
+    ray_params params;
     camera *camera = &scene->camera;
     //double viewport_size = 1.0;
     double viewport_size = 2 * tan(camera->fov * M_PI / 360.0);
@@ -386,7 +318,11 @@ void render(t_canvas *canvas, scene *scene)
             D = vector_normalize(D); // Normalize the ray direction
             // Adjust ray direction based on camera's orientation
             D = vector_add(D, camera->orientation);  // Align with camera's orientation
-            int color = trace_ray(scene, camera_position, D, 1.0, INFINITY, 3);
+            params.O = camera_position;
+            params.D = D;
+            params.t_min = 1.0;
+            params.t_max = INFINITY;
+            int color = trace_ray(scene, params, 3);
             put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
         }
     }
