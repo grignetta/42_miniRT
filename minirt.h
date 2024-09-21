@@ -21,6 +21,12 @@
 
 // Structs for vectors, spheres, lights, and the scene
 
+typedef enum {
+    SHAPE_SPHERE,
+    SHAPE_CYLINDER,
+    SHAPE_PLANE
+} shape_type;
+
 typedef struct
 {
 	double x, y, z;
@@ -50,6 +56,7 @@ typedef struct
 	vector center;
 	double radius;
 	base_shape base;
+	shape_type type;
 } sphere;
 
 typedef struct
@@ -59,6 +66,7 @@ typedef struct
     double height;
 	vector axis;
 	base_shape base;
+	shape_type type;
 } cylinder;
 
 typedef struct
@@ -66,6 +74,7 @@ typedef struct
     vector point;
     vector normal;
 	base_shape base;
+	shape_type type;
 } plane;
 
 typedef struct
@@ -94,12 +103,6 @@ typedef struct
     double blue;
 } color;
 
-typedef enum {
-    SHAPE_SPHERE,
-    SHAPE_CYLINDER,
-    SHAPE_PLANE
-} shape_type;
-
 typedef struct {
     shape_type type;
     void *object;
@@ -108,20 +111,6 @@ typedef struct {
 
 typedef struct s_canvas
 {
-	//int		width;
-	//int		height;
-	//int		**z_matrix;
-	//int		zoom;
-	//float	z_zoom;
-	//int		color;
-	//int		black;
-	//int		color_delta;
-	//double	angle;
-	//int		isometric;
-	//int		x_shift;
-	//int		y_shift;
-	//int		legend_offset;
-
 	int		img_side;
 	void	*mlx_ptr;
 	void	*win_ptr;
