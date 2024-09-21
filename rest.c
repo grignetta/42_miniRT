@@ -230,18 +230,8 @@ int color_to_int(color local_color)
     return ((final_red << 16) | (final_green << 8) | final_blue);
 }
 
-/* int trace_ray(scene *scene, ray_params params, int depth)
+base_shape* get_base_shape(intersection_result result)
 {
-    intersection_result result = closest_intersection(scene, params);//params.O, params.D, params.t_min, params.t_max);
-    if (result.t == params.t_max)
-        return BACKGROUND_COLOR;// Background color
-
-    // Compute local color at the intersection point
-    vector P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
-    vector N = compute_normal(result, P);
-    vector V = vector_scale(params.D, -1); // View direction
-
-    //color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
     base_shape *shape = (base_shape *)result.object;
     if (result.type == SHAPE_SPHERE)
         shape = &((sphere *)result.object)->base;
@@ -249,57 +239,31 @@ int color_to_int(color local_color)
         shape = &((cylinder *)result.object)->base;
     else if (result.type == SHAPE_PLANE)
         shape = &((plane *)result.object)->base;
-    // Compute lighting based on the specular value of the shape
-    color lighting = compute_lighting(scene, P, N, V, shape->specular);
-
-    // Calculate local color using the shape's color attributes
-    color local_color;
-    local_color.red = (shape->red / 255.0) * lighting.red;
-    local_color.green = (shape->green / 255.0) * lighting.green;
-    local_color.blue = (shape->blue / 255.0) * lighting.blue;
-    double r = shape->reflective;
-    if (depth <= 0 || r <= 0)
-        return color_to_int(local_color);
-
-    // Compute reflection vector
-    vector R = vector_reflect(V, N);
-    params.O = P;
-    params.D = R;
-    params.t_min = 0.001;
-    params.t_max = INFINITY;
-    // Trace the reflected ray
-    int reflected_color_int = trace_ray(scene, params, depth - 1);
-
-    color reflected_color = {(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
-    // Combine local color and reflected color based on reflectivity
-
-    color final_color;
-    final_color.red = local_color.red * (1 - r) + reflected_color.red * r;
-    final_color.green = local_color.green * (1 - r) + reflected_color.green * r;
-    final_color.blue = local_color.blue * (1 - r) + reflected_color.blue * r;
-    return color_to_int(final_color);
-} */
+    return shape;
+}
 
 int trace_ray(scene *scene, ray_params params, int depth)
 {
     trace vars;
-    intersection_result result = closest_intersection(scene, params);
+    intersection_result result;
+
+    result = closest_intersection(scene, params);
     if (result.t == params.t_max)
         return BACKGROUND_COLOR; // Background color
-
     // Compute local color at the intersection point
     vars.P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
     vars.N = compute_normal(result, vars.P);
     vars.V = vector_scale(params.D, -1); // View direction
 
     // Determine the shape and compute lighting
-    vars.shape = (base_shape *)result.object;
+    vars.shape = get_base_shape(result);
+    /* vars.shape = (base_shape *)result.object;
     if (result.type == SHAPE_SPHERE)
         vars.shape = &((sphere *)result.object)->base;
     else if (result.type == SHAPE_CYLINDER)
         vars.shape = &((cylinder *)result.object)->base;
     else if (result.type == SHAPE_PLANE)
-        vars.shape = &((plane *)result.object)->base;
+        vars.shape = &((plane *)result.object)->base; */
 
     // Compute lighting based on the specular value of the shape
     vars.lighting = compute_lighting(scene, vars.P, vars.N, vars.V, vars.shape->specular);
