@@ -21,34 +21,10 @@
 
 // Structs for vectors, spheres, lights, and the scene
 
-typedef struct {
-    double red;
-    double green;
-    double blue;
-} color;
-
 typedef struct
 {
 	double x, y, z;
 } vector;
-
-typedef struct
-{
-    vector position;       // Camera position (x, y, z)
-    vector orientation;    // Camera direction (normalized vector)
-    double fov;            // Field of view in degrees
-} camera;
-
-typedef struct
-{
-	vector center;
-	double radius;
-	int red;
-    int green;
-    int blue;
-	int specular;//when low 0 or 1 the picture is very bad
-	double reflective;
-} sphere;
 
 typedef struct
 {
@@ -62,28 +38,45 @@ typedef struct
 } light;
 
 typedef struct {
+    int red;
+    int green;
+    int blue;
+    int specular; //when low 0 or 1 the picture is very bad
+    double reflective;
+} base_shape; //to handle shades and reflections regardless of shape
+
+typedef struct
+{
+	vector center;
+	double radius;
+	base_shape base;
+} sphere;
+
+typedef struct
+{
     vector center;
     double radius;
     double height;
-    int specular;
 	vector axis;
-    double reflective;
-    int red;
-    int green;
-    int blue;
+	base_shape base;
 } cylinder;
 
-typedef struct {
+typedef struct
+{
     vector point;
     vector normal;
-    int specular;
-    double reflective;
-    int red;
-    int green;
-    int blue;
+	base_shape base;
 } plane;
 
-typedef struct {
+typedef struct
+{
+    vector position;       // Camera position (x, y, z)
+    vector orientation;    // Camera direction (normalized vector)
+    double fov;            // Field of view in degrees
+} camera;
+
+typedef struct
+{
     sphere *spheres;
     int sphere_count;
     cylinder *cylinders;
@@ -94,6 +87,12 @@ typedef struct {
     int light_count;
     camera camera;
 } scene;
+typedef struct
+{
+    double red;
+    double green;
+    double blue;
+} color;
 
 typedef enum {
     SHAPE_SPHERE,

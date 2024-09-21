@@ -220,18 +220,27 @@ int trace_ray(scene *scene, ray_params params, int depth)
 
     // Compute local color at the intersection point
     vector P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
-    vector N = compute_normal(result, P);//{0, 0, 0};
-    //vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
-    /* if (result.type == SHAPE_SPHERE)
-        N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
-    else if (result.type == SHAPE_CYLINDER)
-        N = cyl_normal(P, (cylinder *)result.object);
-    else if (result.type == SHAPE_PLANE)
-        N = ((plane *)result.object)->normal; */
+    vector N = compute_normal(result, P);
     vector V = vector_scale(params.D, -1); // View direction
 
     //color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
-     color lighting = compute_lighting(scene, P, N, V, result.type == SHAPE_SPHERE ? ((sphere *)result.object)->specular : ((result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->specular : 500)); // Handle different shapes
+    base_shape *shape = (base_shape *)result.object;
+    if (result.type == SHAPE_SPHERE)
+        shape = &((sphere *)result.object)->base;
+    else if (result.type == SHAPE_CYLINDER)
+        shape = &((cylinder *)result.object)->base;
+    else if (result.type == SHAPE_PLANE)
+        shape = &((plane *)result.object)->base;
+    // Compute lighting based on the specular value of the shape
+    color lighting = compute_lighting(scene, P, N, V, shape->specular);
+
+    // Calculate local color using the shape's color attributes
+    color local_color;
+    local_color.red = (shape->red / 255.0) * lighting.red;
+    local_color.green = (shape->green / 255.0) * lighting.green;
+    local_color.blue = (shape->blue / 255.0) * lighting.blue;
+
+    /*  color lighting = compute_lighting(scene, P, N, V, result.type == SHAPE_SPHERE ? ((sphere *)result.object)->specular : ((result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->specular : 0)); // Handle different shapes
 
     color local_color;
     // local_color.red = (closest_sphere->red / 255.0) * local_lighting.red;
@@ -258,10 +267,23 @@ int trace_ray(scene *scene, ray_params params, int depth)
         local_color.red = (pl->red / 255.0) * lighting.red;
         local_color.green = (pl->green / 255.0) * lighting.green;
         local_color.blue = (pl->blue / 255.0) * lighting.blue;
-    }
+    } */
 
     //double r = closest_sphere->reflective;
-    double r = (result.type == SHAPE_SPHERE) ? ((sphere *)result.object)->reflective : (result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->reflective : 0.0;
+    /* double r = (result.type == SHAPE_SPHERE) ? ((sphere *)result.object)->reflective : (result.type == SHAPE_CYLINDER) ? ((cylinder *)result.object)->reflective : 0.0;
+    if (depth <= 0 || r <= 0) {
+        int final_red = (int)(local_color.red * 255);
+        int final_green = (int)(local_color.green * 255);
+        int final_blue = (int)(local_color.blue * 255);
+
+        final_red = (final_red > 255) ? 255 : final_red;
+        final_green = (final_green > 255) ? 255 : final_green;
+        final_blue = (final_blue > 255) ? 255 : final_blue;
+
+        return (final_red << 16) | (final_green << 8) | final_blue;
+    } */
+    double r = shape->reflective;
+
     if (depth <= 0 || r <= 0) {
         int final_red = (int)(local_color.red * 255);
         int final_green = (int)(local_color.green * 255);
@@ -347,24 +369,24 @@ scene create_scene() {
     scene.spheres = malloc(sizeof(sphere) * scene.sphere_count);
 
     // Red sphere
-    scene.spheres[0] = (sphere){{0, -1, 3}, 1, 255, 0, 0, 500, 0.2};
+    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 0, 0, 500, 0.2}};
     // Blue sphere
    // scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{2, 0, 4}, 1, 0, 255, 0, 10, 0.4};
+    scene.spheres[2] = (sphere){{2, 0, 4}, 1, {0, 255, 0, 10, 0.4}};
     // Yellow large sphere (floor)
     //scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, 500, 0.1, 255, 255, 0};
+    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, {255, 255, 0, 500, 0.1}};
 
     scene.cylinder_count = 1;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
-    scene.cylinders[0] = (cylinder){{-1, -1, 4}, 1, 2, 500, {0, 1, 0}, 0.3, 0, 0, 255};
+    scene.cylinders[0] = (cylinder){{-1, -1, 4}, 1, 2, {0, 1, 0}, {0, 0, 255, 500, 0.3}};
 
 
     scene.light_count = 3;
