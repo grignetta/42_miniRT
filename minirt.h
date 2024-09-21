@@ -141,6 +141,19 @@ typedef struct {
     double t_max;
 } ray_params;
 
+typedef struct {
+    vector P;
+    vector N;
+    vector V;
+    vector R;
+    color local_color;
+    color lighting;
+    color reflected_color;
+    color final_color;
+    base_shape *shape;
+    double r;
+} trace;
+
 //Vector operations
 vector vector_sub(vector v1, vector v2);
 vector vector_add(vector v1, vector v2);
