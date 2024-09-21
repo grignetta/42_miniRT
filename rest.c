@@ -230,6 +230,16 @@ int color_to_int(color local_color)
     return ((final_red << 16) | (final_green << 8) | final_blue);
 }
 
+color color_to_double(int color_int)
+{
+    color result;
+
+    result.red = ((color_int >> 16) & 0xFF) / 255.0;
+    result.green = ((color_int >> 8) & 0xFF) / 255.0;
+    result.blue = (color_int & 0xFF) / 255.0;
+    return (result);
+}
+
 base_shape* get_base_shape(intersection_result result)
 {
     base_shape *shape = (base_shape *)result.object;
@@ -254,20 +264,10 @@ int trace_ray(scene *scene, ray_params params, int depth)
     vars.P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
     vars.N = compute_normal(result, vars.P);
     vars.V = vector_scale(params.D, -1); // View direction
-
     // Determine the shape and compute lighting
     vars.shape = get_base_shape(result);
-    /* vars.shape = (base_shape *)result.object;
-    if (result.type == SHAPE_SPHERE)
-        vars.shape = &((sphere *)result.object)->base;
-    else if (result.type == SHAPE_CYLINDER)
-        vars.shape = &((cylinder *)result.object)->base;
-    else if (result.type == SHAPE_PLANE)
-        vars.shape = &((plane *)result.object)->base; */
-
     // Compute lighting based on the specular value of the shape
     vars.lighting = compute_lighting(scene, vars.P, vars.N, vars.V, vars.shape->specular);
-
     // Calculate local color using the shape's color attributes
     vars.local_color.red = (vars.shape->red / 255.0) * vars.lighting.red;
     vars.local_color.green = (vars.shape->green / 255.0) * vars.lighting.green;
@@ -275,19 +275,17 @@ int trace_ray(scene *scene, ray_params params, int depth)
     vars.r = vars.shape->reflective;
     if (depth <= 0 || vars.r <= 0)
         return color_to_int(vars.local_color);
-
     // Compute reflection vector
     vars.R = vector_reflect(vars.V, vars.N);
     params.O = vars.P;
     params.D = vars.R;
     params.t_min = 0.001;
-    params.t_max = INFINITY;
+    //params.t_max = INFINITY; was declared in the beginning
     // Trace the reflected ray
     int reflected_color_int = trace_ray(scene, params, depth - 1);
-
-    vars.reflected_color = (color){(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
+    //vars.reflected_color = (color){(reflected_color_int >> 16 & 0xFF) / 255.0, (reflected_color_int >> 8 & 0xFF) / 255.0, (reflected_color_int & 0xFF) / 255.0};
+    vars.reflected_color = color_to_double(reflected_color_int);
     // Combine local color and reflected color based on reflectivity
-
     vars.final_color.red = vars.local_color.red * (1 - vars.r) + vars.reflected_color.red * vars.r;
     vars.final_color.green = vars.local_color.green * (1 - vars.r) + vars.reflected_color.green * vars.r;
     vars.final_color.blue = vars.local_color.blue * (1 - vars.r) + vars.reflected_color.blue * vars.r;
