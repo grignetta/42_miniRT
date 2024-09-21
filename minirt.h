@@ -104,7 +104,7 @@ typedef enum {
 typedef struct {
     shape_type type;
     void *object;
-    double t;
+    double t; //distance to intersection
 } intersection_result;
 
 typedef struct s_canvas

@@ -200,6 +200,18 @@ vector cyl_normal(vector p, cylinder *cyl)
 }
 
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
+vector compute_normal(intersection_result result, vector P)
+{
+    vector N = {0, 0, 0};
+    if (result.type == SHAPE_SPHERE)
+        N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
+    else if (result.type == SHAPE_CYLINDER)
+        N = cyl_normal(P, (cylinder *)result.object);
+    else if (result.type == SHAPE_PLANE)
+        N = ((plane *)result.object)->normal;
+    return (N);
+}
+
 int trace_ray(scene *scene, ray_params params, int depth)
 {
     intersection_result result = closest_intersection(scene, params);//params.O, params.D, params.t_min, params.t_max);
@@ -208,15 +220,14 @@ int trace_ray(scene *scene, ray_params params, int depth)
 
     // Compute local color at the intersection point
     vector P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
-    vector N = {0, 0, 0};
+    vector N = compute_normal(result, P);//{0, 0, 0};
     //vector N = vector_normalize(vector_sub(P, closest_sphere->center)); // Normal at the intersection
-    if (result.type == SHAPE_SPHERE)
+    /* if (result.type == SHAPE_SPHERE)
         N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
     else if (result.type == SHAPE_CYLINDER)
         N = cyl_normal(P, (cylinder *)result.object);
     else if (result.type == SHAPE_PLANE)
-        N = ((plane *)result.object)->normal;
-
+        N = ((plane *)result.object)->normal; */
     vector V = vector_scale(params.D, -1); // View direction
 
     //color local_lighting = compute_lighting(scene, P, N, V, closest_sphere->specular);
