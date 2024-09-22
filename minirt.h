@@ -167,14 +167,15 @@ vector vector_reflect(vector R, vector N);
 vector compute_base(cylinder *cyl);
 vector compute_top(cylinder *cyl);
 
-//rest.c
-intersection_result closest_intersection(scene *scene, ray_params params);
-//double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-//color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-//int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
-int trace_ray(scene *scene, ray_params params, int depth);
+//render.c
 void render(t_canvas *app, scene *scene, camera *camera);
-scene create_scene();
+scene create_scene();//temporary
+
+//ray_trace.c
+int trace_ray(scene *scene, ray_params params, int depth);
+
+//intersection.c
+intersection_result closest_intersection(scene *scene, ray_params params);
 
 //utils.c
 void put_pixel(t_canvas *app, int x, int y, int color);
@@ -186,11 +187,5 @@ void set_camera(scene *scene);
 
 //light_computation.c
 color compute_lighting(scene *scene, trace vars);
-
-//intersection.c
-// int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
-// int intersect_ray_cylinder(vector O, vector D, cylinder *cyl, double *t1, double *t2);
-// int intersect_ray_plane(vector O, vector D, plane *pl, double *t);
-
 
 #endif
