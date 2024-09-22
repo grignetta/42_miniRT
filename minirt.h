@@ -84,6 +84,8 @@ typedef struct
     vector position;       // Camera position (x, y, z)
     vector orientation;    // Camera direction (normalized vector)
     double fov;            // Field of view in degrees
+    double viewport_size;
+    double projection_plane_d;
 } camera;
 
 typedef struct
@@ -172,8 +174,11 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
 int trace_ray(scene *scene, ray_params params, int depth);
 void put_pixel(t_canvas *app, int x, int y, int color);
-void render(t_canvas *app, scene *scene);
+void render(t_canvas *app, scene *scene, camera *camera);
 scene create_scene();
+
+//camera.c
+void set_camera(scene *scene);
 
 //intersection.c
 // int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);

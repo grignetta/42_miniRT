@@ -76,23 +76,17 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
 }
 
 // Main rendering loop
-void render(t_canvas *canvas, scene *scene)
+void render(t_canvas *canvas, scene *scene, camera *camera)
 {
     ray_params params;
-    camera *camera = &scene->camera;
-    //double viewport_size = 1.0;
-    double viewport_size = 2 * tan(camera->fov * M_PI / 360.0);
-    double projection_plane_d = viewport_size;//1.0; should be same as vp size, otherwise a fisheye effect
-    //vector camera_position = {0, 0, -5}; // change to camera stuct
-    vector camera_position = scene->camera.position;
 
     for (int x = -canvas->win_width / 2; x < canvas->win_width / 2; x++) {
         for (int y = -canvas->win_height / 2; y < canvas->win_height / 2; y++) {
-            vector D = {x * viewport_size / canvas->win_width, y * viewport_size / canvas->win_height, projection_plane_d};
+            vector D = {x * camera->viewport_size / canvas->win_width, y * camera->viewport_size / canvas->win_height, camera->projection_plane_d};
             D = vector_normalize(D); // Normalize the ray direction
             // Adjust ray direction based on camera's orientation
             D = vector_add(D, camera->orientation);  // Align with camera's orientation
-            params.O = camera_position;
+            params.O = camera->position;
             params.D = D;
             params.t_min = 1.0;
             params.t_max = INFINITY;
