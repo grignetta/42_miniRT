@@ -156,6 +156,14 @@ typedef struct
     double discriminant;
 } intersection;
 
+/* typedef enum {
+    VECTOR_SUB,
+    VECTOR_ADD,
+    VECTOR_SCALE,
+    VECTOR_NORM,
+    VECTOR_REFLECT
+} vector_operation; */
+
 //Vector operations
 vector vector_sub(vector v1, vector v2);
 vector vector_add(vector v1, vector v2);
