@@ -35,12 +35,15 @@ int color_to_int(color local_color)
     final_red = (int)(local_color.red * 255);
     final_green = (int)(local_color.green * 255);
     final_blue = (int)(local_color.blue * 255);
-    if (final_red > 255)
+    check_limit_int(&final_red, 255);
+    check_limit_int(&final_green, 255);
+    check_limit_int(&final_blue, 255);
+    /* if (final_red > 255)
         final_red = 255;
     if (final_green > 255)
         final_green = 255;
     if (final_blue > 255)
-        final_blue = 255;
+        final_blue = 255; */
     return ((final_red << 16) | (final_green << 8) | final_blue);
 }
 

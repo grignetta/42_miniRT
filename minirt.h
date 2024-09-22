@@ -174,9 +174,13 @@ intersection_result closest_intersection(scene *scene, ray_params params);
 color compute_lighting(scene *scene, trace vars);
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
 int trace_ray(scene *scene, ray_params params, int depth);
-void put_pixel(t_canvas *app, int x, int y, int color);
 void render(t_canvas *app, scene *scene, camera *camera);
 scene create_scene();
+
+//utils.c
+void put_pixel(t_canvas *app, int x, int y, int color);
+void check_limit_double(double *value, double limit);
+void check_limit_int(int *value, int limit);
 
 //camera.c
 void set_camera(scene *scene);

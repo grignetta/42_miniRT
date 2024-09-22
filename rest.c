@@ -68,9 +68,12 @@ color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, 
     }
 
     // Ensure the values are within the 0-1 range
-    result.red = result.red > 1.0 ? 1.0 : result.red;
-    result.green = result.green > 1.0 ? 1.0 : result.green;
-    result.blue = result.blue > 1.0 ? 1.0 : result.blue;
+    check_limit_double(&result.red, 1.0);
+    check_limit_double(&result.green, 1.0);
+    check_limit_double(&result.blue, 1.0);
+    // result.red = result.red > 1.0 ? 1.0 : result.red;
+    // result.green = result.green > 1.0 ? 1.0 : result.green;
+    // result.blue = result.blue > 1.0 ? 1.0 : result.blue;
     return (result);
 }
 
