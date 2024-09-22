@@ -170,7 +170,8 @@ vector compute_top(cylinder *cyl);
 //rest.c
 intersection_result closest_intersection(scene *scene, ray_params params);
 //double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
+//color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
+color compute_lighting(scene *scene, trace vars);
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
 int trace_ray(scene *scene, ray_params params, int depth);
 void put_pixel(t_canvas *app, int x, int y, int color);

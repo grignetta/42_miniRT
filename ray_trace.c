@@ -81,7 +81,7 @@ int trace_ray(scene *scene, ray_params params, int depth)
     // Determine the shape and compute lighting
     vars.shape = get_base_shape(result);
     // Compute lighting based on the specular value of the shape
-    vars.lighting = compute_lighting(scene, vars.P, vars.N, vars.V, vars.shape->specular);
+    vars.lighting = compute_lighting(scene, vars);//vars.P, vars.N, vars.V, vars.shape->specular);
     // Calculate local color using the shape's color attributes
     vars.local_color.red = (vars.shape->red / 255.0) * vars.lighting.red;
     vars.local_color.green = (vars.shape->green / 255.0) * vars.lighting.green;

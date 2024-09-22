@@ -1,12 +1,13 @@
 #include "minirt.h"
 
-color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
+color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, int specular)
 {
     ray_params shadow_params;
+    int i;
 
     color result = {0.0, 0.0, 0.0};
-
-    for (int i = 0; i < scene->light_count; i++)
+    i = -1;
+    while (++i < scene->light_count)
 	{
         light light = scene->lights[i];
 
@@ -20,20 +21,20 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
         {
             vector L;
             double t_max;
-            //if (light.type == 1)
-			//{ // Point
-                L = vector_sub(light.position, P);
+            // if (light.type == 1)
+			// { // Point
+                L = vector_sub(light.position, vars.P);
                 t_max = 1.0; //left in case we add directional light
-            //}
-			//else
-			//{ // Directional
+            // }
+			// else
+			// { // Directional
             //    L = light.direction;
             //    t_max = INFINITY;
-            //}
+            // }
             // Check for shadows
             //double shadow_t;
             //sphere *shadow_sphere =
-            shadow_params.O = P;
+            shadow_params.O = vars.P;
             shadow_params.D = L;
             shadow_params.t_min = 0.001;
             shadow_params.t_max = t_max;
@@ -43,22 +44,22 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
             if (shadow_result.t < shadow_params.t_max)
                 continue; // In shadow, skip this light
             // Diffuse lighting
-            double n_dot_l = vector_dot(N, L);
+            double n_dot_l = vector_dot(vars.N, L);
             if (n_dot_l > 0)
             {
-                double diffuse_intensity = light.intensity * n_dot_l / (vector_length(N) * vector_length(L));
+                double diffuse_intensity = light.intensity * n_dot_l / (vector_length(vars.N) * vector_length(L));
                 result.red += diffuse_intensity * light.red / 255.0;
                 result.green += diffuse_intensity * light.green / 255.0;
                 result.blue += diffuse_intensity * light.blue / 255.0;
             }
             // Specular reflection
             //if (specular != -1) { //maybe make if specular > 5
-            if (specular > 5) {
-                vector R = vector_reflect(L, N);
-                double r_dot_v = vector_dot(R, V);
+            if (vars.shape->specular > 5) {
+                vector R = vector_reflect(L, vars.N);
+                double r_dot_v = vector_dot(R, vars.V);
                 if (r_dot_v > 0)
                 {
-                    double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(R) * vector_length(V)), specular);
+                    double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(R) * vector_length(vars.V)), vars.shape->specular);
                     result.red += specular_intensity * light.red / 255.0;
                     result.green += specular_intensity * light.green / 255.0;
                     result.blue += specular_intensity * light.blue / 255.0;
@@ -120,37 +121,6 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
     mlx_put_image_to_window(canvas->mlx_ptr, canvas->win_ptr, canvas->img, 0, 0);
 }
 
-/* void render(t_canvas *canvas, scene *scene, camera *camera)
-{
-    ray_params params;
-    int x;
-    int y;
-    vector D;
-    int color;
-
-    for (x = -canvas->win_width / 2; x < canvas->win_width / 2; x++)
-    {
-        for (y = -canvas->win_height / 2; y < canvas->win_height / 2; y++)
-        {
-            D = create_vector(
-                x * camera->viewport_size / canvas->win_width,
-                y * camera->viewport_size / canvas->win_height,
-                camera->projection_plane_d
-            );
-            D = vector_normalize(D); // Normalize the ray direction
-            // Adjust ray direction based on camera's orientation
-            D = vector_add(D, camera->orientation);  // Align with camera's orientation
-            params.O = camera->position;
-            params.D = D;
-            params.t_min = 1.0;
-            params.t_max = INFINITY;
-            color = trace_ray(scene, params, 3);
-            put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
-        }
-    }
-    mlx_put_image_to_window(canvas->mlx_ptr, canvas->win_ptr, canvas->img, 0, 0);
-} */
-
 // Example scene setup
 scene create_scene() {
     scene scene;
@@ -186,7 +156,7 @@ scene create_scene() {
     // Point light
     scene.lights[1] = (light){1, 0.6, {2, 1, 0}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
     // Directional light
-   // scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
+    //scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
 
      // Initialize camera (you will replace these values after reading the .rt file)
     scene.camera.position = (vector){0, 0, -5}; // Example values
