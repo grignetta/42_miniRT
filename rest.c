@@ -1,7 +1,7 @@
 #include "minirt.h"
 
 // Function to create a vector
-vector create_vector(double x, double y, double z)
+vector vector_init(double x, double y, double z)
 {
     vector v;
     v.x = x;
@@ -26,7 +26,7 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
         y = -canvas->win_height / 2;//-1 for while loop shrinking
         while (y < canvas->win_height / 2)
         {
-            D = create_vector(x * camera->viewport_size / canvas->win_width,
+            D = vector_init(x * camera->viewport_size / canvas->win_width,
                 y * camera->viewport_size / canvas->win_height,
                 camera->projection_plane_d);
             D = vector_normalize(D); // Normalize the ray direction

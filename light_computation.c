@@ -78,14 +78,24 @@ void specular_reflection(color *result, light light, trace vars, vector L)
     }
 }
 
+color color_init(double red, double green, double blue)
+{
+    color c;
+    c.red = red;
+    c.green = green;
+    c.blue = blue;
+    return (c);
+}
+
 color compute_lighting(scene *scene, trace vars)
 {
-    color result = {0.0, 0.0, 0.0};//change initialization
+    color result;
 	light light;
 	double t_max;
 	vector L;
 	int i;
 
+	result = color_init(0.0, 0.0, 0.0);
     i = -1;
     while (++i < scene->light_count)
     {

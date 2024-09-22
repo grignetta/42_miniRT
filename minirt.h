@@ -171,7 +171,6 @@ vector compute_top(cylinder *cyl);
 intersection_result closest_intersection(scene *scene, ray_params params);
 //double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
 //color compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-color compute_lighting(scene *scene, trace vars);
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
 int trace_ray(scene *scene, ray_params params, int depth);
 void render(t_canvas *app, scene *scene, camera *camera);
@@ -184,6 +183,9 @@ void check_limit_int(int *value, int limit);
 
 //camera.c
 void set_camera(scene *scene);
+
+//light_computation.c
+color compute_lighting(scene *scene, trace vars);
 
 //intersection.c
 // int intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
