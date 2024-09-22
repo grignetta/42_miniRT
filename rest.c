@@ -75,14 +75,35 @@ color compute_lighting(scene *scene, vector P, vector N, vector V, int specular)
     return result;
 }
 
+// Function to create a vector
+vector create_vector(double x, double y, double z)
+{
+    vector v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return (v);
+}
+
+
 // Main rendering loop
 void render(t_canvas *canvas, scene *scene, camera *camera)
 {
     ray_params params;
+    int x;
+    int y;
+    vector D;
+    int color;
 
-    for (int x = -canvas->win_width / 2; x < canvas->win_width / 2; x++) {
-        for (int y = -canvas->win_height / 2; y < canvas->win_height / 2; y++) {
-            vector D = {x * camera->viewport_size / canvas->win_width, y * camera->viewport_size / canvas->win_height, camera->projection_plane_d};
+    x = -canvas->win_width / 2 - 1;//-1 for while loop shrinking
+    while (++x < canvas->win_width / 2)
+    {
+        y = -canvas->win_height / 2;//-1 for while loop shrinking
+        while (y < canvas->win_height / 2)
+        {
+            D = create_vector(x * camera->viewport_size / canvas->win_width,
+                y * camera->viewport_size / canvas->win_height,
+                camera->projection_plane_d);
             D = vector_normalize(D); // Normalize the ray direction
             // Adjust ray direction based on camera's orientation
             D = vector_add(D, camera->orientation);  // Align with camera's orientation
@@ -90,12 +111,45 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
             params.D = D;
             params.t_min = 1.0;
             params.t_max = INFINITY;
-            int color = trace_ray(scene, params, 3);
+            color = trace_ray(scene, params, 3);
+            put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
+            y++;
+        }
+        //x++;
+    }
+    mlx_put_image_to_window(canvas->mlx_ptr, canvas->win_ptr, canvas->img, 0, 0);
+}
+
+/* void render(t_canvas *canvas, scene *scene, camera *camera)
+{
+    ray_params params;
+    int x;
+    int y;
+    vector D;
+    int color;
+
+    for (x = -canvas->win_width / 2; x < canvas->win_width / 2; x++)
+    {
+        for (y = -canvas->win_height / 2; y < canvas->win_height / 2; y++)
+        {
+            D = create_vector(
+                x * camera->viewport_size / canvas->win_width,
+                y * camera->viewport_size / canvas->win_height,
+                camera->projection_plane_d
+            );
+            D = vector_normalize(D); // Normalize the ray direction
+            // Adjust ray direction based on camera's orientation
+            D = vector_add(D, camera->orientation);  // Align with camera's orientation
+            params.O = camera->position;
+            params.D = D;
+            params.t_min = 1.0;
+            params.t_max = INFINITY;
+            color = trace_ray(scene, params, 3);
             put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
         }
     }
     mlx_put_image_to_window(canvas->mlx_ptr, canvas->win_ptr, canvas->img, 0, 0);
-}
+} */
 
 // Example scene setup
 scene create_scene() {
