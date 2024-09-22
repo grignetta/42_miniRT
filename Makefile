@@ -17,6 +17,7 @@ SOURCES = main.c \
 			ray_trace.c \
 			intersection.c \
 			camera.c \
+			light_computation.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
