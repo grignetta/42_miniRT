@@ -1,5 +1,12 @@
 #include "minirt.h"
 
+void add_light(color *result, light light, double intensity)
+{
+    result->red += intensity * light.red / 255.0;
+    result->green += intensity * light.green / 255.0;
+    result->blue += intensity * light.blue / 255.0;
+}
+
 color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, int specular)
 {
     ray_params shadow_params;
@@ -12,11 +19,7 @@ color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, 
         light light = scene->lights[i];
 
         if (light.type == 0) // Ambient
-        {
-            result.red += light.intensity * light.red / 255.0;
-            result.green += light.intensity * light.green / 255.0;
-            result.blue += light.intensity * light.blue / 255.0;
-        }
+            add_light(&result, light, light.intensity);
         else
         {
             vector L;
@@ -48,9 +51,7 @@ color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, 
             if (n_dot_l > 0)
             {
                 double diffuse_intensity = light.intensity * n_dot_l / (vector_length(vars.N) * vector_length(L));
-                result.red += diffuse_intensity * light.red / 255.0;
-                result.green += diffuse_intensity * light.green / 255.0;
-                result.blue += diffuse_intensity * light.blue / 255.0;
+                add_light(&result, light, diffuse_intensity);
             }
             // Specular reflection
             //if (specular != -1) { //maybe make if specular > 5
@@ -60,9 +61,7 @@ color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, 
                 if (r_dot_v > 0)
                 {
                     double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(R) * vector_length(vars.V)), vars.shape->specular);
-                    result.red += specular_intensity * light.red / 255.0;
-                    result.green += specular_intensity * light.green / 255.0;
-                    result.blue += specular_intensity * light.blue / 255.0;
+                    add_light(&result, light, specular_intensity);
                 }
             }
         }
@@ -72,8 +71,7 @@ color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, 
     result.red = result.red > 1.0 ? 1.0 : result.red;
     result.green = result.green > 1.0 ? 1.0 : result.green;
     result.blue = result.blue > 1.0 ? 1.0 : result.blue;
-
-    return result;
+    return (result);
 }
 
 // Function to create a vector
