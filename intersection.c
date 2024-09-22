@@ -90,10 +90,13 @@ int intersect_ray_plane(ray_params params, plane *pl, double *t)
 // Closest intersection function
 intersection_result closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)
 {
-    intersection_result result = {0};
-    result.t = params.t_max;
+    intersection_result result;
 	int i;
+    double t;
 
+    result.object = NULL;
+    result.type = SHAPE_NONE;
+    result.t = params.t_max;
     // Check spheres
 	i = -1;
 	while (++i < scene->sphere_count)
@@ -106,7 +109,6 @@ intersection_result closest_intersection(scene *scene, ray_params params)// vect
     i = -1;
 	while (++i < scene->plane_count)
 	{
-        double t;
         if (intersect_ray_plane(params, &scene->planes[i], &t)) {
             if (t < result.t && t > params.t_min) {
                 result.t = t;

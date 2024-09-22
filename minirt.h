@@ -21,7 +21,9 @@
 
 // Structs for vectors, spheres, lights, and the scene
 
-typedef enum {
+typedef enum
+{
+    SHAPE_NONE,
     SHAPE_SPHERE,
     SHAPE_CYLINDER,
     SHAPE_PLANE
