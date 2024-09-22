@@ -2,14 +2,16 @@
 
 // Function to calculate the intersection of a ray with a sphere
 //if (intersect_ray_sphere(params.O, params.D, &scene->spheres[i], &t1, &t2))
-void update_result(intersection_result *result, double t, void *object, ray_params params, shape_type type)
+int update_result(intersection_result *result, double t, void *object, ray_params params)
 {
     if (t < result->t && t > params.t_min)
     {
         result->t = t;
-        result->type = type;
+        //result->type = type;
         result->object = object;
+		return (1);
     }
+	return (0);
 }
 
 //int intersect_ray_sphere(ray_params params, sphere *sphere, double *t1, double *t2)
@@ -29,9 +31,10 @@ int intersect_ray_sphere(ray_params params, sphere *sphere, intersection_result 
 
     t1 = (-point.b + sqrt(point.discriminant)) / (2 * point.a);
     t2 = (-point.b - sqrt(point.discriminant)) / (2 * point.a);
-	update_result(result, t1, sphere, params, SHAPE_SPHERE);
-	update_result(result, t2, sphere, params, SHAPE_SPHERE);
-	//result->type = SHAPE_SPHERE;
+	if (update_result(result, t1, sphere, params))
+        result->type = SHAPE_SPHERE;
+    if (update_result(result, t2, sphere, params))
+		result->type = SHAPE_SPHERE;
     return (1);
 }
 
@@ -62,9 +65,10 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
         t1 = INFINITY;
     if (y2 < cyl->center.y || y2 > cyl->center.y + cyl->height)
         {t2 = INFINITY;}
-	update_result(result, t1, cyl, params, SHAPE_CYLINDER);
-	update_result(result, t2, cyl, params, SHAPE_CYLINDER);
-	//result->type = SHAPE_CYLINDER;
+	if (update_result(result, t1, cyl, params))//two if statements are necessary
+        result->type = SHAPE_CYLINDER;
+    if (update_result(result, t2, cyl, params))
+		result->type = SHAPE_CYLINDER;
     return (1);
 }
 
@@ -93,39 +97,11 @@ intersection_result closest_intersection(scene *scene, ray_params params)// vect
     // Check spheres
 	i = -1;
 	while (++i < scene->sphere_count)
-	{
 		intersect_ray_sphere(params, &scene->spheres[i], &result);
-        /* if (intersect_ray_sphere(params, &scene->spheres[i], result))
-		{
-            if (t1 < result.t && t1 > params.t_min)
-                result.t = t1;
-            if (t2 < result.t && t2 > params.t_min)
-                result.t = t2;
-            result.type = SHAPE_SPHERE;//probably to move back under if condition
-            result.object = &scene->spheres[i];//probably to move back under if condition
-        } */
-    }
-
     // Check cylinders
 	i = -1;
 	while (++i < scene->cylinder_count)
-	{
-        //double t1, t2;
 		intersect_ray_cylinder(params, &scene->cylinders[i], &result);
-        /* if (intersect_ray_cylinder(params, &scene->cylinders[i], &t1, &t2)) {
-            if (t1 < result.t && t1 > params.t_min) {
-                result.t = t1;
-                result.type = SHAPE_CYLINDER;
-                result.object = &scene->cylinders[i];
-            }
-            if (t2 < result.t && t2 > params.t_min) {
-                result.t = t2;
-                result.type = SHAPE_CYLINDER;
-                result.object = &scene->cylinders[i];
-            }
-        } */
-    }
-
     // Check planes
     i = -1;
 	while (++i < scene->plane_count)
@@ -139,6 +115,5 @@ intersection_result closest_intersection(scene *scene, ray_params params)// vect
             }
         }
     }
-
-    return result;
+    return (result);
 }
