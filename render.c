@@ -10,7 +10,6 @@ vector vector_init(double x, double y, double z)
     return (v);
 }
 
-
 // Main rendering loop
 void render(t_canvas *canvas, scene *scene, camera *camera)
 {

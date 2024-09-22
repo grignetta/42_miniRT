@@ -11,7 +11,7 @@ MLX_NAME = mlx
 MLX = $(MLX_PATH)$(MLX_NAME)
 
 SOURCES = main.c \
-			rest.c \
+			render.c \
 			vector_operations.c \
 			utils.c \
 			ray_trace.c \
