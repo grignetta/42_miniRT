@@ -13,6 +13,7 @@ MLX = $(MLX_PATH)$(MLX_NAME)
 SOURCES = main.c \
 			rest.c \
 			vector_operations.c \
+			parsing.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 

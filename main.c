@@ -68,7 +68,7 @@ int	main(int argc, char **argv)
 			return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
 				mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
 				free(canvas), 1);
-		//scene scene = create_scene(); // Initialize your
+		scene scene = create_scene(); // Initialize your
 		int fd = open[argv[1], O_RDONLY];
 		if (fd == -1)
 			return (perror("Error\n"), 1);

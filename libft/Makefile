@@ -48,7 +48,7 @@ SOURCES = ft_isdigit.c \
 		  ft_putnbr_fd.c \
 		  ft_isalpha.c \
 		  ft_strpbrk.c \
-		  ft_strtok.c \
+		  ft_ft_strtok.c \
 		  ft_printf.c \
 		  ft_print_char.c \
 		  ft_print_hex.c \
