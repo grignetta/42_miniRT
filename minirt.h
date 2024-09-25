@@ -45,7 +45,8 @@ typedef struct
     int blue;
 } light;
 
-typedef struct {
+typedef struct
+{
     int red;
     int green;
     int blue;
@@ -111,6 +112,7 @@ typedef struct {
     shape_type type;
     void *object;
     double t; //distance to intersection
+    int surface; // 0 for side, 1 for bottom cap, 2 for top cap
 } intersection_result;
 
 typedef struct s_canvas
@@ -181,6 +183,7 @@ scene create_scene();//temporary
 
 //ray_trace.c
 int trace_ray(scene *scene, ray_params params, int depth);
+vector vector_init(double x, double y, double z);
 
 //intersection.c
 intersection_result closest_intersection(scene *scene, ray_params params);

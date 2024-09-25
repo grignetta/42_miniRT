@@ -1,7 +1,7 @@
 #include "minirt.h"
 
 // Function to compute the normal at a point on the cylinder
-vector cyl_normal(vector p, cylinder *cyl)
+/* vector cyl_normal(vector p, cylinder *cyl)
 {
     vector base = compute_base(cyl);
     vector top = compute_top(cyl);
@@ -11,16 +11,52 @@ vector cyl_normal(vector p, cylinder *cyl)
     double h = vector_dot(pa, ba) / baba;
     vector normal = vector_sub(pa, vector_scale(ba, h));
     return vector_normalize(vector_scale(normal, 1.0 / cyl->radius));
+} */
+
+vector cyl_normal(vector P, cylinder *cyl) {
+    vector N;
+    double y_bottom = cyl->center.y;
+    double y_top = cyl->center.y + cyl->height;
+    double epsilon = 1e-6; // Small value to handle floating-point precision
+
+    if (fabs(P.y - y_bottom) < epsilon) {
+        // Bottom cap
+        N = vector_init(0, -1, 0); // Normal pointing downwards
+    } else if (fabs(P.y - y_top) < epsilon) {
+        // Top cap
+        N = vector_init(0, 1, 0); // Normal pointing upwards
+    } else {
+        // Side surface
+        vector temp = vector_sub(P, cyl->center);
+        temp.y = 0; // Project onto the XZ plane
+        N = vector_normalize(temp);
+    }
+    return N;
 }
+
+
 
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
 vector compute_normal(intersection_result result, vector P)
 {
+    cylinder *c;
+
     vector N = {0, 0, 0};
     if (result.type == SHAPE_SPHERE)
         N = vector_normalize(vector_sub(P, ((sphere *)result.object)->center));
     else if (result.type == SHAPE_CYLINDER)
-        N = cyl_normal(P, (cylinder *)result.object);
+    {
+        c = (cylinder *)result.object;
+        if (result.surface == 0)
+            // Side surface
+            N = cyl_normal(P, c);
+        else if (result.surface == 1)
+            // Bottom cap
+            N = vector_init(0, -1, 0);
+        else if (result.surface == 2)
+            // Top cap
+            N = vector_init(0, 1, 0);
+    }
     else if (result.type == SHAPE_PLANE)
         N = ((plane *)result.object)->normal;
     return (N);
@@ -75,6 +111,7 @@ int trace_ray(scene *scene, ray_params params, int depth)
     vars.P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
     vars.N = compute_normal(result, vars.P);
     vars.V = vector_scale(params.D, -1); // View direction
+    //vars.V = vector_normalize(vars.V);//maybe not necessary
     // Determine the shape and compute lighting
     vars.shape = get_base_shape(result);
     // Compute lighting based on the specular value of the shape

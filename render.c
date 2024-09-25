@@ -45,46 +45,49 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
 }
 
 // Example scene setup
-scene create_scene() {
+scene create_scene()
+{
     scene scene;
     scene.sphere_count = 4;
     scene.spheres = malloc(sizeof(sphere) * scene.sphere_count);
 
     // Red sphere
-    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 0, 0, 500, 0.2}, 0};
+    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 255, 0, 500, 0.4}, 1};
     // Blue sphere
    // scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{2, 0, 4}, 1, {0, 255, 0, 10, 0.4}, 0};
+    scene.spheres[2] = (sphere){{2, 0, 4}, 1, {0, 255, 0, 100, 0.2}, 1};
     // Yellow large sphere (floor)
     //scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -1, 0}, {0, 1, 0}, {255, 255, 0, 500, 0.5}, 2};
+    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 0, 30, 0.5}, 2};
 
     scene.cylinder_count = 1;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
-    scene.cylinders[0] = (cylinder){{-1, -1, 4}, 1, 2, {0, 1, 0}, {0, 0, 255, 500, 0.3}, 1};
+    scene.cylinders[0] = (cylinder){{-1, -3, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.3}, 1};
 
 
-    scene.light_count = 3;
+   scene.light_count = 3;
     scene.lights = malloc(sizeof(light) * scene.light_count);
 
     // Ambient
-	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}, 255, 255, 255};
+	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}, 255, 162, 57};
     // Point light
-    scene.lights[1] = (light){1, 0.6, {2, 1, 0}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
+    scene.lights[1] = (light){1, 0.6, {1.5, 2, 0}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
     // Directional light
-    //scene.lights[2] = (light){2, 0.2, {0, 0, 0}, {1, 4, 4}, 245, 144, 144};//if ambient and point lights have different colors, what to write here?
+    //scene.lights[2] = (light){2, 0.6, {0, 0 , 0}, {1, 4, 4}, 255, 255, 255};//if ambient and point lights have different colors, what to write here?
+    // Point light
+    //scene.lights[1] = (light){1, 0.6, {0, 0, 0}, {2, 1, 0}, 255, 255, 255};
 
      // Initialize camera (you will replace these values after reading the .rt file)
     scene.camera.position = (vector){0, 0, -5}; // Example values
     scene.camera.orientation = (vector){0.0, 0.0, 0.0}; // Example values
-    scene.camera.fov = 100.0; // Example value
+    scene.camera.fov = 100.0;// Example value
 
     return scene;
 }

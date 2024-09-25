@@ -38,6 +38,22 @@ int intersect_ray_sphere(ray_params params, sphere *sphere, intersection_result 
     return (1);
 }
 
+
+int intersect_ray_plane(ray_params params, plane *pl, double *t)
+{
+    double denom;
+
+	denom = vector_dot(pl->normal, params.D);
+    if (fabs(denom) > 1e-6)
+	{ // Avoid division by zero and small values that might cause numerical instability
+        vector P0L0 = vector_sub(pl->point, params.O);
+        *t = vector_dot(P0L0, pl->normal) / denom;
+		if (*t >= 0)
+        	return (1); // intersection exists
+    }
+    return 0; // No intersection
+}
+
 int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result *result)
 {
 	double t1;
@@ -66,26 +82,59 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
     if (y2 < cyl->center.y || y2 > cyl->center.y + cyl->height)
         {t2 = INFINITY;}
 	if (update_result(result, t1, cyl, params))//two if statements are necessary
+    {
         result->type = SHAPE_CYLINDER;
+        result->surface = 0; // Side surface
+    }
     if (update_result(result, t2, cyl, params))
-		result->type = SHAPE_CYLINDER;
+	{
+        result->type = SHAPE_CYLINDER;
+        result->surface = 0; // Side surface
+    }
+    // Intersect with the bottom cap
+    plane bottom_cap;
+    bottom_cap.point = cyl->center; // Center of the bottom cap
+    bottom_cap.normal = vector_init(0, -1, 0); // Normal pointing downwards
+
+    double t_cap;
+    if (intersect_ray_plane(params, &bottom_cap, &t_cap))
+    {
+        vector P = vector_add(params.O, vector_scale(params.D, t_cap));
+        vector dist_vec = vector_sub(P, cyl->center);
+        double dist_sq = dist_vec.x * dist_vec.x + dist_vec.z * dist_vec.z;
+        if (dist_sq <= cyl->radius * cyl->radius)
+        {
+            if (update_result(result, t_cap, cyl, params))
+            {
+                result->type = SHAPE_CYLINDER;
+                result->surface = 1; // Bottom cap
+            }
+        }
+    }
+
+    // Intersect with the top cap
+    plane top_cap;
+    top_cap.point = vector_add(cyl->center, vector_init(0, cyl->height, 0)); // Center of the top cap
+    top_cap.normal = vector_init(0, 1, 0); // Normal pointing upwards
+
+    if (intersect_ray_plane(params, &top_cap, &t_cap))
+    {
+        vector P = vector_add(params.O, vector_scale(params.D, t_cap));
+        vector dist_vec = vector_sub(P, top_cap.point);
+        double dist_sq = dist_vec.x * dist_vec.x + dist_vec.z * dist_vec.z;
+        if (dist_sq <= cyl->radius * cyl->radius)
+        {
+            if (update_result(result, t_cap, cyl, params))
+            {
+                result->type = SHAPE_CYLINDER;
+                result->surface = 2; // Top cap
+            }
+        }
+    }
+
     return (1);
 }
 
-int intersect_ray_plane(ray_params params, plane *pl, double *t)
-{
-    double denom;
-
-	denom = vector_dot(pl->normal, params.D);
-    if (fabs(denom) > 1e-6)
-	{ // Avoid division by zero and small values that might cause numerical instability
-        vector P0L0 = vector_sub(pl->point, params.O);
-        *t = vector_dot(P0L0, pl->normal) / denom;
-		if (*t >= 0)
-        	return (1); // intersection exists
-    }
-    return 0; // No intersection
-}
 
 // Closest intersection function
 intersection_result closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)

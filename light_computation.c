@@ -16,16 +16,18 @@ vector get_light_direction(light light, trace vars, double *t_max)
 {
     vector L;
 
-    // if (light.type == 1) // Point
-    // {
+    if (light.type == 1) // Point
+    {
         L = vector_sub(light.position, vars.P);
-        *t_max = 1.0;
-    // }
-    // else // Directional
-    // {
-    //     L = light.direction;
-    //     *t_max = INFINITY;
-    // }
+       // *t_max = 1.0;
+        *t_max = vector_length(L); // Set t_max to the distance to the light
+        L = vector_normalize(L);
+    }
+    else // Directional
+    {
+        L = light.direction;
+        *t_max = INFINITY;
+    }
     return L;
 }
 
@@ -36,7 +38,7 @@ int is_in_shadow(scene *scene, trace vars, vector L, double t_max)
 
     shadow_params.O = vars.P;
     shadow_params.D = L;
-    shadow_params.t_min = 0.001;
+    shadow_params.t_min = 0.001;//0.001;
     shadow_params.t_max = t_max;
     shadow_result = closest_intersection(scene, shadow_params);
 	if (shadow_result.t < shadow_params.t_max)
@@ -49,6 +51,7 @@ void diffuse_light(color *result, light light, trace vars, vector L)
 	double n_dot_l;
 	double diffuse_intensity;
 
+    //L = vector_normalize(L);//maybe not necessary if was normed before
     n_dot_l = vector_dot(vars.N, L);
     if (n_dot_l > 0)
     {
@@ -66,7 +69,10 @@ void specular_reflection(color *result, light light, trace vars, vector L)
 
     if (vars.shape->specular > 5)
     {
+        //L = vector_normalize(L);//maybe not necessary if was normed before
         R = vector_reflect(L, vars.N);
+        //R = vector_normalize(R);//maybe not necessary
+        //vars.V = vector_normalize(vars.V);//maybe not necessary
         r_dot_v = vector_dot(R, vars.V);
         if (r_dot_v > 0)
         {
