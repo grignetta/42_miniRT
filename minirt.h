@@ -21,34 +21,18 @@
 
 // Structs for vectors, spheres, lights, and the scene
 
-typedef struct {
-    double red;
-    double green;
-    double blue;
-} color;
+typedef enum
+{
+    SHAPE_NONE,
+    SHAPE_SPHERE,
+    SHAPE_CYLINDER,
+    SHAPE_PLANE
+} shape_type;
 
 typedef struct
 {
 	double x, y, z;
 } vector;
-
-typedef struct
-{
-    vector position;       // Camera position (x, y, z)
-    vector orientation;    // Camera direction (normalized vector)
-    double fov;            // Field of view in degrees
-} camera;
-
-typedef struct
-{
-	vector center;
-	double radius;
-	int red;
-    int green;
-    int blue;
-	int specular;//when low 0 or 1 the picture is very bad
-	double reflective;
-} sphere;
 
 typedef struct
 {
@@ -61,29 +45,52 @@ typedef struct
     int blue;
 } light;
 
-typedef struct {
+typedef struct
+{
+    int red;
+    int green;
+    int blue;
+    int specular; //when low 0 or 1 the picture is very bad
+    double reflective;
+} base_shape; //to handle shades and reflections regardless of shape
+
+typedef struct
+{
+	vector center;
+	double radius;
+	base_shape base;
+	shape_type type;
+} sphere;
+
+typedef struct
+{
     vector center;
     double radius;
     double height;
-    int specular;
 	vector axis;
-    double reflective;
-    int red;
-    int green;
-    int blue;
+	base_shape base;
+	shape_type type;
 } cylinder;
 
-typedef struct {
+typedef struct
+{
     vector point;
     vector normal;
-    int specular;
-    double reflective;
-    int red;
-    int green;
-    int blue;
+	base_shape base;
+	shape_type type;
 } plane;
 
-typedef struct {
+typedef struct
+{
+    vector position;       // Camera position (x, y, z)
+    vector orientation;    // Camera direction (normalized vector)
+    double fov;            // Field of view in degrees
+    double viewport_size;
+    double projection_plane_d;
+} camera;
+
+typedef struct
+{
     sphere *spheres;
     int sphere_count;
     cylinder *cylinders;
@@ -94,35 +101,22 @@ typedef struct {
     int light_count;
     camera camera;
 } scene;
-
-typedef enum {
-    SHAPE_SPHERE,
-    SHAPE_CYLINDER,
-    SHAPE_PLANE
-} shape_type;
+typedef struct
+{
+    double red;
+    double green;
+    double blue;
+} color;
 
 typedef struct {
     shape_type type;
     void *object;
-    double t;
+    double t; //distance to intersection
+    int surface; // 0 for side, 1 for bottom cap, 2 for top cap
 } intersection_result;
 
 typedef struct s_canvas
 {
-	//int		width;
-	//int		height;
-	//int		**z_matrix;
-	//int		zoom;
-	//float	z_zoom;
-	//int		color;
-	//int		black;
-	//int		color_delta;
-	//double	angle;
-	//int		isometric;
-	//int		x_shift;
-	//int		y_shift;
-	//int		legend_offset;
-
 	int		img_side;
 	void	*mlx_ptr;
 	void	*win_ptr;
@@ -142,6 +136,36 @@ typedef struct {
     double t_max;
 } ray_params;
 
+typedef struct {
+    vector P;
+    vector N;
+    vector V;
+    vector R;
+    color local_color;
+    color lighting;
+    color reflected_color;
+    color final_color;
+    base_shape *shape;
+    double r;
+} trace;
+
+typedef struct
+{
+    vector CO;
+    double a;
+	double b;
+	double c;
+    double discriminant;
+} intersection;
+
+/* typedef enum {
+    VECTOR_SUB,
+    VECTOR_ADD,
+    VECTOR_SCALE,
+    VECTOR_NORM,
+    VECTOR_REFLECT
+} vector_operation; */
+
 //Vector operations
 vector              vector_sub(vector v1, vector v2);
 vector              vector_add(vector v1, vector v2);
@@ -153,21 +177,26 @@ vector              vector_reflect(vector R, vector N);
 vector              compute_base(cylinder *cyl);
 vector              compute_top(cylinder *cyl);
 
-//rest.c
-int                 intersect_ray_sphere(vector O, vector D, sphere *sphere, double *t1, double *t2);
-//sphere *closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max, double *closest_t);
-//intersection_result closest_intersection(scene *scene, vector O, vector D, double t_min, double t_max);
-intersection_result closest_intersection(scene *scene, ray_params params);
-//double compute_lighting(scene *scene, vector P, vector N, vector V, int specular);
-color               compute_lighting(scene *scene, vector P, vector N,
-                        vector V, int specular);
-//int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth);
-int                 trace_ray(scene *scene, ray_params params, int depth);
-void                put_pixel(t_canvas *app, int x, int y, int color);
-void                render(t_canvas *app, scene *scene);
-scene               create_scene();
-//parsing
-scene	            parse_rt(int fd, char *filename);
+//render.c
+void render(t_canvas *app, scene *scene, camera *camera);
+scene create_scene();//temporary
 
+//ray_trace.c
+int trace_ray(scene *scene, ray_params params, int depth);
+vector vector_init(double x, double y, double z);
+
+//intersection.c
+intersection_result closest_intersection(scene *scene, ray_params params);
+
+//utils.c
+void put_pixel(t_canvas *app, int x, int y, int color);
+void check_limit_double(double *value, double limit);
+void check_limit_int(int *value, int limit);
+
+//camera.c
+void set_camera(scene *scene);
+
+//light_computation.c
+color compute_lighting(scene *scene, trace vars);
 
 #endif
