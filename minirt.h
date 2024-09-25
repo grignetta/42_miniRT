@@ -199,4 +199,6 @@ void set_camera(scene *scene);
 //light_computation.c
 color compute_lighting(scene *scene, trace vars);
 
+//parsing
+scene	parse_rt(int fd, char *filename);
 #endif
