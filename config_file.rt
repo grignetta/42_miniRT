@@ -7,25 +7,25 @@ A 0.2 255,255,255
 ***x,y,z coordinates of the view point***
 ***3D normalized orientation vector. In range [-1,1] for each x,y,z axis***
 ***FOV : Horizontal field of view in degrees in range [0,180]***
-C -50.0,0,20 0,0,1 70
+C 0.0,0,-5 0,0,0 100
 
 **LIGHT**
 ***x,y,z coordinates of the light point***
 ***the light brightness ratio in range [0.0,1.0]***
 ***(unused in mandatory part)R,G,B colors in range [0-255]***
-L -40.0,50.0,0.0 0.6 10,0,255
+L 1.5,2.0,0.0 0.6 255,255,255
 
 **SPHERE**
 ***x,y,z coordinates of the sphere center***
 ***the sphere diameter***
 ***R,G,B colors in range [0-255]***
-sp 0.0,0.0,20.6 12.6 10,0,255
+sp 0.0,-1.0,3 1 255,255,0
 
 **PLANE**
 ***x,y,z coordinates of a point in the plane***
 ***3d normalized normal vector. In range [-1,1] for each x,y,z axis***
 ***R,G,B colors in range [0-255]***
-pl 0.0,0.0,-10.0 0.0,1.0,0.0 0,0,225
+pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,255,0
 
 **CYLINDER**
 ***x,y,z coordinates of the center of the cylindee***
@@ -33,4 +33,4 @@ pl 0.0,0.0,-10.0 0.0,1.0,0.0 0,0,225
 ***the cylinder diameter***
 ***the cylinder height***
 ***R,G,B colors in range [0,255]***
-cy 50.0,0.0,20.6 0.0,0.0,1.0 14.2 21.42 10,0,255
+cy -1.0,-3.0,4.0 0.0,1.0,0.0 1.5 2.00 0,0,255

@@ -6,7 +6,7 @@
 #    By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/13 16:14:04 by mmasarov          #+#    #+#              #
-#    Updated: 2024/07/04 17:30:25 by mmasarov         ###   ########.fr        #
+#    Updated: 2024/09/25 16:04:37 by mmasarov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ SOURCES = ft_isdigit.c \
 		  ft_putnbr_fd.c \
 		  ft_isalpha.c \
 		  ft_strpbrk.c \
-		  ft_ft_strtok.c \
+		  ft_strtok.c \
 		  ft_printf.c \
 		  ft_print_char.c \
 		  ft_print_hex.c \

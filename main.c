@@ -55,9 +55,11 @@ int	initialize_graphics(t_canvas *canvas)
 int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
-	(void)argv;
+	scene		scene;
+	int			fd;
 
-	if (argc == 1)
+	//(void)argv;
+	if (argc == 2)
 	{
 		canvas = initialize_matrix();
 		if (canvas == NULL)
@@ -68,11 +70,11 @@ int	main(int argc, char **argv)
 			return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
 				mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
 				free(canvas), 1);
-		scene scene = create_scene(); // Initialize your
-		int fd = open[argv[1], O_RDONLY];
+		//scene = create_scene(); // Initialize your
+		fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 			return (perror("Error\n"), 1);
-		scene scene = parse_rt(fd);
+		scene = parse_rt(fd, argv[1]);
 		close(fd);
         render(canvas, &scene); // Render the scene
 		/*mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);

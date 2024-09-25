@@ -1,176 +1,238 @@
 #include "minirt.h"
 
-void parse_ambient(char *line) {
-    Ambient ambient;
-    char *token = ft_strtok(line + 2, " ");
-    ambient.ratio = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    ambient.r = atoi(token);
-    token = ft_strtok(NULL, ",");
-    ambient.g = atoi(token);
-    token = ft_strtok(NULL, " ");
-    ambient.b = atoi(token);
-
-    printf("Ambient: ratio = %lf, color = (%d, %d, %d)\n", ambient.ratio, ambient.r, ambient.g, ambient.b);
-}
-
-void parse_camera(char *line) {
-    Camera camera;
-    char *token = ft_strtok(line + 2, ",");
-    camera.x = atof(token);
-    token = ft_strtok(NULL, ",");
-    camera.y = atof(token);
-    token = ft_strtok(NULL, " ");
-    camera.z = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    camera.orient_x = atof(token);
-    token = ft_strtok(NULL, ",");
-    camera.orient_y = atof(token);
-    token = ft_strtok(NULL, " ");
-    camera.orient_z = atof(token);
-
-    token = ft_strtok(NULL, " ");
-    camera.fov = atof(token);
-
-    printf("Camera: position = (%lf, %lf, %lf), orientation = (%lf, %lf, %lf), fov = %lf\n",
-           camera.x, camera.y, camera.z, camera.orient_x, camera.orient_y, camera.orient_z, camera.fov);
-}
-
-void parse_light(char *line)
+void parse_ambient(char *line, scene *sc)
 {
-    light light;
+	light	ambient_light;
+	char	*token;
 
-    char *token = ft_strtok(line + 2, ",");
-    light.x = atof(token);
-    token = ft_ft_strtok(NULL, ",");
-    light.y = atof(token);
-    token = ft_strtok(NULL, " ");
-    light.z = atof(token);
-
-    token = ft_strtok(NULL, " ");
-    light.brightness = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    light.r = atoi(token);
-    token = ft_strtok(NULL, ",");
-    light.g = atoi(token);
-    token = ft_strtok(NULL, " ");
-    light.b = atoi(token);
-
-    printf("Light: position = (%lf, %lf, %lf), brightness = %lf, color = (%d, %d, %d)\n",
-           light.x, light.y, light.z, light.brightness, light.r, light.g, light.b);
+	ambient_light.type = 0;
+	token = ft_strtok(line + 2, " ");
+	ambient_light.intensity = atof(token);
+	token = ft_strtok(NULL, ",");
+	ambient_light.red = ft_atoi(token);
+	token = ft_strtok(NULL, ",");
+	ambient_light.green = ft_atoi(token);
+	token = ft_strtok(NULL, " ");
+	ambient_light.blue = ft_atoi(token);
+	sc->lights[sc->light_count++] = ambient_light;
+	printf("Ambient: intensity = %lf, color = (%d, %d, %d)\n",
+		   ambient_light.intensity, ambient_light.red, ambient_light.green, ambient_light.blue);
 }
 
-void parse_sphere(char *line) {
-    sphere sphere;
-    char *token = ft_strtok(line + 3, ",");
-    sphere.x = atof(token);
-    token = ft_strtok(NULL, ",");
-    sphere.y = atof(token);
-    token = ft_strtok(NULL, " ");
-    sphere.z = atof(token);
-
-    token = ft_strtok(NULL, " ");
-    sphere.diameter = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    sphere.r = atoi(token);
-    token = ft_strtok(NULL, ",");
-    sphere.g = atoi(token);
-    token = ft_strtok(NULL, " ");
-    sphere.b = atoi(token);
-
-    printf("Sphere: center = (%lf, %lf, %lf), diameter = %lf, color = (%d, %d, %d)\n",
-           sphere.x, sphere.y, sphere.z, sphere.diameter, sphere.r, sphere.g, sphere.b);
-}
-
-void parse_plane(char *line) {
-    plane plane;
-    char *token = ft_strtok(line + 3, ",");
-    plane.x = atof(token);
-    token = ft_strtok(NULL, ",");
-    plane.y = atof(token);
-    token = ft_strtok(NULL, " ");
-    plane.z = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    plane.norm_x = atof(token);
-    token = ft_strtok(NULL, ",");
-    plane.norm_y = atof(token);
-    token = ft_strtok(NULL, " ");
-    plane.norm_z = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    plane.r = atoi(token);
-    token = ft_strtok(NULL, ",");
-    plane.g = atoi(token);
-    token = ft_strtok(NULL, " ");
-    plane.b = atoi(token);
-
-    printf("Plane: point = (%lf, %lf, %lf), normal = (%lf, %lf, %lf), color = (%d, %d, %d)\n",
-           plane.x, plane.y, plane.z, plane.norm_x, plane.norm_y, plane.norm_z, plane.r, plane.g, plane.b);
-}
-
-void parse_cylinder(char *line) {
-    cylinder cylinder;
-    char *token = ft_strtok(line + 3, ",");
-    cylinder.x = atof(token);
-    token = ft_strtok(NULL, ",");
-    cylinder.y = atof(token);
-    token = ft_strtok(NULL, " ");
-    cylinder.z = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    cylinder.orient_x = atof(token);
-    token = ft_strtok(NULL, ",");
-    cylinder.orient_y = atof(token);
-    token = ft_strtok(NULL, " ");
-    cylinder.orient_z = atof(token);
-
-    token = ft_strtok(NULL, " ");
-    cylinder.diameter = atof(token);
-
-    token = ft_strtok(NULL, " ");
-    cylinder.height = atof(token);
-
-    token = ft_strtok(NULL, ",");
-    cylinder.r = atoi(token);
-    token = ft_strtok(NULL, ",");
-    cylinder.g = atoi(token);
-    token = ft_strtok(NULL, " ");
-    cylinder.b = atoi(token);
-
-    printf("Cylinder: center = (%lf, %lf, %lf), orientation = (%lf, %lf, %lf), diameter = %lf, height = %lf, color = (%d, %d, %d)\n",
-           cylinder.x, cylinder.y, cylinder.z, cylinder.orient_x, cylinder.orient_y, cylinder.orient_z,
-           cylinder.diameter, cylinder.height, cylinder.r, cylinder.g, cylinder.b);
-}
-
-
-scene parse_rt(int fd)
+// Parse camera
+void parse_camera(char *line, scene *sc)
 {
-    char *line;
-    int sphere_count;
+	char	*token;
+
+	token = ft_strtok(line + 2, ",");
+	sc->camera.position.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	sc->camera.position.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	sc->camera.position.z = atof(token);
+	token = ft_strtok(NULL, ",");
+	sc->camera.orientation.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	sc->camera.orientation.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	sc->camera.orientation.z = atof(token);
+	token = ft_strtok(NULL, " ");
+	sc->camera.fov = atof(token);
+
+	printf("Camera: position = (%lf, %lf, %lf), orientation = (%lf, %lf, %lf), fov = %lf\n",
+		   sc->camera.position.x, sc->camera.position.y, sc->camera.position.z,
+		   sc->camera.orientation.x, sc->camera.orientation.y, sc->camera.orientation.z,
+		   sc->camera.fov);
+}
+
+// Parse light
+void parse_light(char *line, scene *sc)
+{
+	light	point_light;
+
+	point_light.type = 1;  // 1 for point light
+	char *token = ft_strtok(line + 2, ",");
+	point_light.position.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	point_light.position.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	point_light.position.z = atof(token);
+	token = ft_strtok(NULL, " ");
+	point_light.intensity = atof(token);
+	token = ft_strtok(NULL, ",");
+	point_light.red = ft_atoi(token);
+	token = ft_strtok(NULL, ",");
+	point_light.green = ft_atoi(token);
+	token = ft_strtok(NULL, " ");
+	point_light.blue = ft_atoi(token);
+	sc->lights[sc->light_count++] = point_light;
+	printf("Light: position = (%lf, %lf, %lf), intensity = %lf, color = (%d, %d, %d)\n",
+		   point_light.position.x, point_light.position.y, point_light.position.z,
+		   point_light.intensity, point_light.red, point_light.green, point_light.blue);
+}
+
+void parse_sphere(char *line, scene *sc)
+{
+	sphere	new_sphere;
+
+	char *token = ft_strtok(line + 3, ",");
+	new_sphere.center.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_sphere.center.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_sphere.center.z = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_sphere.radius = atof(token) / 2.0;  // Assuming the input is diameter, convert to radius
+	token = ft_strtok(NULL, ",");
+	new_sphere.red = ft_atoi(token);
+	token = ft_strtok(NULL, ",");
+	new_sphere.green = ft_atoi(token);
+	token = ft_strtok(NULL, " ");
+	new_sphere.blue = ft_atoi(token);
+	new_sphere.specular = 100; // Default specular value
+	new_sphere.reflective = 0.5;  // Default reflective value
+	sc->spheres[sc->sphere_count++] = new_sphere;
+	printf("Sphere: center = (%lf, %lf, %lf), radius = %lf, color = (%d, %d, %d)\n",
+		   new_sphere.center.x, new_sphere.center.y, new_sphere.center.z,
+		   new_sphere.radius, new_sphere.red, new_sphere.green, new_sphere.blue);
+}
+
+void parse_plane(char *line, scene *sc)
+{
+	plane	new_plane;
+	char	*token;
+
+	token = ft_strtok(line + 3, ",");
+	new_plane.point.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_plane.point.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_plane.point.z = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_plane.normal.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_plane.normal.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_plane.normal.z = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_plane.red = ft_atoi(token);
+	token = ft_strtok(NULL, ",");
+	new_plane.green = ft_atoi(token);
+	token = ft_strtok(NULL, " ");
+	new_plane.blue = ft_atoi(token);
+	new_plane.specular = 100;
+	new_plane.reflective = 0.5;
+	sc->planes[sc->plane_count++] = new_plane;
+	printf("Plane: point = (%lf, %lf, %lf), normal = (%lf, %lf, %lf), color = (%d, %d, %d)\n",
+		   new_plane.point.x, new_plane.point.y, new_plane.point.z,
+		   new_plane.normal.x, new_plane.normal.y, new_plane.normal.z,
+		   new_plane.red, new_plane.green, new_plane.blue);
+}
+
+void parse_cylinder(char *line, scene *sc)
+{
+	cylinder	new_cylinder;
+	char		*token;
+
+	token = ft_strtok(line + 3, ",");
+	new_cylinder.center.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_cylinder.center.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_cylinder.center.z = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_cylinder.axis.x = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_cylinder.axis.y = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_cylinder.axis.z = atof(token);
+	token = ft_strtok(NULL, " ");
+	new_cylinder.radius = atof(token) / 2.0;  // Assuming input is diameter
+	token = ft_strtok(NULL, " ");
+	new_cylinder.height = atof(token);
+	token = ft_strtok(NULL, ",");
+	new_cylinder.red = ft_atoi(token);
+	token = ft_strtok(NULL, ",");
+	new_cylinder.green = ft_atoi(token);
+	token = ft_strtok(NULL, " ");
+	new_cylinder.blue = ft_atoi(token);
+	new_cylinder.specular = 100;  // Default specular value
+	new_cylinder.reflective = 0.5;  // Default reflective value
+	sc->cylinders[sc->cylinder_count++] = new_cylinder;
+
+	printf("Cylinder: center = (%lf, %lf, %lf), axis = (%lf, %lf, %lf), radius = %lf, height = %lf, color = (%d, %d, %d)\n",
+		   new_cylinder.center.x, new_cylinder.center.y, new_cylinder.center.z,
+		   new_cylinder.axis.x, new_cylinder.axis.y, new_cylinder.axis.z,
+		   new_cylinder.radius, new_cylinder.height, new_cylinder.red, new_cylinder.green, new_cylinder.blue);
+}
+
+void count_objects(int fd, scene *sc)
+{
+    char	*line;
+
+    sc->sphere_count = 0;
+    sc->cylinder_count = 0;
+    sc->plane_count = 0;
+    sc->light_count = 0;
 
     while ((line = get_next_line(fd)))
-    {
+	{
         if (line[0] == 'A')
-            parse_ambient(line);
-        else if (line[0] == 'C')
-            parse_camera(line);
+            sc->light_count++;
+        else if (line[0] == 'C')  //necessary or can I just skip?
+            ;
         else if (line[0] == 'L')
-            parse_light(line);
-        else if (strncmp(line, "sp", 2) == 0)
-        {
-            parse_sphere(line);
-            sphere_count++;
-        }
-        else if (strncmp(line, "pl", 2) == 0)
-            parse_plane(line);
-        else if (strncmp(line, "cy", 2) == 0)
-            parse_cylinder(line);
+            sc->light_count++;
+        else if (ft_strncmp(line, "sp", 2) == 0)
+            sc->sphere_count++;
+        else if (ft_strncmp(line, "pl", 2) == 0)
+            sc->plane_count++;
+        else if (ft_strncmp(line, "cy", 2) == 0)
+            sc->cylinder_count++;
         free(line);
     }
+}
+
+void	reset_count(scene *sc)
+{
+	sc->sphere_count = 0;
+	sc->cylinder_count = 0;
+	sc->plane_count = 0;
+	sc->light_count = 0;
+}
+
+// Parse the .rt file
+scene	parse_rt(int fd, char *filename)
+{
+	scene	sc;
+	char	*line;
+
+	count_objects(fd, &sc);
+	sc.spheres = malloc(sizeof(sphere) * sc.sphere_count);
+	sc.cylinders = malloc(sizeof(cylinder) * sc.cylinder_count);
+	sc.planes = malloc(sizeof(plane) * sc.plane_count);
+	sc.lights = malloc(sizeof(light) * sc.light_count);
+	close(fd);
+	reset_count(&sc);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (perror("Error\n"), sc); //error managemnt to think about
+	while ((line = get_next_line(fd)))
+	{
+		if (line[0] == 'A')
+			parse_ambient(line, &sc);
+		else if (line[0] == 'C')
+			parse_camera(line, &sc);
+		else if (line[0] == 'L')
+			parse_light(line, &sc);
+		else if (ft_strncmp(line, "sp", 2) == 0)
+			parse_sphere(line, &sc);
+		else if (ft_strncmp(line, "pl", 2) == 0)
+			parse_plane(line, &sc);
+		else if (ft_strncmp(line, "cy", 2) == 0)
+			parse_cylinder(line, &sc);
+		free(line);
+	}
+	return (sc);
 }
 

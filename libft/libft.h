@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 17:32:32 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/09/25 16:00:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
 
 /* Added functions*/
-char	*ft_ft_strtok(char *str, const char *delim);
+char	*ft_strtok(char *str, const char *delim);
 char	*ft_strpbrk(char *str, char *delim);
 char	*ft_strncat(char *dest, const char *src, size_t n);
 char	*ft_strcat(char *dest, const char *src);
