@@ -69,10 +69,7 @@ void specular_reflection(color *result, light light, trace vars, vector L)
 
     if (vars.shape->specular > 5)
     {
-        //L = vector_normalize(L);//maybe not necessary if was normed before
         R = vector_reflect(L, vars.N);
-        //R = vector_normalize(R);//maybe not necessary
-        //vars.V = vector_normalize(vars.V);//maybe not necessary
         r_dot_v = vector_dot(R, vars.V);
         if (r_dot_v > 0)
         {

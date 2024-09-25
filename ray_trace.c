@@ -145,7 +145,7 @@ int trace_ray(scene *scene, ray_params params, int depth)
     params.O = vars.P;
     params.D = vars.R;
     params.t_min = 0.001;
-    //params.t_max = INFINITY; was declared in the beginning
+    params.t_max = INFINITY; //was declared in the beginning
     // Trace the reflected ray
     int reflected_color_int = trace_ray(scene, params, depth - 1);
     vars.reflected_color = color_to_double(reflected_color_int);
