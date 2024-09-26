@@ -75,6 +75,15 @@ int	main(int argc, char **argv)
 		if (fd == -1)
 			return (perror("Error\n"), 1);
 		scene = parse_rt(fd, argv[1]);
+		if (scene.success)
+		{
+			close(fd);
+        	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+        	mlx_destroy_display(canvas->mlx_ptr);
+        	free(canvas->mlx_ptr);
+        	free(canvas);
+        	return (1);
+    	}
 		close(fd);
         render(canvas, &scene, &scene.camera); // Render the scene
 		/*mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);

@@ -84,17 +84,17 @@ void parse_sphere(char *line, scene *sc)
 	token = ft_strtok(NULL, " ");
 	new_sphere.radius = atof(token) / 2.0;  // Assuming the input is diameter, convert to radius
 	token = ft_strtok(NULL, ",");
-	new_sphere.red = ft_atoi(token);
+	new_sphere.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
-	new_sphere.green = ft_atoi(token);
+	new_sphere.base.green = ft_atoi(token);
 	token = ft_strtok(NULL, " ");
-	new_sphere.blue = ft_atoi(token);
-	new_sphere.specular = 100; // Default specular value
-	new_sphere.reflective = 0.5;  // Default reflective value
+	new_sphere.base.blue = ft_atoi(token);
+	new_sphere.base.specular = 100; // Default specular value
+	new_sphere.base.reflective = 0.5;  // Default reflective value
 	sc->spheres[sc->sphere_count++] = new_sphere;
 	printf("Sphere: center = (%lf, %lf, %lf), radius = %lf, color = (%d, %d, %d)\n",
 		   new_sphere.center.x, new_sphere.center.y, new_sphere.center.z,
-		   new_sphere.radius, new_sphere.red, new_sphere.green, new_sphere.blue);
+		   new_sphere.radius, new_sphere.base.red, new_sphere.base.green, new_sphere.base.blue);
 }
 
 void parse_plane(char *line, scene *sc)
@@ -115,18 +115,18 @@ void parse_plane(char *line, scene *sc)
 	token = ft_strtok(NULL, " ");
 	new_plane.normal.z = atof(token);
 	token = ft_strtok(NULL, ",");
-	new_plane.red = ft_atoi(token);
+	new_plane.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
-	new_plane.green = ft_atoi(token);
+	new_plane.base.green = ft_atoi(token);
 	token = ft_strtok(NULL, " ");
-	new_plane.blue = ft_atoi(token);
-	new_plane.specular = 100;
-	new_plane.reflective = 0.5;
+	new_plane.base.blue = ft_atoi(token);
+	new_plane.base.specular = 100;
+	new_plane.base.reflective = 0.5;
 	sc->planes[sc->plane_count++] = new_plane;
 	printf("Plane: point = (%lf, %lf, %lf), normal = (%lf, %lf, %lf), color = (%d, %d, %d)\n",
 		   new_plane.point.x, new_plane.point.y, new_plane.point.z,
 		   new_plane.normal.x, new_plane.normal.y, new_plane.normal.z,
-		   new_plane.red, new_plane.green, new_plane.blue);
+		   new_plane.base.red, new_plane.base.green, new_plane.base.blue);
 }
 
 void parse_cylinder(char *line, scene *sc)
@@ -151,19 +151,19 @@ void parse_cylinder(char *line, scene *sc)
 	token = ft_strtok(NULL, " ");
 	new_cylinder.height = atof(token);
 	token = ft_strtok(NULL, ",");
-	new_cylinder.red = ft_atoi(token);
+	new_cylinder.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
-	new_cylinder.green = ft_atoi(token);
+	new_cylinder.base.green = ft_atoi(token);
 	token = ft_strtok(NULL, " ");
-	new_cylinder.blue = ft_atoi(token);
-	new_cylinder.specular = 100;  // Default specular value
-	new_cylinder.reflective = 0.5;  // Default reflective value
+	new_cylinder.base.blue = ft_atoi(token);
+	new_cylinder.base.specular = 100;  // Default specular value
+	new_cylinder.base.reflective = 0.5;  // Default reflective value
 	sc->cylinders[sc->cylinder_count++] = new_cylinder;
 
 	printf("Cylinder: center = (%lf, %lf, %lf), axis = (%lf, %lf, %lf), radius = %lf, height = %lf, color = (%d, %d, %d)\n",
 		   new_cylinder.center.x, new_cylinder.center.y, new_cylinder.center.z,
 		   new_cylinder.axis.x, new_cylinder.axis.y, new_cylinder.axis.z,
-		   new_cylinder.radius, new_cylinder.height, new_cylinder.red, new_cylinder.green, new_cylinder.blue);
+		   new_cylinder.radius, new_cylinder.height, new_cylinder.base.red, new_cylinder.base.green, new_cylinder.base.blue);
 }
 
 void count_objects(int fd, scene *sc)
@@ -212,11 +212,18 @@ scene	parse_rt(int fd, char *filename)
 	sc.cylinders = malloc(sizeof(cylinder) * sc.cylinder_count);
 	sc.planes = malloc(sizeof(plane) * sc.plane_count);
 	sc.lights = malloc(sizeof(light) * sc.light_count);
+	sc.planes = NULL;
+	if (!sc.spheres || !sc.cylinders || !sc.planes || !sc.lights)
+	{
+		perror("Error: Memory allocation failed:");
+		free_scene(&sc);
+		return (sc); //error management to think about, probably set sc to zero?
+	}
 	close(fd);
 	reset_count(&sc);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-		return (perror("Error\n"), sc); //error managemnt to think about
+		return (perror("Error\n"), sc); //error manit probably managemnt to think about
 	while ((line = get_next_line(fd)))
 	{
 		if (line[0] == 'A')
@@ -233,6 +240,7 @@ scene	parse_rt(int fd, char *filename)
 			parse_cylinder(line, &sc);
 		free(line);
 	}
+	sc.success = 0;
 	return (sc);
 }
 

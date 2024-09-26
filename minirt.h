@@ -100,7 +100,9 @@ typedef struct
     light *lights;
     int light_count;
     camera camera;
+    int success;
 } scene;
+
 typedef struct
 {
     double red;
@@ -201,4 +203,7 @@ color compute_lighting(scene *scene, trace vars);
 
 //parsing
 scene	parse_rt(int fd, char *filename);
+
+//free
+void	free_scene(scene *sc);
 #endif
