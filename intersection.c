@@ -127,19 +127,20 @@ int is_within_caps(vector P, cylinder *cyl)
     return (axis_dist >= -half_h && axis_dist <= half_h);
 }
 
-int intersect_ray_with_cap(ray_params params, vector cap_center, vector cap_normal, double radius, double *t)
+//int intersect_ray_with_cap(ray_params params, vector cap_center, vector cap_normal, double radius, double *t)
+int intersect_ray_with_cap(ray_params params, cylinder *cyl, double *t)
 {
     plane cap_plane;
-    cap_plane.point = cap_center;
-    cap_plane.normal = cap_normal;
+    cap_plane.point = cyl->cap_center;
+    cap_plane.normal = cyl->cap_normal;
 
     if (intersect_ray_plane(params, &cap_plane, t))
     {
         vector P = vector_add(params.O, vector_scale(params.D, *t));
-        vector dist_vec = vector_sub(P, cap_center);
+        vector dist_vec = vector_sub(P, cyl->cap_center);
         double dist_sq = vector_dot(dist_vec, dist_vec);
 
-        if (dist_sq <= radius * radius)
+        if (dist_sq <= cyl->radius * cyl->radius)
             return 1; // Intersection with cap
     }
 
@@ -161,6 +162,7 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
     compute_cap_centers(cyl, &bottom_center, &top_center);
 
     double t1, t2;
+
     if (cross_ray_inf_cyl(params, cyl, &t1, &t2))
     {
         // Check t1
@@ -188,13 +190,17 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
 
     // Intersect with bottom cap
     double t_cap;
-    if (intersect_ray_with_cap(params, bottom_center, vector_scale(cyl->axis, -1), cyl->radius, &t_cap))
+    cyl->cap_center = bottom_center;
+    cyl->cap_normal = vector_scale(cyl->axis, -1);
+    if (intersect_ray_with_cap(params, cyl, &t_cap))
     {
         update_cylinder_result(result, t_cap, cyl, 1, params); // Bottom cap
     }
 
     // Intersect with top cap
-    if (intersect_ray_with_cap(params, top_center, cyl->axis, cyl->radius, &t_cap))
+    cyl->cap_center = top_center;
+    cyl->cap_normal = cyl->axis;
+    if (intersect_ray_with_cap(params, cyl, &t_cap))
     {
         update_cylinder_result(result, t_cap, cyl, 2, params); // Top cap
     }

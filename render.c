@@ -69,7 +69,7 @@ scene create_scene()
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
-    scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1};
+    scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
 
 
    scene.light_count = 3;

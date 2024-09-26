@@ -77,6 +77,8 @@ typedef struct
 	vector axis;
 	base_shape base;
 	shape_type type;
+    vector cap_center;
+    vector cap_normal;
 } cylinder;
 
 typedef struct
