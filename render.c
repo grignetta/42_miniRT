@@ -63,7 +63,7 @@ scene create_scene()
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 255, 30, 0.5}, 2, 1.0, {1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}};
+    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 0, 30, 0.5}, 2, 1};
 
     scene.cylinder_count = 1;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);

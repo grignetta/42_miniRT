@@ -86,8 +86,6 @@ typedef struct
 	base_shape base;
 	shape_type type;
     double square_size;
-    color color1;
-    color color2;
 } plane;
 
 typedef struct

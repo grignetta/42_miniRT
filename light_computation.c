@@ -19,8 +19,8 @@ vector get_light_direction(light light, trace vars, double *t_max)
     if (light.type == 1) // Point
     {
         L = vector_sub(light.position, vars.P);
-       // *t_max = 1.0;
-        *t_max = vector_length(L); // Set t_max to the distance to the light
+        //*t_max = 1.0;
+         *t_max = vector_length(L); // Set t_max to the distance to the light
         L = vector_normalize(L);
     }
     else // Directional
@@ -38,7 +38,7 @@ int is_in_shadow(scene *scene, trace vars, vector L, double t_max)
 
     shadow_params.O = vars.P;
     shadow_params.D = L;
-    shadow_params.t_min = 0.001;//0.001;
+    shadow_params.t_min = 0.001;
     shadow_params.t_max = t_max;
     shadow_result = closest_intersection(scene, shadow_params);
 	if (shadow_result.t < shadow_params.t_max)
@@ -51,7 +51,6 @@ void diffuse_light(color *result, light light, trace vars, vector L)
 	double n_dot_l;
 	double diffuse_intensity;
 
-    //L = vector_normalize(L);//maybe not necessary if was normed before
     n_dot_l = vector_dot(vars.N, L);
     if (n_dot_l > 0)
     {

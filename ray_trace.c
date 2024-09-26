@@ -116,25 +116,32 @@ base_shape* get_base_shape(intersection_result result)
     return shape;
 }
 
-color get_checkerboard_color(vector P, plane *pl)
+color get_plane_color(vector P, plane *pl)
 {
-    double square_size = pl->square_size;
-
+    color base_color = {
+        .red = pl->base.red / 255.0,
+        .green = pl->base.green / 255.0,
+        .blue = pl->base.blue / 255.0
+    };
+    if (pl->square_size == 0)
+        return (base_color);
     // Calculate the texture coordinates
-    int x_square = (int)floor(P.x / square_size);
-    int z_square = (int)floor(P.z / square_size);
+    int x_square = (int)floor(P.x / pl->square_size);
+    int z_square = (int)floor(P.z / pl->square_size);
 
     // Determine if the sum is even or odd
     int sum = x_square + z_square;
 
+    color inverse_color = {
+        .red = 1.0 - base_color.red,
+        .green = 1.0 - base_color.green,
+        .blue = 1.0 - base_color.blue
+    };
+
     if (sum % 2 == 0)
-    {
-        return pl->color1;
-    }
+        return base_color;
     else
-    {
-        return pl->color2;
-    }
+        return inverse_color;
 }
 
 int trace_ray(scene *scene, ray_params params, int depth)
@@ -160,7 +167,7 @@ int trace_ray(scene *scene, ray_params params, int depth)
     if (result.type == SHAPE_PLANE)
     {
         plane *pl = (plane *)result.object;
-        color checker_color = get_checkerboard_color(vars.P, pl);
+        color checker_color = get_plane_color(vars.P, pl);
         vars.local_color.red = checker_color.red * vars.lighting.red;
         vars.local_color.green = checker_color.green * vars.lighting.green;
         vars.local_color.blue = checker_color.blue * vars.lighting.blue;
@@ -172,7 +179,7 @@ int trace_ray(scene *scene, ray_params params, int depth)
         vars.local_color.green = (vars.shape->green / 255.0) * vars.lighting.green;
         vars.local_color.blue = (vars.shape->blue / 255.0) * vars.lighting.blue;
     }
-    // Calculate local color using the shape's color attributes
+    //Calculate local color using the shape's color attributes
     // vars.local_color.red = (vars.shape->red / 255.0) * vars.lighting.red;
     // vars.local_color.green = (vars.shape->green / 255.0) * vars.lighting.green;
     // vars.local_color.blue = (vars.shape->blue / 255.0) * vars.lighting.blue;
