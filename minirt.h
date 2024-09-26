@@ -31,6 +31,13 @@ typedef enum
 
 typedef struct
 {
+    double red;
+    double green;
+    double blue;
+} color;
+
+typedef struct
+{
 	double x, y, z;
 } vector;
 
@@ -78,6 +85,9 @@ typedef struct
     vector normal;
 	base_shape base;
 	shape_type type;
+    double square_size;
+    color color1;
+    color color2;
 } plane;
 
 typedef struct
@@ -101,13 +111,6 @@ typedef struct
     int light_count;
     camera camera;
 } scene;
-typedef struct
-{
-    double red;
-    double green;
-    double blue;
-} color;
-
 typedef struct {
     shape_type type;
     void *object;

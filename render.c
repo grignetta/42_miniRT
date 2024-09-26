@@ -52,24 +52,24 @@ scene create_scene()
     scene.spheres = malloc(sizeof(sphere) * scene.sphere_count);
 
     // Red sphere
-    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 0, 0, 500, 0.4}, 1};
+    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 0, 0, 500, 0.1}, 1};
     // Blue sphere
    // scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
     // Green sphere
-    scene.spheres[1] = (sphere){{2, -1, 4}, 1, {0, 255, 0, 500, 0.4}, 1};
+    scene.spheres[1] = (sphere){{2, -1, 4}, 1, {0, 255, 0, 500, 0.5}, 1};
     // Yellow large sphere (floor)
     //scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 255, 30, 0.5}, 2};
+    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 255, 30, 0.5}, 2, 1.0, {1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}};
 
     scene.cylinder_count = 1;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
-    scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.8}, 1};
+    scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1};
 
 
    scene.light_count = 3;
