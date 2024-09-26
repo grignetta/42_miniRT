@@ -147,13 +147,10 @@ int intersect_ray_with_cap(ray_params params, cylinder *cyl, double *t)
     return 0; // No intersection with cap
 }
 
-void update_cylinder_result(intersection_result *result, double t, cylinder *cyl, int surface, ray_params params)
+void update_cylinder_result(intersection_result *result, int surface)
 {
-    if (update_result(result, t, cyl, params))
-    {
         result->type = SHAPE_CYLINDER;
         result->surface = surface;
-    }
 }
 
 int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result *result)
@@ -168,24 +165,18 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
         // Check t1
         vector P1 = vector_add(params.O, vector_scale(params.D, t1));
         if (is_within_caps(P1, cyl))
-        {
-            update_cylinder_result(result, t1, cyl, 0, params); // Side surface
-        }
+            {if (update_result(result, t1, cyl, params))
+                update_cylinder_result(result, 0);} // Side surface}
         else
-        {
             t1 = INFINITY;
-        }
 
         // Check t2
         vector P2 = vector_add(params.O, vector_scale(params.D, t2));
         if (is_within_caps(P2, cyl))
-        {
-            update_cylinder_result(result, t2, cyl, 0, params); // Side surface
-        }
+            {if (update_result(result, t2, cyl, params))
+                update_cylinder_result(result, 0);} // Side surface}
         else
-        {
             t2 = INFINITY;
-        }
     }
 
     // Intersect with bottom cap
@@ -193,25 +184,22 @@ int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result
     cyl->cap_center = bottom_center;
     cyl->cap_normal = vector_scale(cyl->axis, -1);
     if (intersect_ray_with_cap(params, cyl, &t_cap))
-    {
-        update_cylinder_result(result, t_cap, cyl, 1, params); // Bottom cap
-    }
+        if (update_result(result, t_cap, cyl, params))
+            update_cylinder_result(result, 1); // Bottom cap
 
     // Intersect with top cap
     cyl->cap_center = top_center;
     cyl->cap_normal = cyl->axis;
     if (intersect_ray_with_cap(params, cyl, &t_cap))
-    {
-        update_cylinder_result(result, t_cap, cyl, 2, params); // Top cap
-    }
-
+        if (update_result(result, t_cap, cyl, params))
+            update_cylinder_result(result, 2); // Top cap
     // Determine if any valid intersections were found
     return (result->t < INFINITY);
 }
 
 
 
-int intersect_ray_cylinder_1(ray_params params, cylinder *cyl, intersection_result *result)
+/* int intersect_ray_cylinder_1(ray_params params, cylinder *cyl, intersection_result *result)
 {
     // Compute cap centers
     vector half_h_v = vector_scale(cyl->axis, cyl->height / 2);
@@ -312,7 +300,7 @@ int intersect_ray_cylinder_1(ray_params params, cylinder *cyl, intersection_resu
     }
 
     return (1);
-}
+} */
 
 
 // Closest intersection function

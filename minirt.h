@@ -111,6 +111,7 @@ typedef struct
     int light_count;
     camera camera;
 } scene;
+
 typedef struct {
     shape_type type;
     void *object;
