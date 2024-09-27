@@ -35,7 +35,7 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
             params.D = D;
             params.t_min = 1.0;
             params.t_max = INFINITY;
-            color = trace_ray(scene, params, 3);
+            color = trace_ray(scene, params, 5);//5 is better for mirror effect
             put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
             y++;
         }
@@ -48,28 +48,30 @@ void render(t_canvas *canvas, scene *scene, camera *camera)
 scene create_scene()
 {
     scene scene;
-    scene.sphere_count = 4;
+    scene.sphere_count = 2;
     scene.spheres = malloc(sizeof(sphere) * scene.sphere_count);
 
     // Red sphere
-    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 255, 0, 500, 0.4}, 1};
+    scene.spheres[0] = (sphere){{0, -1, 3}, 1, {255, 0, 0, 500, 0.1}, 1};
     // Blue sphere
    // scene.spheres[1] = (sphere){{-2, 0, 4}, 1, 0, 0, 255, 10, 0.3};
     // Green sphere
-    scene.spheres[2] = (sphere){{2, 0, 4}, 1, {0, 255, 0, 100, 0.2}, 1};
+    scene.spheres[1] = (sphere){{2, -1, 4}, 1, {0, 255, 0, 500, 0.5}, 1};
     // Yellow large sphere (floor)
     //scene.spheres[3] = (sphere){{0, -5001, 0}, 5000, 255, 255, 0, 1000, 0.5};
 
     // Example plane
     scene.plane_count = 1;
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
-    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 0, 30, 0.5}, 2};
+    scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 0, 30, 0.5}, 2, 1};
 
-    scene.cylinder_count = 1;
+    scene.cylinder_count = 3;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
-    scene.cylinders[0] = (cylinder){{-1, -3, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.3}, 1};
+    scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
+    scene.cylinders[1] = (cylinder){{3, 0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
+    scene.cylinders[2] = (cylinder){{0, 3, 6}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
 
 
    scene.light_count = 3;
@@ -78,9 +80,9 @@ scene create_scene()
     // Ambient
 	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}, 255, 162, 57};
     // Point light
-    scene.lights[1] = (light){1, 0.6, {1.5, 2, 0}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
+    scene.lights[1] = (light){1, 0.6, {-1.5, -0.5, -3}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
     // Directional light
-    //scene.lights[2] = (light){2, 0.6, {0, 0 , 0}, {1, 4, 4}, 255, 255, 255};//if ambient and point lights have different colors, what to write here?
+    scene.lights[2] = (light){2, 0.6, {0, 0 , 0}, {1, 4, 4}, 255, 255, 255};//if ambient and point lights have different colors, what to write here?
     // Point light
     //scene.lights[1] = (light){1, 0.6, {0, 0, 0}, {2, 1, 0}, 255, 255, 255};
 

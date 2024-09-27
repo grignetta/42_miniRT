@@ -1,14 +1,16 @@
 NAME = miniRT
 HEADER = minirt.h
 CC = cc
-CFLAGS = -g -Wall -Wextra -Werror  #-fsanitize=thread
+CFLAGS = -g -Wall -Wextra -Werror  -I$(MLX_PATH) #-fsanitize=thread
 
 LIBDIR = ./libft #check whose libft
 OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
+MLX_PATH = ./minilibx-linux/
 MLX_NAME = mlx
 MLX = $(MLX_PATH)$(MLX_NAME)
+MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd
 
 SOURCES = main.c \
 			render.c \
@@ -19,6 +21,9 @@ SOURCES = main.c \
 			camera.c \
 			light_computation.c \
 			parsing.c \
+			free_functions.c \
+			intersect_cylinder_utils.c \
+			intersect_cylinder.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
@@ -31,7 +36,7 @@ $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -o $@ -c $< -I.
 
 $(NAME): $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft -lXext -lX11 -l$(MLX_NAME) -lm -o $(NAME)
+		$(CC) $(CFLAGS) $(OBJ) $(MLX_LIBS) -L$(LIBDIR) -lft -o $(NAME)
 
 lib:
 	@$(MAKE) -C $(LIBDIR) all --no-print-directory
