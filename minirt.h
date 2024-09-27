@@ -162,6 +162,14 @@ typedef struct
     double discriminant;
 } intersection;
 
+//For quadratic equations
+typedef struct
+{
+    double a;
+    double b;
+    double c;
+} quadratic;
+
 /* typedef enum {
     VECTOR_SUB,
     VECTOR_ADD,
@@ -191,6 +199,11 @@ vector vector_init(double x, double y, double z);
 
 //intersection.c
 intersection_result closest_intersection(scene *scene, ray_params params);
+int update_result(intersection_result *result, double t, void *object, ray_params params);
+void update_cylinder_result(intersection_result *result, int surface);
+void handle_side_intersections(ray_params params, cylinder *cyl, intersection_result *result);
+int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result *result);
+int intersect_ray_plane(ray_params params, plane *pl, double *t);
 
 //utils.c
 void put_pixel(t_canvas *app, int x, int y, int color);

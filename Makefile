@@ -18,6 +18,8 @@ SOURCES = main.c \
 			intersection.c \
 			camera.c \
 			light_computation.c \
+			intersect_cylinder.c \
+			intersect_cylinder_utils.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
