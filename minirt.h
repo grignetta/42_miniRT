@@ -31,6 +31,13 @@ typedef enum
 
 typedef struct
 {
+    double red;
+    double green;
+    double blue;
+} color;
+
+typedef struct
+{
 	double x, y, z;
 } vector;
 
@@ -70,6 +77,8 @@ typedef struct
 	vector axis;
 	base_shape base;
 	shape_type type;
+    vector cap_center;
+    vector cap_normal;
 } cylinder;
 
 typedef struct
@@ -78,6 +87,7 @@ typedef struct
     vector normal;
 	base_shape base;
 	shape_type type;
+    double square_size;
 } plane;
 
 typedef struct
@@ -101,19 +111,13 @@ typedef struct
     int light_count;
     camera camera;
 } scene;
-typedef struct
-{
-    double red;
-    double green;
-    double blue;
-} color;
 
 typedef struct {
     shape_type type;
     void *object;
     double t; //distance to intersection
     int surface; // 0 for side, 1 for bottom cap, 2 for top cap
-} intersection_result;
+} intersect_result;
 
 typedef struct s_canvas
 {
@@ -158,6 +162,14 @@ typedef struct
     double discriminant;
 } intersection;
 
+//For quadratic equations
+typedef struct
+{
+    double a;
+    double b;
+    double c;
+} quadratic;
+
 /* typedef enum {
     VECTOR_SUB,
     VECTOR_ADD,
@@ -186,7 +198,12 @@ int trace_ray(scene *scene, ray_params params, int depth);
 vector vector_init(double x, double y, double z);
 
 //intersection.c
-intersection_result closest_intersection(scene *scene, ray_params params);
+intersect_result closest_intersection(scene *scene, ray_params params);
+int update_result(intersect_result *result, double t, void *object, ray_params params);
+void update_cyl_result(intersect_result *result, int surface);
+void handle_side_intersect(ray_params params, cylinder *cyl, intersect_result *result);
+int cross_ray_cyl(ray_params params, cylinder *cyl, intersect_result *result);
+int cross_ray_plane(ray_params params, plane *pl, double *t);
 
 //utils.c
 void put_pixel(t_canvas *app, int x, int y, int color);
