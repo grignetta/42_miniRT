@@ -65,11 +65,13 @@ scene create_scene()
     scene.planes = malloc(sizeof(plane) * scene.plane_count);
     scene.planes[0] = (plane){{0, -2, 0}, {0, 1, 0}, {255, 255, 0, 30, 0.5}, 2, 1};
 
-    scene.cylinder_count = 1;
+    scene.cylinder_count = 3;
     scene.cylinders = malloc(sizeof(cylinder) * scene.cylinder_count);
 
     // Example cylinder
     scene.cylinders[0] = (cylinder){{-2, -0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
+    scene.cylinders[1] = (cylinder){{3, 0.5, 4}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
+    scene.cylinders[2] = (cylinder){{0, 3, 6}, 1.5, 2, {0, 1, 0}, {0, 0, 255, 500, 0.2}, 1, {0, 0, 0}, {0, 0, 0}};
 
 
    scene.light_count = 3;
@@ -78,9 +80,9 @@ scene create_scene()
     // Ambient
 	scene.lights[0] = (light){0, 0.2, {0, 0, 0}, {0, 0, 0}, 255, 162, 57};
     // Point light
-    scene.lights[1] = (light){1, 0.6, {1.5, 2, 0}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
+    scene.lights[1] = (light){1, 0.6, {-1.5, -0.5, -3}, {0, 0, 0}, 255, 255, 255};//point light also can have its own color (for bonus)
     // Directional light
-    //scene.lights[2] = (light){2, 0.6, {0, 0 , 0}, {1, 4, 4}, 255, 255, 255};//if ambient and point lights have different colors, what to write here?
+    scene.lights[2] = (light){2, 0.6, {0, 0 , 0}, {1, 4, 4}, 255, 255, 255};//if ambient and point lights have different colors, what to write here?
     // Point light
     //scene.lights[1] = (light){1, 0.6, {0, 0, 0}, {2, 1, 0}, 255, 255, 255};
 
