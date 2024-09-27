@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-int update_result(intersection_result *result, double t, void *object, ray_params params)
+int update_result(intersect_result *result, double t, void *object, ray_params params)
 {
     if (t < result->t && t > params.t_min)
     {
@@ -12,8 +12,8 @@ int update_result(intersection_result *result, double t, void *object, ray_param
 	return (0);
 }
 
-int intersect_ray_sphere(ray_params params, sphere *sphere,
-        intersection_result *result)
+int cross_ray_sphere(ray_params params, sphere *sphere,
+        intersect_result *result)
 {
 	double t1;
 	double t2;
@@ -36,7 +36,7 @@ int intersect_ray_sphere(ray_params params, sphere *sphere,
 }
 
 
-int intersect_ray_plane(ray_params params, plane *pl, double *t)
+int cross_ray_plane(ray_params params, plane *pl, double *t)
 {
     double denom;
 
@@ -51,9 +51,9 @@ int intersect_ray_plane(ray_params params, plane *pl, double *t)
 }
 
 // Closest intersection function
-intersection_result closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)
+intersect_result closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)
 {
-    intersection_result result;
+    intersect_result result;
 	int i;
     double t;
 
@@ -63,16 +63,16 @@ intersection_result closest_intersection(scene *scene, ray_params params)// vect
     // Check spheres
 	i = -1;
 	while (++i < scene->sphere_count)
-		intersect_ray_sphere(params, &scene->spheres[i], &result);
+		cross_ray_sphere(params, &scene->spheres[i], &result);
     // Check cylinders
 	i = -1;
 	while (++i < scene->cylinder_count)
-		intersect_ray_cylinder(params, &scene->cylinders[i], &result);
+		cross_ray_cyl(params, &scene->cylinders[i], &result);
     // Check planes
     i = -1;
 	while (++i < scene->plane_count)
 	{
-        if (intersect_ray_plane(params, &scene->planes[i], &t)) {
+        if (cross_ray_plane(params, &scene->planes[i], &t)) {
             if (t < result.t && t > params.t_min) {
                 result.t = t;
                 result.type = SHAPE_PLANE;

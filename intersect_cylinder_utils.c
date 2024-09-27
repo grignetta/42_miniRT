@@ -49,7 +49,7 @@ int is_within_caps(vector P, cylinder *cyl)
     return (axis_dist >= -half_h && axis_dist <= half_h);
 }
 
-void handle_side_intersections(ray_params params, cylinder *cyl, intersection_result *result)
+void handle_side_intersect(ray_params params, cylinder *cyl, intersect_result *result)
 {
     double t1;
     double t2;
@@ -63,12 +63,12 @@ void handle_side_intersections(ray_params params, cylinder *cyl, intersection_re
         if (!is_within_caps(P1, cyl))
             t1 = INFINITY; // Intersection is outside the caps
         if (update_result(result, t1, cyl, params))
-            update_cylinder_result(result, 0); // Side surface
+            update_cyl_result(result, 0); // Side surface
         // Check t2
         P2 = vector_add(params.O, vector_scale(params.D, t2));
         if (!is_within_caps(P2, cyl))
             t2 = INFINITY; // Intersection is outside the caps
         if (update_result(result, t2, cyl, params))
-            update_cylinder_result(result, 0); // Side surface
+            update_cyl_result(result, 0); // Side surface
     }
 }

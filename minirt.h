@@ -117,7 +117,7 @@ typedef struct {
     void *object;
     double t; //distance to intersection
     int surface; // 0 for side, 1 for bottom cap, 2 for top cap
-} intersection_result;
+} intersect_result;
 
 typedef struct s_canvas
 {
@@ -198,12 +198,12 @@ int trace_ray(scene *scene, ray_params params, int depth);
 vector vector_init(double x, double y, double z);
 
 //intersection.c
-intersection_result closest_intersection(scene *scene, ray_params params);
-int update_result(intersection_result *result, double t, void *object, ray_params params);
-void update_cylinder_result(intersection_result *result, int surface);
-void handle_side_intersections(ray_params params, cylinder *cyl, intersection_result *result);
-int intersect_ray_cylinder(ray_params params, cylinder *cyl, intersection_result *result);
-int intersect_ray_plane(ray_params params, plane *pl, double *t);
+intersect_result closest_intersection(scene *scene, ray_params params);
+int update_result(intersect_result *result, double t, void *object, ray_params params);
+void update_cyl_result(intersect_result *result, int surface);
+void handle_side_intersect(ray_params params, cylinder *cyl, intersect_result *result);
+int cross_ray_cyl(ray_params params, cylinder *cyl, intersect_result *result);
+int cross_ray_plane(ray_params params, plane *pl, double *t);
 
 //utils.c
 void put_pixel(t_canvas *app, int x, int y, int color);

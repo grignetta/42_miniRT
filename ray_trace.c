@@ -53,7 +53,7 @@ vector cyl_normal(vector P, cylinder *cyl, int surface)
 
 
 //int trace_ray(scene *scene, vector O, vector D, double t_min, double t_max, int depth)
-vector compute_normal(intersection_result result, vector P)
+vector compute_normal(intersect_result result, vector P)
 {
     //cylinder *c;
 
@@ -104,7 +104,7 @@ color color_to_double(int color_int)
     return (result);
 }
 
-base_shape* get_base_shape(intersection_result result)
+base_shape* get_base_shape(intersect_result result)
 {
     base_shape *shape = (base_shape *)result.object;
     if (result.type == SHAPE_SPHERE)
@@ -147,7 +147,7 @@ color get_plane_color(vector P, plane *pl)
 int trace_ray(scene *scene, ray_params params, int depth)
 {
     trace vars;
-    intersection_result result;
+    intersect_result result;
 
     result = closest_intersection(scene, params);
     if (result.t == params.t_max)

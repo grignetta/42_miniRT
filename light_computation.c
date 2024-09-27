@@ -34,7 +34,7 @@ vector get_light_direction(light light, trace vars, double *t_max)
 int is_in_shadow(scene *scene, trace vars, vector L, double t_max)
 {
     ray_params shadow_params;
-	intersection_result shadow_result;
+	intersect_result shadow_result;
 
     shadow_params.O = vars.P;
     shadow_params.D = L;
@@ -153,7 +153,7 @@ color compute_lighting(scene *scene, trace vars)
             shadow_params.t_min = 0.001;
             shadow_params.t_max = t_max;
 
-            intersection_result shadow_result = closest_intersection(scene, shadow_params);
+            intersect_result shadow_result = closest_intersection(scene, shadow_params);
             //if (shadow_sphere != NULL) continue;
             if (shadow_result.t < shadow_params.t_max)
                 continue; // In shadow, skip this light
