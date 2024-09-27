@@ -207,23 +207,30 @@ scene	parse_rt(int fd, char *filename)
 	scene	sc;
 	char	*line;
 
+	sc.success = 0;
 	count_objects(fd, &sc);
 	sc.spheres = malloc(sizeof(sphere) * sc.sphere_count);
 	sc.cylinders = malloc(sizeof(cylinder) * sc.cylinder_count);
 	sc.planes = malloc(sizeof(plane) * sc.plane_count);
 	sc.lights = malloc(sizeof(light) * sc.light_count);
-	sc.planes = NULL;
+	//sc.planes = NULL;
 	if (!sc.spheres || !sc.cylinders || !sc.planes || !sc.lights)
 	{
 		perror("Error: Memory allocation failed:");
 		free_scene(&sc);
+		sc.success = 1;
 		return (sc); //error management to think about, probably set sc to zero?
 	}
 	close(fd);
 	reset_count(&sc);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-		return (perror("Error\n"), sc); //error manit probably managemnt to think about
+	{
+		perror("Error\n");
+		free_scene(&sc);
+		sc.success = 1;
+		return (sc);
+	}
 	while ((line = get_next_line(fd)))
 	{
 		if (line[0] == 'A')
@@ -240,7 +247,5 @@ scene	parse_rt(int fd, char *filename)
 			parse_cylinder(line, &sc);
 		free(line);
 	}
-	sc.success = 0;
 	return (sc);
 }
-

@@ -56,9 +56,9 @@ int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
 	scene		scene;
-	int			fd;
+	//int			fd;
 
-	//(void)argv;
+	(void)argv;
 	if (argc == 2)
 	{
 		canvas = initialize_matrix();
@@ -70,8 +70,8 @@ int	main(int argc, char **argv)
 			return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
 				mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
 				free(canvas), 1);
-		//scene = create_scene(); // Initialize your
-		fd = open(argv[1], O_RDONLY);
+		scene = create_scene(); // Initialize your
+		/*fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 			return (perror("Error\n"), 1);
 		scene = parse_rt(fd, argv[1]);
@@ -84,12 +84,12 @@ int	main(int argc, char **argv)
         	free(canvas);
         	return (1);
     	}
-		close(fd);
+		close(fd);*/
         render(canvas, &scene, &scene.camera); // Render the scene
 		/*mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);
-		mlx_hook(canvas->win_ptr, 2, 1, handle_input, canvas);
+		mlx_hook(canvas->win_ptr, 2, 1, handle_input, canvas);*/
 		mlx_hook(canvas->win_ptr, 17, 0, close_event, canvas);
-		mlx_loop_hook(canvas->mlx_ptr, update, canvas);*/
+		//mlx_loop_hook(canvas->mlx_ptr, update, canvas);
 		mlx_loop(canvas->mlx_ptr);
 	}
 	else

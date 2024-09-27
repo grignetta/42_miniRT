@@ -101,7 +101,7 @@ typedef struct
     int light_count;
     camera camera;
     int success;
-} scene;
+}   scene;
 
 typedef struct
 {
@@ -206,4 +206,6 @@ scene	parse_rt(int fd, char *filename);
 
 //free
 void	free_scene(scene *sc);
+int     close_event(void *param);
+
 #endif
