@@ -1,14 +1,14 @@
 NAME = miniRT
 HEADER = minirt.h
 CC = cc
-CFLAGS = -g -Wall -Wextra -Werror  #-fsanitize=thread
+CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
 
 LIBDIR = ./libft #check whose libft
 OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
-MLX_NAME = mlx
-MLX = $(MLX_PATH)$(MLX_NAME)
+LDFLAGS := -L/usr/local/lib -lmlx -lXext -lX11 -lm
+#LDFLAGS := -Llib -lmlx -lXext -lX11 -lm
 
 SOURCES = main.c \
 			render.c \
@@ -32,7 +32,7 @@ $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -o $@ -c $< -I.
 
 $(NAME): $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft -lXext -lX11 -l$(MLX_NAME) -lm -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft $(LDFLAGS) -o $(NAME)
 
 lib:
 	@$(MAKE) -C $(LIBDIR) all --no-print-directory
@@ -40,11 +40,11 @@ lib:
 .PHONY: clean fclean all re
 
 clean:
-		$(MAKE) -C $(LIBDIR) clean
-		rm -rf $(OBJDIR)
+	$(MAKE) -C $(LIBDIR) clean
+	rm -rf $(OBJDIR)
 
 fclean: clean
-		$(MAKE) -C $(LIBDIR) fclean
-		rm -rf $(NAME)
+	$(MAKE) -C $(LIBDIR) fclean
+	rm -rf $(NAME)
 
 re: fclean all
