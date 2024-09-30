@@ -122,6 +122,7 @@ void parse_plane(char *line, scene *sc)
 	new_plane.base.blue = ft_atoi(token);
 	new_plane.base.specular = 100;
 	new_plane.base.reflective = 0.5;
+	new_plane.square_size = 0;
 	sc->planes[sc->plane_count++] = new_plane;
 	printf("Plane: point = (%lf, %lf, %lf), normal = (%lf, %lf, %lf), color = (%d, %d, %d)\n",
 		   new_plane.point.x, new_plane.point.y, new_plane.point.z,
