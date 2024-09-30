@@ -7,7 +7,7 @@ void parse_ambient(char *line, scene *sc)
 
 	ambient_light.type = 0;
 	token = ft_strtok(line + 2, " ");
-	ambient_light.intensity = atof(token);
+	ambient_light.intensity = ft_atof(token);
 	token = ft_strtok(NULL, ",");
 	ambient_light.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
@@ -25,19 +25,19 @@ void parse_camera(char *line, scene *sc)
 	char	*token;
 
 	token = ft_strtok(line + 2, ",");
-	sc->camera.position.x = atof(token);
+	sc->camera.position.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	sc->camera.position.y = atof(token);
+	sc->camera.position.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	sc->camera.position.z = atof(token);
+	sc->camera.position.z = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	sc->camera.orientation.x = atof(token);
+	sc->camera.orientation.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	sc->camera.orientation.y = atof(token);
+	sc->camera.orientation.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	sc->camera.orientation.z = atof(token);
+	sc->camera.orientation.z = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	sc->camera.fov = atof(token);
+	sc->camera.fov = ft_atof(token);
 
 	printf("Camera: position = (%lf, %lf, %lf), orientation = (%lf, %lf, %lf), fov = %lf\n",
 		   sc->camera.position.x, sc->camera.position.y, sc->camera.position.z,
@@ -52,13 +52,13 @@ void parse_light(char *line, scene *sc)
 
 	point_light.type = 1;  // 1 for point light
 	char *token = ft_strtok(line + 2, ",");
-	point_light.position.x = atof(token);
+	point_light.position.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	point_light.position.y = atof(token);
+	point_light.position.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	point_light.position.z = atof(token);
+	point_light.position.z = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	point_light.intensity = atof(token);
+	point_light.intensity = ft_atof(token);
 	token = ft_strtok(NULL, ",");
 	point_light.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
@@ -76,13 +76,13 @@ void parse_sphere(char *line, scene *sc)
 	sphere	new_sphere;
 
 	char *token = ft_strtok(line + 3, ",");
-	new_sphere.center.x = atof(token);
+	new_sphere.center.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_sphere.center.y = atof(token);
+	new_sphere.center.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_sphere.center.z = atof(token);
+	new_sphere.center.z = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_sphere.radius = atof(token) / 2.0;  // Assuming the input is diameter, convert to radius
+	new_sphere.radius = ft_atof(token) / 2.0;  // Assuming the input is diameter, convert to radius
 	token = ft_strtok(NULL, ",");
 	new_sphere.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
@@ -103,17 +103,17 @@ void parse_plane(char *line, scene *sc)
 	char	*token;
 
 	token = ft_strtok(line + 3, ",");
-	new_plane.point.x = atof(token);
+	new_plane.point.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_plane.point.y = atof(token);
+	new_plane.point.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_plane.point.z = atof(token);
+	new_plane.point.z = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_plane.normal.x = atof(token);
+	new_plane.normal.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_plane.normal.y = atof(token);
+	new_plane.normal.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_plane.normal.z = atof(token);
+	new_plane.normal.z = ft_atof(token);
 	token = ft_strtok(NULL, ",");
 	new_plane.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
@@ -136,21 +136,21 @@ void parse_cylinder(char *line, scene *sc)
 	char		*token;
 
 	token = ft_strtok(line + 3, ",");
-	new_cylinder.center.x = atof(token);
+	new_cylinder.center.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_cylinder.center.y = atof(token);
+	new_cylinder.center.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_cylinder.center.z = atof(token);
+	new_cylinder.center.z = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_cylinder.axis.x = atof(token);
+	new_cylinder.axis.x = ft_atof(token);
 	token = ft_strtok(NULL, ",");
-	new_cylinder.axis.y = atof(token);
+	new_cylinder.axis.y = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_cylinder.axis.z = atof(token);
+	new_cylinder.axis.z = ft_atof(token);
 	token = ft_strtok(NULL, " ");
-	new_cylinder.radius = atof(token) / 2.0;  // Assuming input is diameter
+	new_cylinder.radius = ft_atof(token) / 2.0;
 	token = ft_strtok(NULL, " ");
-	new_cylinder.height = atof(token);
+	new_cylinder.height = ft_atof(token);
 	token = ft_strtok(NULL, ",");
 	new_cylinder.base.red = ft_atoi(token);
 	token = ft_strtok(NULL, ",");
@@ -220,7 +220,7 @@ scene	parse_rt(int fd, char *filename)
 		perror("Error: Memory allocation failed:");
 		free_scene(&sc);
 		sc.success = 1;
-		return (sc); //error management to think about, probably set sc to zero?
+		return (sc);
 	}
 	close(fd);
 	reset_count(&sc);
