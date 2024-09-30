@@ -110,6 +110,7 @@ typedef struct
     light *lights;
     int light_count;
     camera camera;
+    int success;
 } scene;
 
 typedef struct {
@@ -215,5 +216,9 @@ void set_camera(scene *scene);
 
 //light_computation.c
 color compute_lighting(scene *scene, trace vars);
+
+void	free_scene(scene *sc);
+scene	parse_rt(int fd, char *filename);
+
 
 #endif
