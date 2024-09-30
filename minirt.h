@@ -6,6 +6,9 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <X11/keysym.h>
+# include <X11/X.h>
+# include <X11/Xlib.h>
 # include "./libft/libft.h"
 
 # ifndef M_PI
@@ -110,6 +113,7 @@ typedef struct
     light *lights;
     int light_count;
     camera camera;
+    int success;
 } scene;
 
 typedef struct {
@@ -131,6 +135,7 @@ typedef struct s_canvas
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+    scene   *scene;
 }	t_canvas;
 
 typedef struct {
@@ -215,5 +220,11 @@ void set_camera(scene *scene);
 
 //light_computation.c
 color compute_lighting(scene *scene, trace vars);
+
+void	free_scene(scene *sc);
+scene	parse_rt(int fd, char *filename);
+int     close_event(void *param);
+int	    key_handle(int keysym, void *param);
+
 
 #endif

@@ -55,9 +55,11 @@ int	initialize_graphics(t_canvas *canvas)
 int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
-	(void)argv;
+	scene		scene;
+	int			fd;
+	//(void)argv;
 
-	if (argc == 1)
+	if (argc == 2)
 	{
 		canvas = initialize_matrix();
 		if (canvas == NULL)
@@ -68,13 +70,27 @@ int	main(int argc, char **argv)
 			return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
 				mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
 				free(canvas), 1);
-		scene scene = create_scene(); // change to parcing from .rt file
+		//scene scene = create_scene(); // change to parcing from .rt file
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
+			return (perror("Error\n"), 1);
+		scene = parse_rt(fd, argv[1]);
+		if (scene.success)
+		{
+			close(fd);
+			mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+        	mlx_destroy_display(canvas->mlx_ptr);
+        	free(canvas->mlx_ptr);
+        	free(canvas);
+        	return (1);
+    	}
 		set_camera(&scene);
+		canvas->scene = &scene;
         render(canvas, &scene, &scene.camera); // Render the scene
-		/*mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);
-		mlx_hook(canvas->win_ptr, 2, 1, handle_input, canvas);
+		//mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);
+		mlx_hook(canvas->win_ptr, KeyPress, KeyPressMask, key_handle, canvas);
 		mlx_hook(canvas->win_ptr, 17, 0, close_event, canvas);
-		mlx_loop_hook(canvas->mlx_ptr, update, canvas);*/
+		//mlx_loop_hook(canvas->mlx_ptr, update, canvas);
 		mlx_loop(canvas->mlx_ptr);
 	}
 	else
