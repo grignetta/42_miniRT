@@ -75,15 +75,8 @@ int	main(int argc, char **argv)
 		if (fd == -1)
 			return (perror("Error\n"), 1);
 		scene = parse_rt(fd, argv[1]);
-		if (scene.success)
-		{
-			close(fd);
-			mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
-        	mlx_destroy_display(canvas->mlx_ptr);
-        	free(canvas->mlx_ptr);
-        	free(canvas);
-        	return (1);
-    	}
+		if (scene_success(scene, canvas, fd))
+			return (1);
 		set_camera(&scene);
 		canvas->scene = &scene;
         render(canvas, &scene, &scene.camera); // Render the scene
@@ -94,5 +87,5 @@ int	main(int argc, char **argv)
 		mlx_loop(canvas->mlx_ptr);
 	}
 	else
-		return (write(1, "error\n", 6), 1);
+		return (write(1, "Error\n", 6), 1);
 }

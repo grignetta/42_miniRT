@@ -219,12 +219,13 @@ void check_limit_int(int *value, int limit);
 void set_camera(scene *scene);
 
 //light_computation.c
-color compute_lighting(scene *scene, trace vars);
+color   compute_lighting(scene *scene, trace vars);
 
 void	free_scene(scene *sc);
 scene	parse_rt(int fd, char *filename);
 int     close_event(void *param);
 int	    key_handle(int keysym, void *param);
+int	    scene_success(scene scene, t_canvas *canvas, int fd);
 
 
 #endif

@@ -202,7 +202,6 @@ void	reset_count(scene *sc)
 	sc->light_count = 0;
 }
 
-// Parse the .rt file
 scene	parse_rt(int fd, char *filename)
 {
 	scene	sc;
@@ -214,11 +213,9 @@ scene	parse_rt(int fd, char *filename)
 	sc.cylinders = malloc(sizeof(cylinder) * sc.cylinder_count);
 	sc.planes = malloc(sizeof(plane) * sc.plane_count);
 	sc.lights = malloc(sizeof(light) * sc.light_count);
-	//sc.planes = NULL;
 	if (!sc.spheres || !sc.cylinders || !sc.planes || !sc.lights)
 	{
 		perror("Error: Memory allocation failed:");
-		free_scene(&sc);
 		sc.success = 1;
 		return (sc);
 	}
@@ -228,7 +225,6 @@ scene	parse_rt(int fd, char *filename)
 	if (fd == -1)
 	{
 		perror("Error\n");
-		free_scene(&sc);
 		sc.success = 1;
 		return (sc);
 	}
