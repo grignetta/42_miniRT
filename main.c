@@ -89,7 +89,7 @@ int	main(int argc, char **argv)
 			return (free_everything(scene, canvas, fd), 1);
 		set_camera(&scene);
 		canvas->scene = &scene;
-        render(canvas, &scene, &scene.camera); // Render the scene
+		render(canvas, &scene, &scene.camera); // Render the scene
 		//mlx_mouse_hook(canvas->win_ptr, mouse_event, canvas);
 		mlx_hook(canvas->win_ptr, KeyPress, KeyPressMask, key_handle, canvas);
 		mlx_hook(canvas->win_ptr, 17, 0, close_event, canvas);

@@ -25,6 +25,7 @@ SOURCES = main.c \
 			intersect_cylinder.c \
 			parsing.c \
 			free_functions.c \
+			error_checking.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 

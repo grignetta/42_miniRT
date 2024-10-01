@@ -94,7 +94,7 @@ int	close_event(void *param)
             free(canvas->mlx_ptr);
         free(canvas);
     }
-	if (scene) //check if ok like this
+	if (scene)
 		free_scene(scene);
     exit(0);
     return (0);
