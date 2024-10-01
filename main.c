@@ -52,6 +52,22 @@ int	initialize_graphics(t_canvas *canvas)
 	return (0);
 }
 
+t_canvas	*init_mlx(void)
+{
+	t_canvas	*canvas;
+
+	canvas = initialize_matrix();
+	if (canvas == NULL)
+		return (NULL);
+	if (initialize_graphics(canvas))
+		return (free(canvas), NULL);
+	if (initialize_image(canvas))
+		return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
+			mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
+			free(canvas), NULL);
+	return (canvas);
+}
+
 int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
@@ -61,22 +77,16 @@ int	main(int argc, char **argv)
 
 	if (argc == 2)
 	{
-		canvas = initialize_matrix();
+		canvas = init_mlx();
 		if (canvas == NULL)
 			return (1);
-		if (initialize_graphics(canvas))
-			return (free(canvas), 1);
-		if (initialize_image(canvas))
-			return (mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr),
-				mlx_destroy_display(canvas->mlx_ptr), free(canvas->mlx_ptr),
-				free(canvas), 1);
 		//scene scene = create_scene(); // change to parcing from .rt file
 		fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
-			return (perror("Error\n"), 1);
+			return (perror("Error:"), free_close(canvas, fd), 1);
 		scene = parse_rt(fd, argv[1]);
-		if (scene_success(scene, canvas, fd))
-			return (1);
+		if (scene.success)
+			return (free_everything(scene, canvas, fd), 1);
 		set_camera(&scene);
 		canvas->scene = &scene;
         render(canvas, &scene, &scene.camera); // Render the scene

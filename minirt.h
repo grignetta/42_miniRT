@@ -225,7 +225,8 @@ void	free_scene(scene *sc);
 scene	parse_rt(int fd, char *filename);
 int     close_event(void *param);
 int	    key_handle(int keysym, void *param);
-int	    scene_success(scene scene, t_canvas *canvas, int fd);
+void	free_everything(scene scene, t_canvas *canvas, int fd);
+void	free_close(t_canvas *canvas, int fd);
 
 
 #endif

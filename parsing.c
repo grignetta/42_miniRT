@@ -223,11 +223,7 @@ scene	parse_rt(int fd, char *filename)
 	reset_count(&sc);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-	{
-		perror("Error\n");
-		sc.success = 1;
-		return (sc);
-	}
+		return (sc.success = 1, sc);
 	while ((line = get_next_line(fd)))
 	{
 		if (line[0] == 'A')

@@ -1,27 +1,42 @@
 #include "minirt.h"
 
-int	scene_success(scene scene, t_canvas *canvas, int fd)
+void	free_close(t_canvas *canvas, int fd)
 {
-	if (scene.success)
-	{
+	if (fd != -1)
 		close(fd);
-		if (canvas)
+	if (canvas)
+	{
+		if (canvas->img)
+        	mlx_destroy_image(canvas->mlx_ptr, canvas->img);
+        if (canvas->win_ptr)
 		{
-			if (canvas->img)
-            	mlx_destroy_image(canvas->mlx_ptr, canvas->img);
-        	if (canvas->win_ptr)
-			{
-            	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
-				mlx_destroy_display(canvas->mlx_ptr);
-			}
-        	if (canvas->mlx_ptr)
-            	free(canvas->mlx_ptr);
-        	free(canvas);
-    	}
-		free_scene(&scene);
-    	return (1);
+        	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+			mlx_destroy_display(canvas->mlx_ptr);
+		}
+        if (canvas->mlx_ptr)
+        	free(canvas->mlx_ptr);
+        free(canvas);
     }
-	return (0);
+}
+
+void	free_everything(scene scene, t_canvas *canvas, int fd)
+{
+	if (fd != -1)
+		close(fd);
+	if (canvas)
+	{
+		if (canvas->img)
+        	mlx_destroy_image(canvas->mlx_ptr, canvas->img);
+        if (canvas->win_ptr)
+		{
+        	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+			mlx_destroy_display(canvas->mlx_ptr);
+		}
+        if (canvas->mlx_ptr)
+        	free(canvas->mlx_ptr);
+        free(canvas);
+    }
+	free_scene(&scene);
 }
 
 void	free_scene(scene *sc)
