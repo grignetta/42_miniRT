@@ -94,5 +94,7 @@ int		check_nl(char *str);
 char	*get_next_line(int fd);
 int		ft_exact_strcmp(const char *s1, const char *s2);
 double	ft_atof(char *s);
+int		ft_isnum(char *str);
+int		ft_isspace(char c);
 
 #endif

@@ -20,110 +20,114 @@
 # define BACKGROUND_COLOR 0x000000 // Black background
 
 // from: P = O + t(V - O), taking t only from the scene to infinity
-#define T_MIN 1.0
+# define T_MIN 1.0
 
 // Structs for vectors, spheres, lights, and the scene
 
 typedef enum
 {
-    SHAPE_NONE,
-    SHAPE_SPHERE,
-    SHAPE_CYLINDER,
-    SHAPE_PLANE
-} shape_type;
+	SHAPE_NONE,
+	SHAPE_SPHERE,
+	SHAPE_CYLINDER,
+	SHAPE_PLANE
+}	shape_type;
 
 typedef struct
 {
-    double red;
-    double green;
-    double blue;
-} color;
+	double	red;
+	double	green;
+	double	blue;
+}	color;
 
 typedef struct
 {
-	double x, y, z;
-} vector;
+	double	x;
+	double	y;
+	double	z;
+}	vector;
 
 typedef struct
 {
-	int type; // 0 for ambient, 1 for point, 2 for directional - no directional
-	double intensity;
-	vector position;
-	vector direction;
-	int red;
-    int green;
-    int blue;
-} light;
+	int		type; // 0 for ambient, 1 for point, 2 for directional - no directional
+	double	intensity;
+	vector	position;
+	vector	direction;
+	int		red;
+	int		green;
+	int		blue;
+}	light;
 
 typedef struct
 {
-    int red;
-    int green;
-    int blue;
-    int specular; //when low 0 or 1 the picture is very bad
-    double reflective;
-} base_shape; //to handle shades and reflections regardless of shape
+	int		red;
+	int		green;
+	int		blue;
+	int		specular; //when low 0 or 1 the picture is very bad
+	double	reflective;
+}	base_shape; //to handle shades and reflections regardless of shape
 
 typedef struct
 {
-	vector center;
-	double radius;
-	base_shape base;
-	shape_type type;
-} sphere;
+	vector		center;
+	double		radius;
+	base_shape	base;
+	shape_type	type;
+}	sphere;
 
 typedef struct
 {
-    vector center;
-    double radius;
-    double height;
-	vector axis;
-	base_shape base;
-	shape_type type;
-    vector cap_center;
-    vector cap_normal;
-} cylinder;
+	vector		center;
+	double		radius;
+	double		height;
+	vector		axis;
+	base_shape	base;
+	shape_type	type;
+	vector		cap_center;
+	vector		cap_normal;
+}	cylinder;
 
 typedef struct
 {
-    vector point;
-    vector normal;
-	base_shape base;
-	shape_type type;
-    double square_size;
-} plane;
+	vector		point;
+	vector		normal;
+	base_shape	base;
+	shape_type	type;
+	double		square_size;
+}	plane;
 
 typedef struct
 {
-    vector position;       // Camera position (x, y, z)
-    vector orientation;    // Camera direction (normalized vector)
-    double fov;            // Field of view in degrees
-    double viewport_size;
-    double projection_plane_d;
-} camera;
+	vector	position;// Camera position (x, y, z)
+	vector	orientation;// Camera direction (normalized vector)
+	double	fov;// Field of view in degrees
+	double	viewport_size;
+	double	projection_plane_d;
+}	camera;
 
 typedef struct
 {
-    sphere *spheres;
-    int sphere_count;
-    cylinder *cylinders;
-    int cylinder_count;
-    plane *planes;
-    int plane_count;
-    light *lights;
-    int light_count;
-    camera camera;
-    int success;
-} scene;
+	sphere		*spheres;
+	int			sphere_count;
+	cylinder	*cylinders;
+	int			cylinder_count;
+	plane		*planes;
+	int			plane_count;
+	light		*lights;
+	int			light_count;
+	camera		camera;
+	int			camera_count;
+	int			success;
+}	scene;
 
-typedef struct {
-    shape_type type;
-    void *object;
-    double t; //distance to intersection
-    int surface; // 0 for side, 1 for bottom cap, 2 for top cap
-} intersect_result;
+typedef struct
+{
+	shape_type	type;
+	void		*object;
+	double		t; //distance to intersection
+	int			surface; // 0 for side, 1 for bottom cap, 2 for top cap
+}	intersect_result;
 
-typedef struct s_canvas
+typedef struct	s_canvas
 {
 	int		img_side;
 	void	*mlx_ptr;
@@ -135,96 +139,157 @@ typedef struct s_canvas
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-    scene   *scene;
+	scene	*scene;
 }	t_canvas;
-
-typedef struct {
-    vector O;
-    vector D;
-    double t_min;
-    double t_max;
-} ray_params;
-
-typedef struct {
-    vector P;
-    vector N;
-    vector V;
-    vector R;
-    color local_color;
-    color lighting;
-    color reflected_color;
-    color final_color;
-    base_shape *shape;
-    double r;
-} trace;
 
 typedef struct
 {
-    vector CO;
-    double a;
-	double b;
-	double c;
-    double discriminant;
-} intersection;
+	vector	O;
+	vector	D;
+	double	t_min;
+	double	t_max;
+}	ray_params;
+
+typedef struct
+{
+	vector		P;
+	vector		N;
+	vector		V;
+	vector		R;
+	color		local_color;
+	color		lighting;
+	color		reflected_color;
+	color		final_color;
+	base_shape	*shape;
+	double		r;
+}	trace;
+
+typedef struct
+{
+	vector	CO;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+}	intersection;
 
 //For quadratic equations
 typedef struct
 {
-    double a;
-    double b;
-    double c;
-} quadratic;
+	double	a;
+	double	b;
+	double	c;
+}	quadratic;
 
 /* typedef enum {
-    VECTOR_SUB,
-    VECTOR_ADD,
-    VECTOR_SCALE,
-    VECTOR_NORM,
-    VECTOR_REFLECT
+	VECTOR_SUB,
+	VECTOR_ADD,
+	VECTOR_SCALE,
+	VECTOR_NORM,
+	VECTOR_REFLECT
 } vector_operation; */
 
-//Vector operations
-vector vector_sub(vector v1, vector v2);
-vector vector_add(vector v1, vector v2);
-vector vector_scale(vector v, double scalar);
-double vector_dot(vector v1, vector v2);
-double vector_length(vector v);
-vector vector_normalize(vector v);
-vector vector_reflect(vector R, vector N);
-vector compute_base(cylinder *cyl);
-vector compute_top(cylinder *cyl);
+//vector_operations.c
+vector				vector_sub(vector v1, vector v2);
+vector				vector_add(vector v1, vector v2);
+vector				vector_scale(vector v, double scalar);
+double				vector_dot(vector v1, vector v2);
+double				vector_length(vector v);
+vector				vector_normalize(vector v);
+vector				vector_reflect(vector R, vector N);
+vector				compute_base(cylinder *cyl);
+vector				compute_top(cylinder *cyl);
+
+//init.c
+void				init_canvas(t_canvas *canvas);
+t_canvas			*init_mlx(void);
+t_canvas			*initialize_matrix(void);
+int					initialize_graphics(t_canvas *canvas);
+int					initialize_image(t_canvas *canvas);
 
 //render.c
-void render(t_canvas *app, scene *scene, camera *camera);
-scene create_scene();//temporary
+void				render(t_canvas *app, scene *scene, camera *camera);
+scene				create_scene(void);//temporary
 
-//ray_trace.c
-int trace_ray(scene *scene, ray_params params, int depth);
-vector vector_init(double x, double y, double z);
+//ray_trace_1.c
+int					trace_ray(scene *scene, ray_params params, int depth);
+vector				vector_init(double x, double y, double z);
+color				color_to_double(int color_int);
+base_shape			*get_base_shape(intersect_result result);
+color				get_plane_color(vector P, plane *pl);
+int					trace_ray(scene *scene, ray_params params, int depth);
+
+//ray_trace_2.c
+vector				cyl_normal(vector P, cylinder *cyl, int surface);
+vector				compute_normal(intersect_result result, vector P);
+int					color_to_int(color local_color);
 
 //intersection.c
-intersect_result closest_intersection(scene *scene, ray_params params);
-int update_result(intersect_result *result, double t, void *object, ray_params params);
-void update_cyl_result(intersect_result *result, int surface);
-void handle_side_intersect(ray_params params, cylinder *cyl, intersect_result *result);
-int cross_ray_cyl(ray_params params, cylinder *cyl, intersect_result *result);
-int cross_ray_plane(ray_params params, plane *pl, double *t);
+intersect_result	closest_intersection(scene *scene, ray_params params);
+int					update_result(intersect_result *result, double t,
+						void *object, ray_params params);
+void				update_cyl_result(intersect_result *result, int surface);
+void				handle_side_intersect(ray_params params, cylinder *cyl,
+						intersect_result *result);
+int					cross_ray_cyl(ray_params params, cylinder *cyl,
+						intersect_result *result);
+int					cross_ray_plane(ray_params params, plane *pl, double *t);
 
 //utils.c
-void put_pixel(t_canvas *app, int x, int y, int color);
-void check_limit_double(double *value, double limit);
-void check_limit_int(int *value, int limit);
+void				put_pixel(t_canvas *app, int x, int y, int color);
+void				check_limit_double(double *value, double limit);
+void				check_limit_int(int *value, int limit);
 
 //camera.c
-void set_camera(scene *scene);
+void				set_camera(scene *scene);
 
 //light_computation.c
-color compute_lighting(scene *scene, trace vars);
+color				compute_lighting(scene *scene, trace vars);
 
-void	free_scene(scene *sc);
-scene	parse_rt(int fd, char *filename);
-int     close_event(void *param);
-int	    key_handle(int keysym, void *param);
+//free_functions.c
+void				free_scene(scene *sc);
+int					close_event(void *param);
+int					key_handle(int keysym, void *param);
+void				free_everything(scene scene, t_canvas *canvas, int fd);
+void				free_close(t_canvas *canvas, int fd);
 
+//parsing.c
+scene				parse_rt(int fd, char *filename);
+void				parse_line(char *line, scene *sc);
+void				count_and_allocate(scene *sc, int fd);
+
+//input_check_color.c
+double				get_color(char *token, scene *sc);
+int					parse_color_light(char *token, scene *sc,
+						light *point_light);
+int					parse_color_sphere(char *token, scene *sc,
+						base_shape *base);
+int					parse_color_cylinder(char *token, scene *sc,
+						base_shape *base);
+int					parse_color_plane(char *token, scene *sc,
+						base_shape *base);
+
+//input_check_rest.c
+double				get_intensity(char *token, scene *sc);
+double				get_position(char *token, scene *sc);
+double				get_fov(char *token, scene *sc);
+double				get_value(char *token, scene *sc);
+
+//parsing_objects.c
+void				parse_cylinder(char *line, scene *sc);
+void				parse_plane(char *line, scene *sc);
+void				parse_sphere(char *line, scene *sc);
+void				parse_camera(char *line, scene *sc);
+
+//parsing_lights.c
+void				parse_ambient(char *line, scene *sc);
+void				parse_light(char *line, scene *sc);
+void				count_lights(char *line, scene *sc,
+						int *a_light, int *p_light);
+
+//parsing_utils.c
+void				reset_count(scene *sc);
+void				count_objects(int fd, scene *sc);
+void				initiate_count(scene *sc);
 
 #endif

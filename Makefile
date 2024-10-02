@@ -15,16 +15,24 @@ MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd #added for linu
 
 SOURCES = main.c \
 			render.c \
-			vector_operations.c \
+			vector_operations_1.c \
+			vector_operations_2.c \
 			utils.c \
-			ray_trace.c \
+			ray_trace_1.c \
+			ray_trace_2.c \
 			intersection.c \
 			camera.c \
 			light_computation.c \
 			intersect_cylinder_utils.c \
 			intersect_cylinder.c \
 			parsing.c \
+			parsing_objects.c \
+			parsing_lights.c \
+			parsing_utils.c \
+			input_check_rest.c \
 			free_functions.c \
+			input_check_color.c \
+			init.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
