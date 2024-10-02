@@ -78,7 +78,7 @@ int	close_event(void *param)
 {
 	t_canvas	*canvas;
 	scene		*scene;
-	
+
 	canvas = (t_canvas *)param;
 	scene = canvas->scene;
 	if (canvas)

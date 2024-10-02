@@ -1,6 +1,7 @@
 #include "minirt.h"
 
-int	update_result(intersect_result *result, double t, void *object, ray_params params)
+int	update_result(intersect_result *result, double t,
+	void *object, ray_params params)
 {
 	if (t < result->t && t > params.t_min)
 	{
@@ -35,7 +36,6 @@ int	cross_ray_sphere(ray_params params, sphere *sphere,
 	return (1);
 }
 
-
 int	cross_ray_plane(ray_params params, plane *pl, double *t)
 {
 	double	denom;
@@ -47,7 +47,7 @@ int	cross_ray_plane(ray_params params, plane *pl, double *t)
 		if (*t >= 0)
 			return (1); // intersection exists
 	}
-	return 0; // No intersection
+	return (0); // No intersection
 }
 
 // Closest intersection function
@@ -72,8 +72,10 @@ intersect_result	closest_intersection(scene *scene, ray_params params)// vector 
 	i = -1;
 	while (++i < scene->plane_count)
 	{
-		if (cross_ray_plane(params, &scene->planes[i], &t)) {
-			if (t < result.t && t > params.t_min) {
+		if (cross_ray_plane(params, &scene->planes[i], &t))
+		{
+			if (t < result.t && t > params.t_min)
+			{
 				result.t = t;
 				result.type = SHAPE_PLANE;
 				result.object = &scene->planes[i];

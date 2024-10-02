@@ -17,7 +17,7 @@ int	parse_color_plane(char *token, scene *sc, base_shape *base)
 	return (0);
 }
 
-int	parse_color_cylinder(char *token,scene *sc, base_shape *base)
+int	parse_color_cylinder(char *token, scene *sc, base_shape *base)
 {
 	token = ft_strtok(NULL, ",");
 	base->red = get_color(token, sc);
