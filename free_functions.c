@@ -7,16 +7,16 @@ void	free_close(t_canvas *canvas, int fd)
 	if (canvas)
 	{
 		if (canvas->img)
-        	mlx_destroy_image(canvas->mlx_ptr, canvas->img);
-        if (canvas->win_ptr)
+			mlx_destroy_image(canvas->mlx_ptr, canvas->img);
+		if (canvas->win_ptr)
 		{
-        	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+			mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
 			mlx_destroy_display(canvas->mlx_ptr);
 		}
-        if (canvas->mlx_ptr)
-        	free(canvas->mlx_ptr);
-        free(canvas);
-    }
+		if (canvas->mlx_ptr)
+			free(canvas->mlx_ptr);
+		free(canvas);
+	}
 }
 
 void	free_everything(scene scene, t_canvas *canvas, int fd)
@@ -26,16 +26,16 @@ void	free_everything(scene scene, t_canvas *canvas, int fd)
 	if (canvas)
 	{
 		if (canvas->img)
-        	mlx_destroy_image(canvas->mlx_ptr, canvas->img);
-        if (canvas->win_ptr)
+			mlx_destroy_image(canvas->mlx_ptr, canvas->img);
+		if (canvas->win_ptr)
 		{
-        	mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+			mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
 			mlx_destroy_display(canvas->mlx_ptr);
 		}
-        if (canvas->mlx_ptr)
-        	free(canvas->mlx_ptr);
-        free(canvas);
-    }
+		if (canvas->mlx_ptr)
+			free(canvas->mlx_ptr);
+		free(canvas);
+	}
 	free_scene(&scene);
 }
 
@@ -76,26 +76,26 @@ int	key_handle(int keysym, void *param)
 
 int	close_event(void *param)
 {
-    t_canvas	*canvas;
+	t_canvas	*canvas;
 	scene		*scene;
 	
 	canvas = (t_canvas *)param;
 	scene = canvas->scene;
-    if (canvas)
+	if (canvas)
 	{
 		if (canvas->img)
-            mlx_destroy_image(canvas->mlx_ptr, canvas->img);
-        if (canvas->win_ptr)
+			mlx_destroy_image(canvas->mlx_ptr, canvas->img);
+		if (canvas->win_ptr)
 		{
-            mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
+			mlx_destroy_window(canvas->mlx_ptr, canvas->win_ptr);
 			mlx_destroy_display(canvas->mlx_ptr);
 		}
-        if (canvas->mlx_ptr)
-            free(canvas->mlx_ptr);
-        free(canvas);
-    }
+		if (canvas->mlx_ptr)
+			free(canvas->mlx_ptr);
+		free(canvas);
+	}
 	if (scene)
 		free_scene(scene);
-    exit(0);
-    return (0);
+	exit(0);
+	return (0);
 }

@@ -78,6 +78,7 @@ SOURCES = ft_isdigit.c \
 		  ft_exact_strcmp.c \
 		  ft_realloc.c \
 		  ft_atof.c \
+		  ft_isnum.c \
 
 OBJECT = $(SOURCES:.c=.o)
 

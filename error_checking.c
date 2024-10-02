@@ -41,3 +41,18 @@ double	get_intensity(char *token, scene *sc)
 	}
 	return (intensity);
 }
+
+double	get_position(char *token, scene *sc)
+{
+	double	position;
+
+	if (token && ft_isnum(token))
+		position = ft_atof(token);
+	else
+	{
+		perror("Error: Invalid input for position");
+		sc->success = 1;
+		return (-1);
+	}
+	return (position);
+}

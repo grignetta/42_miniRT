@@ -235,5 +235,6 @@ scene	parse_rt(int fd, char *filename);
 //check_functions.c
 double	    get_color(char *token, scene *sc);
 double      get_intensity(char *token, scene *sc);
+double	    get_position(char *token, scene *sc);
 
 #endif

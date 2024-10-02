@@ -2,8 +2,8 @@
 
 void	init_canvas(t_canvas *canvas)
 {
-	canvas->win_width = 1000;
-	canvas->win_height = 1000;
+	canvas->win_width = 600;
+	canvas->win_height = 600;
 }
 
 t_canvas	*initialize_matrix()//char *filename)
