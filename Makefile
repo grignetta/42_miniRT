@@ -24,8 +24,13 @@ SOURCES = main.c \
 			intersect_cylinder_utils.c \
 			intersect_cylinder.c \
 			parsing.c \
+			parsing_objects.c \
+			parsing_lights.c \
+			parsing_utils.c \
+			input_check_rest.c \
 			free_functions.c \
-			error_checking.c \
+			input_check_color.c \
+			init.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
