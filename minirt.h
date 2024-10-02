@@ -211,9 +211,18 @@ int					initialize_image(t_canvas *canvas);
 void				render(t_canvas *app, scene *scene, camera *camera);
 scene				create_scene(void);//temporary
 
-//ray_trace.c
+//ray_trace_1.c
 int					trace_ray(scene *scene, ray_params params, int depth);
 vector				vector_init(double x, double y, double z);
+color				color_to_double(int color_int);
+base_shape			*get_base_shape(intersect_result result);
+color				get_plane_color(vector P, plane *pl);
+int					trace_ray(scene *scene, ray_params params, int depth);
+
+//ray_trace_2.c
+vector				cyl_normal(vector P, cylinder *cyl, int surface);
+vector				compute_normal(intersect_result result, vector P);
+int					color_to_int(color local_color);
 
 //intersection.c
 intersect_result	closest_intersection(scene *scene, ray_params params);

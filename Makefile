@@ -15,9 +15,11 @@ MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd #added for linu
 
 SOURCES = main.c \
 			render.c \
-			vector_operations.c \
+			vector_operations_1.c \
+			vector_operations_2.c \
 			utils.c \
-			ray_trace.c \
+			ray_trace_1.c \
+			ray_trace_2.c \
 			intersection.c \
 			camera.c \
 			light_computation.c \
