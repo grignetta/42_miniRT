@@ -35,8 +35,6 @@ void	parse_camera(char *line, scene *sc)
 	sc->camera.position.y = get_position(token, sc);
 	token = ft_strtok(NULL, " ");
 	sc->camera.position.z = get_position(token, sc);
-	if (sc->success)
-		return ;
 	token = ft_strtok(NULL, ",");
 	sc->camera.orientation.x = get_position(token, sc);
 	token = ft_strtok(NULL, ",");
@@ -46,8 +44,9 @@ void	parse_camera(char *line, scene *sc)
 	if (sc->success)
 		return ;
 	token = ft_strtok(NULL, " ");
-	sc->camera.fov = ft_atof(token);
-
+	sc->camera.fov = get_fov(token, sc);
+	if (sc->camera.fov == -1)
+		return ;
 	/*printf("Camera: position = (%lf, %lf, %lf), orientation = (%lf, %lf, %lf), fov = %lf\n",
 		   sc->camera.position.x, sc->camera.position.y, sc->camera.position.z,
 		   sc->camera.orientation.x, sc->camera.orientation.y, sc->camera.orientation.z,
@@ -57,9 +56,10 @@ void	parse_camera(char *line, scene *sc)
 void	parse_light(char *line, scene *sc)
 {
 	light	point_light;
+	char	*token;
 
 	point_light.type = 1;
-	char *token = ft_strtok(line + 2, ",");
+	token = ft_strtok(line + 2, ",");
 	point_light.position.x = get_position(token, sc);
 	token = ft_strtok(NULL, ",");
 	point_light.position.y = get_position(token, sc);
@@ -71,18 +71,7 @@ void	parse_light(char *line, scene *sc)
 	point_light.intensity = get_intensity(token, sc);
 	if (point_light.intensity == -1)
 		return ;
-	token = ft_strtok(NULL, ",");
-	point_light.red = get_color(token, sc);
-	if (point_light.red == -1)
-		return ;
-	token = ft_strtok(NULL, ",");
-	point_light.green = get_color(token, sc);
-	if (point_light.green == -1)
-		return ;
-	token = ft_strtok(NULL, " ");
-	point_light.blue = get_color(token, sc);
-	if (point_light.blue == -1)
-		return ;
+	parse_color_light(token, sc, &point_light);
 	sc->lights[sc->light_count++] = point_light;
 	/*printf("Light: position = (%lf, %lf, %lf), intensity = %lf, color = (%d, %d, %d)\n",
 		   point_light.position.x, point_light.position.y, point_light.position.z,
@@ -92,29 +81,19 @@ void	parse_light(char *line, scene *sc)
 void	parse_sphere(char *line, scene *sc)
 {
 	sphere	new_sphere;
+	char	*token;
 
-	char *token = ft_strtok(line + 3, ",");
+	token = ft_strtok(line + 3, ",");
 	new_sphere.center.x = get_position(token, sc);
 	token = ft_strtok(NULL, ",");
 	new_sphere.center.y = get_position(token, sc);
 	token = ft_strtok(NULL, " ");
 	new_sphere.center.z = get_position(token, sc);
+	token = ft_strtok(NULL, " ");
+	new_sphere.radius = get_value(token, sc) / 2;
 	if (sc->success)
 		return ;
-	token = ft_strtok(NULL, " ");
-	new_sphere.radius = ft_atof(token) / 2.0;  // Assuming the input is diameter, convert to radius
-	token = ft_strtok(NULL, ",");
-	new_sphere.base.red = get_color(token, sc);
-	if (new_sphere.base.red == -1)
-		return ;
-	token = ft_strtok(NULL, ",");
-	new_sphere.base.green = get_color(token, sc);
-	if (new_sphere.base.green == -1)
-		return ;
-	token = ft_strtok(NULL, " ");
-	new_sphere.base.blue = get_color(token, sc);
-	if (new_sphere.base.blue == -1)
-		return ;
+	parse_color_sphere(token, sc, &new_sphere.base);
 	new_sphere.base.specular = 100;
 	new_sphere.base.reflective = 0.5;
 	sc->spheres[sc->sphere_count++] = new_sphere;
@@ -144,18 +123,7 @@ void	parse_plane(char *line, scene *sc)
 	new_plane.normal.z = get_position(token, sc);
 	if (sc->success)
 		return ;
-	token = ft_strtok(NULL, ",");
-	new_plane.base.red = get_color(token, sc);
-	if (new_plane.base.red == -1)
-		return ;
-	token = ft_strtok(NULL, ",");
-	new_plane.base.green = get_color(token, sc);
-	if (new_plane.base.green == -1)
-		return ;
-	token = ft_strtok(NULL, " ");
-	new_plane.base.blue = get_color(token, sc);
-	if (new_plane.base.blue == -1)
-		return ;
+	parse_color_plane(token, sc, &new_plane.base);
 	new_plane.base.specular = 100;
 	new_plane.base.reflective = 0.5;
 	new_plane.square_size = 0;
@@ -177,31 +145,18 @@ void	parse_cylinder(char *line, scene *sc)
 	new_cylinder.center.y = get_position(token, sc);
 	token = ft_strtok(NULL, " ");
 	new_cylinder.center.z = get_position(token, sc);
-	if (sc->success)
-		return ;
 	token = ft_strtok(NULL, ",");
 	new_cylinder.axis.x = get_position(token, sc);
 	token = ft_strtok(NULL, ",");
 	new_cylinder.axis.y = get_position(token, sc);
 	token = ft_strtok(NULL, " ");
 	new_cylinder.axis.z = get_position(token, sc);
+	token = ft_strtok(NULL, " ");
+	new_cylinder.radius = get_value(token, sc) / 2;
+	token = ft_strtok(NULL, " ");
+	new_cylinder.height = get_value(token, sc);
+	parse_color_cylinder(token, sc, &new_cylinder.base);
 	if (sc->success)
-		return ;
-	token = ft_strtok(NULL, " ");
-	new_cylinder.radius = ft_atof(token) / 2.0;
-	token = ft_strtok(NULL, " ");
-	new_cylinder.height = ft_atof(token);
-	token = ft_strtok(NULL, ",");
-	new_cylinder.base.red = get_color(token, sc);
-	if (new_cylinder.base.red == -1)
-		return ;
-	token = ft_strtok(NULL, ",");
-	new_cylinder.base.green = get_color(token, sc);
-	if (new_cylinder.base.green == -1)
-		return ;
-	token = ft_strtok(NULL, " ");
-	new_cylinder.base.blue = get_color(token, sc);
-	if (new_cylinder.base.blue == -1)
 		return ;
 	new_cylinder.base.specular = 100;
 	new_cylinder.base.reflective = 0.5;

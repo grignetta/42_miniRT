@@ -23,7 +23,7 @@ int	ft_isnum(char *str)
 			str++;
 		}
 	}
-	if (*str != '\0')
-		return (0);
-	return (has_digit);
+	while (ft_isspace(*str))
+		str++;
+	return (*str == '\0' && has_digit);
 }

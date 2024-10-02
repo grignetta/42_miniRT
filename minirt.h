@@ -236,5 +236,11 @@ scene	parse_rt(int fd, char *filename);
 double	    get_color(char *token, scene *sc);
 double      get_intensity(char *token, scene *sc);
 double	    get_position(char *token, scene *sc);
+int	        parse_color_light(char *token, scene *sc, light *point_light);
+int	        parse_color_sphere(char *token, scene *sc, base_shape *base);
+double	    get_fov(char *token, scene *sc);
+int	        parse_color_cylinder(char *token,scene *sc, base_shape *base);
+double	    get_value(char *token, scene *sc);
+int	        parse_color_plane(char *token, scene *sc, base_shape *base);
 
 #endif
