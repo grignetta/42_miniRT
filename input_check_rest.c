@@ -4,7 +4,7 @@ double	get_intensity(char *token, scene *sc)
 {
 	double	intensity;
 
-	if (token && ft_isdigit(*token))
+	if (token && ft_isnum(token))
 		intensity = ft_atof(token);
 	else
 	{

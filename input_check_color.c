@@ -72,7 +72,7 @@ double	get_color(char *token, scene *sc)
 {
 	double	color;
 
-	if (token && ft_isdigit(*token))
+	if (token && ft_isnum(token))
 		color = ft_atof(token);
 	else
 	{
