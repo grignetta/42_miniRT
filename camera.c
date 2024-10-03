@@ -1,8 +1,8 @@
 #include "minirt.h"
 
-void	set_camera(scene *scene)
+void	set_camera(t_scene *scene)
 {
-	camera	*camera;
+	t_camera	*camera;
 
 	camera = &scene->camera;
 	//double viewport_size = 1.0;

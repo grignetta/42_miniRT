@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-void	initiate_count(scene *sc)
+void	initiate_count(t_scene *sc)
 {
 	sc->sphere_count = 0;
 	sc->cylinder_count = 0;
@@ -9,7 +9,7 @@ void	initiate_count(scene *sc)
 	sc->camera_count = 0;
 }
 
-void	count_check(char *line, scene *sc, int *a_light, int *p_light)
+void	count_check(char *line, t_scene *sc, int *a_light, int *p_light)
 {
 	if ((*p_light) > 1 || (*a_light) > 1 || sc->camera_count > 1)
 	{
@@ -18,7 +18,7 @@ void	count_check(char *line, scene *sc, int *a_light, int *p_light)
 	}
 }
 
-void	count_objects(int fd, scene *sc)
+void	count_objects(int fd, t_scene *sc)
 {
 	char	*line;
 	int		a_light;
@@ -45,7 +45,7 @@ void	count_objects(int fd, scene *sc)
 	count_check(line, sc, &a_light, &p_light);
 }
 
-void	reset_count(scene *sc)
+void	reset_count(t_scene *sc)
 {
 	sc->sphere_count = 0;
 	sc->cylinder_count = 0;

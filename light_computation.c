@@ -1,24 +1,24 @@
 #include "minirt.h"
 
-void	add_light(color *result, light light, double intensity)
+void	add_light(t_color *result, t_light light, double intensity)
 {
 	result->red += intensity * light.red / 255.0;
 	result->green += intensity * light.green / 255.0;
 	result->blue += intensity * light.blue / 255.0;
 }
 
-void	ambient_light(color *result, light light)//added just for more clarity
+void	ambient_light(t_color *result, t_light light)//added just for more clarity
 {
 	add_light(result, light, light.intensity);
 }
 
-vector	get_light_direction(light light, trace vars, double *t_max)
+t_vector	get_light_direction(t_light light, t_trace vars, double *t_max)
 {
-	vector	L;
+	t_vector	L;
 
 	if (light.type == 1) // Point
 	{
-		L = vector_sub(light.position, vars.P);
+		L = vector_sub(light.position, vars.p);
 		//*t_max = 1.0;
 		 *t_max = vector_length(L); // Set t_max to the distance to the light
 		L = vector_normalize(L);
@@ -31,13 +31,13 @@ vector	get_light_direction(light light, trace vars, double *t_max)
 	return (L);
 }
 
-int	is_in_shadow(scene *scene, trace vars, vector L, double t_max)
+int	is_in_shadow(t_scene *scene, t_trace vars, t_vector L, double t_max)
 {
-	ray_params			shadow_params;
-	intersect_result	shadow_result;
+	t_ray_params			shadow_params;
+	t_intersect_result	shadow_result;
 
-	shadow_params.O = vars.P;
-	shadow_params.D = L;
+	shadow_params.o = vars.p;
+	shadow_params.d = L;
 	shadow_params.t_min = 0.001;
 	shadow_params.t_max = t_max;
 	shadow_result = closest_intersection(scene, shadow_params);
@@ -46,55 +46,55 @@ int	is_in_shadow(scene *scene, trace vars, vector L, double t_max)
 	return (0);
 }
 
-void	diffuse_light(color *result, light light, trace vars, vector L)
+void	diffuse_light(t_color *result, t_light light, t_trace vars, t_vector L)
 {
 	double	n_dot_l;
 	double	diffuse_intensity;
 
-	n_dot_l = vector_dot(vars.N, L);
+	n_dot_l = vector_dot(vars.n, L);
 	if (n_dot_l > 0)
 	{
 		diffuse_intensity = light.intensity * n_dot_l
-			/ (vector_length(vars.N) * vector_length(L));
+			/ (vector_length(vars.n) * vector_length(L));
 		add_light(result, light, diffuse_intensity);
 	}
 }
 
-void	specular_reflection(color *result, light light, trace vars, vector L)
+void	specular_reflection(t_color *result, t_light light, t_trace vars, t_vector L)
 {
-	vector	R;
+	t_vector	vr;
 	double	r_dot_v;
 	double	specular_intensity;
 
 	if (vars.shape->specular > 5)
 	{
-		R = vector_reflect(L, vars.N);
-		r_dot_v = vector_dot(R, vars.V);
+		vr = vector_reflect(L, vars.n);
+		r_dot_v = vector_dot(vr, vars.v);
 		if (r_dot_v > 0)
 		{
 			specular_intensity = light.intensity
-				* pow(r_dot_v / (vector_length(R) * vector_length(vars.V)),
+				* pow(r_dot_v / (vector_length(vr) * vector_length(vars.v)),
 				vars.shape->specular);
 			add_light(result, light, specular_intensity);
 		}
 	}
 }
 
-color	color_init(double red, double green, double blue)
+t_color	color_init(double red, double green, double blue)
 {
-	color c;
+	t_color c;
 	c.red = red;
 	c.green = green;
 	c.blue = blue;
 	return (c);
 }
 
-color	compute_lighting(scene *scene, trace vars)
+t_color	compute_lighting(t_scene *scene, t_trace vars)
 {
-	color	result;
-	light	light;
+	t_color	result;
+	t_light	light;
 	double	t_max;
-	vector	L;
+	t_vector	L;
 	int		i;
 
 	result = color_init(0.0, 0.0, 0.0);
@@ -120,7 +120,7 @@ color	compute_lighting(scene *scene, trace vars)
 	return (result);
 }
 
-/* color compute_lighting(scene *scene, trace vars)//vector P, vector N, vector V, int specular)
+/* color compute_lighting(scene *scene, trace vars)//vector p, vector n, vector v, int specular)
 {
 	ray_params shadow_params;
 	int i;
@@ -139,7 +139,7 @@ color	compute_lighting(scene *scene, trace vars)
 			double t_max;
 			if (light.type == 1)
 			{ // Point
-				L = vector_sub(light.position, vars.P);
+				L = vector_sub(light.position, vars.p);
 				t_max = 1.0; //left in case we add directional light
 			}
 			else
@@ -148,8 +148,8 @@ color	compute_lighting(scene *scene, trace vars)
 			   t_max = INFINITY;
 			}
 			//Check for shadows
-			shadow_params.O = vars.P;
-			shadow_params.D = L;
+			shadow_params.o = vars.p;
+			shadow_params.d = L;
 			shadow_params.t_min = 0.001;
 			shadow_params.t_max = t_max;
 
@@ -158,21 +158,21 @@ color	compute_lighting(scene *scene, trace vars)
 			if (shadow_result.t < shadow_params.t_max)
 				continue; // In shadow, skip this light
 			// Diffuse lighting
-			double n_dot_l = vector_dot(vars.N, L);
+			double n_dot_l = vector_dot(vars.n, L);
 			if (n_dot_l > 0)
 			{
-				double diffuse_intensity = light.intensity * n_dot_l / (vector_length(vars.N) * vector_length(L));
-				add_light(&result, light, diffuse_intensity);
+				double diffuse_intensity = light.intensity * n_dot_l / (vector_length(vars.n) * vector_length(L));
+				add_light(&result, t_light, diffuse_intensity);
 			}
 			// Specular reflection
 			//if (specular != -1) {
 			if (vars.shape->specular > 5) //maybe make if specular > 5
 			{
-				vector R = vector_reflect(L, vars.N);
-				double r_dot_v = vector_dot(R, vars.V);
+				vector vr = vector_reflect(L, vars.n);
+				double r_dot_v = vector_dot(vr, vars.v);
 				if (r_dot_v > 0)
 				{
-					double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(R) * vector_length(vars.V)), vars.shape->specular);
+					double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(vr) * vector_length(vars.v)), vars.shape->specular);
 					add_light(&result, light, specular_intensity);
 				}
 			}

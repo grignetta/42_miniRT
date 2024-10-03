@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-double	get_intensity(char *token, scene *sc)
+double	get_intensity(char *token, t_scene *sc)
 {
 	double	intensity;
 
@@ -21,7 +21,7 @@ double	get_intensity(char *token, scene *sc)
 	return (intensity);
 }
 
-double	get_position(char *token, scene *sc)
+double	get_position(char *token, t_scene *sc)
 {
 	double	position;
 
@@ -36,7 +36,7 @@ double	get_position(char *token, scene *sc)
 	return (position);
 }
 
-double	get_fov(char *token, scene *sc)
+double	get_fov(char *token, t_scene *sc)
 {
 	double	fov;
 
@@ -57,7 +57,7 @@ double	get_fov(char *token, scene *sc)
 	return (fov);
 }
 
-double	get_value(char *token, scene *sc)
+double	get_value(char *token, t_scene *sc)
 {
 	if (token && ft_isnum(token))
 		return (ft_atof(token));

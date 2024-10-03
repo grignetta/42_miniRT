@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-int	parse_color_plane(char *token, scene *sc, base_shape *base)
+int	parse_color_plane(char *token, t_scene *sc, t_base_shape *base)
 {
 	token = ft_strtok(NULL, ",");
 	base->red = get_color(token, sc);
@@ -17,7 +17,7 @@ int	parse_color_plane(char *token, scene *sc, base_shape *base)
 	return (0);
 }
 
-int	parse_color_cylinder(char *token, scene *sc, base_shape *base)
+int	parse_color_cylinder(char *token, t_scene *sc, t_base_shape *base)
 {
 	token = ft_strtok(NULL, ",");
 	base->red = get_color(token, sc);
@@ -34,7 +34,7 @@ int	parse_color_cylinder(char *token, scene *sc, base_shape *base)
 	return (0);
 }
 
-int	parse_color_light(char *token, scene *sc, light *point_light)
+int	parse_color_light(char *token, t_scene *sc, t_light *point_light)
 {
 	token = ft_strtok(NULL, ",");
 	point_light->red = get_color(token, sc);
@@ -51,7 +51,7 @@ int	parse_color_light(char *token, scene *sc, light *point_light)
 	return (0);
 }
 
-int	parse_color_sphere(char *token, scene *sc, base_shape *base)
+int	parse_color_sphere(char *token, t_scene *sc, t_base_shape *base)
 {
 	token = ft_strtok(NULL, ",");
 	base->red = get_color(token, sc);
@@ -68,7 +68,7 @@ int	parse_color_sphere(char *token, scene *sc, base_shape *base)
 	return (0);
 }
 
-double	get_color(char *token, scene *sc)
+double	get_color(char *token, t_scene *sc)
 {
 	double	color;
 

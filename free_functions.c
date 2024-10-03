@@ -19,7 +19,7 @@ void	free_close(t_canvas *canvas, int fd)
 	}
 }
 
-void	free_everything(scene scene, t_canvas *canvas, int fd)
+void	free_everything(t_scene scene, t_canvas *canvas, int fd)
 {
 	if (fd != -1)
 		close(fd);
@@ -39,7 +39,7 @@ void	free_everything(scene scene, t_canvas *canvas, int fd)
 	free_scene(&scene);
 }
 
-void	free_scene(scene *sc)
+void	free_scene(t_scene *sc)
 {
 	if (sc->spheres)
 	{
@@ -77,7 +77,7 @@ int	key_handle(int keysym, void *param)
 int	close_event(void *param)
 {
 	t_canvas	*canvas;
-	scene		*scene;
+	t_scene		*scene;
 
 	canvas = (t_canvas *)param;
 	scene = canvas->scene;

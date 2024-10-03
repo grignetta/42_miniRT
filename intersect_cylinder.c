@@ -1,27 +1,27 @@
 #include "minirt.h"
 
-void	cap_centers(cylinder *cyl, vector *bottom_center, vector *top_center)
+void	cap_centers(t_cylinder *cyl, t_vector *bottom_center, t_vector *top_center)
 {
-	vector	half_h_v;
+	t_vector	half_h_v;
 
 	half_h_v = vector_scale(cyl->axis, cyl->height / 2);
 	*bottom_center = vector_sub(cyl->center, half_h_v);
 	*top_center = vector_add(cyl->center, half_h_v);
 }
 
-int	cross_ray_cap(ray_params params, cylinder *cyl, double *t)
+int	cross_ray_cap(t_ray_params params, t_cylinder *cyl, double *t)
 {
-	plane	cap_plane;
-	vector	P;
-	vector	dist_vec;
+	t_plane	cap_plane;
+	t_vector	p;
+	t_vector	dist_vec;
 	double	dist_sq;
 
 	cap_plane.point = cyl->cap_center;
 	cap_plane.normal = cyl->cap_normal;
 	if (cross_ray_plane(params, &cap_plane, t))
 	{
-		P = vector_add(params.O, vector_scale(params.D, *t));
-		dist_vec = vector_sub(P, cyl->cap_center);
+		p = vector_add(params.o, vector_scale(params.d, *t));
+		dist_vec = vector_sub(p, cyl->cap_center);
 		dist_sq = vector_dot(dist_vec, dist_vec);
 		if (dist_sq <= cyl->radius * cyl->radius) //different?
 			return (1); // Intersection with cap
@@ -29,16 +29,16 @@ int	cross_ray_cap(ray_params params, cylinder *cyl, double *t)
 	return (0); // No intersection with cap
 }
 
-void	update_cyl_result(intersect_result *result, int surface)
+void	update_cyl_result(t_intersect_result *result, int surface)
 {
 	result->type = SHAPE_CYLINDER;
 	result->surface = surface;
 }
 
-int	cross_ray_cyl(ray_params params, cylinder *cyl, intersect_result *result)
+int	cross_ray_cyl(t_ray_params params, t_cylinder *cyl, t_intersect_result *result)
 {
-	vector	bottom_center;
-	vector	top_center;
+	t_vector	bottom_center;
+	t_vector	top_center;
 	double	t_cap;
 
 	cap_centers(cyl, &bottom_center, &top_center);

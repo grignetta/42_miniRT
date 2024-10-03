@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-void	parse_camera(char *line, scene *sc)
+void	parse_camera(char *line, t_scene *sc)
 {
 	char	*token;
 
@@ -24,9 +24,9 @@ void	parse_camera(char *line, scene *sc)
 		return ;
 }
 
-void	parse_sphere(char *line, scene *sc)
+void	parse_sphere(char *line, t_scene *sc)
 {
-	sphere	new_sphere;
+	t_sphere	new_sphere;
 	char	*token;
 
 	token = ft_strtok(line + 3, ",");
@@ -45,9 +45,9 @@ void	parse_sphere(char *line, scene *sc)
 	sc->spheres[sc->sphere_count++] = new_sphere;
 }
 
-void	parse_plane(char *line, scene *sc)
+void	parse_plane(char *line, t_scene *sc)
 {
-	plane	new_plane;
+	t_plane	new_plane;
 	char	*token;
 
 	token = ft_strtok(line + 3, ",");
@@ -73,9 +73,9 @@ void	parse_plane(char *line, scene *sc)
 	sc->planes[sc->plane_count++] = new_plane;
 }
 
-void	parse_cylinder(char *line, scene *sc)
+void	parse_cylinder(char *line, t_scene *sc)
 {
-	cylinder	new_cylinder;
+	t_cylinder	new_cylinder;
 	char		*token;
 
 	token = ft_strtok(line + 3, ",");

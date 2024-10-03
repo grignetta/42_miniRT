@@ -1,8 +1,8 @@
 #include "minirt.h"
 
-void	parse_ambient(char *line, scene *sc)
+void	parse_ambient(char *line, t_scene *sc)
 {
-	light	ambient_light;
+	t_light	ambient_light;
 	char	*token;
 
 	ambient_light.type = 0;
@@ -25,9 +25,9 @@ void	parse_ambient(char *line, scene *sc)
 	sc->lights[sc->light_count++] = ambient_light;
 }
 
-void	parse_light(char *line, scene *sc)
+void	parse_light(char *line, t_scene *sc)
 {
-	light	point_light;
+	t_light	point_light;
 	char	*token;
 
 	point_light.type = 1;
@@ -47,7 +47,7 @@ void	parse_light(char *line, scene *sc)
 	sc->lights[sc->light_count++] = point_light;
 }
 
-void	count_lights(char *line, scene *sc, int *a_light, int *p_light)
+void	count_lights(char *line, t_scene *sc, int *a_light, int *p_light)
 {
 	if (line[0] == 'A')
 	{
