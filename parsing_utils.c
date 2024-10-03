@@ -16,6 +16,11 @@ void	count_check(char *line, t_scene *sc, int *a_light, int *p_light)
 		perror("Error\nToo many ambient lights, point lights or cameras");
 		return (sc->success = 1, free(line));
 	}
+	else if (sc->camera_count == 0)
+	{
+		perror("Error\nNo camera found");
+		return (sc->success = 1, free(line));
+	}
 }
 
 void	count_objects(int fd, t_scene *sc)
