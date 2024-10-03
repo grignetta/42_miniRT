@@ -5,10 +5,14 @@ int	get_fd(char *filename, t_canvas *canvas)
 	int	fd;
 
 	if (ft_strcmp(filename + ft_strlen(filename) - 3, ".rt"))
-		return (printf("Error: Invalid file extension\n"), -1);
+	{
+		free_close(canvas, -1);
+		printf("Error\nInvalid file extension\n");
+		return (-1);
+	}
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-		return (perror("Error:"), free_close(canvas, fd), -1);
+		return (perror("Error\n"), free_close(canvas, fd), -1);
 	return (fd);
 }
 

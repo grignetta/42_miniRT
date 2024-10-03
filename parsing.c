@@ -9,7 +9,7 @@ void	count_and_allocate(scene *sc, int fd)
 	sc->lights = malloc(sizeof(light) * sc->light_count);
 	if (!sc->spheres || !sc->cylinders || !sc->planes || !sc->lights)
 	{
-		perror("Error: Memory allocation failed:");
+		perror("Error\nMemory allocation failed:");
 		sc->success = 1;
 		close(fd);
 		return ;

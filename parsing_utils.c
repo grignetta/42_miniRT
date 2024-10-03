@@ -13,7 +13,7 @@ void	count_check(char *line, scene *sc, int *a_light, int *p_light)
 {
 	if ((*p_light) > 1 || (*a_light) > 1 || sc->camera_count > 1)
 	{
-		perror("Error: Too many ambient lights, point lights or cameras");
+		perror("Error\nToo many ambient lights, point lights or cameras");
 		return (sc->success = 1, free(line));
 	}
 }
