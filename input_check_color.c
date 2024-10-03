@@ -77,13 +77,13 @@ double	get_color(char *token, scene *sc)
 	else
 	{
 		sc->success = 1;
-		perror("Error: Invalid input for color");
+		perror("Error\nInvalid input for color");
 		return (-1);
 	}
 	if (color < 0 || color > 255)
 	{
 		sc->success = 1;
-		perror("Error: The value must be between 0 and 255");
+		perror("Error\nThe value must be between 0 and 255");
 		return (-1);
 	}
 	return (color);
