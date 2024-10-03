@@ -26,7 +26,15 @@ double	get_position(char *token, t_scene *sc)
 	double	position;
 
 	if (token && ft_isnum(token))
+	{
 		position = ft_atof(token);
+		if (position == DBL_MAX || position == DBL_MIN)
+		{
+			perror("Error\nPosition is out of range");
+			sc->success = 1;
+			return (-1);
+		}
+	}
 	else
 	{
 		perror("Error\nInvalid input for position");
