@@ -11,10 +11,10 @@ void	cap_centers(t_cylinder *cyl, t_vector *bottom_center, t_vector *top_center)
 
 int	cross_ray_cap(t_ray_params params, t_cylinder *cyl, double *t)
 {
-	t_plane	cap_plane;
+	t_plane		cap_plane;
 	t_vector	p;
 	t_vector	dist_vec;
-	double	dist_sq;
+	double		dist_sq;
 
 	cap_plane.point = cyl->cap_center;
 	cap_plane.normal = cyl->cap_normal;
@@ -39,7 +39,7 @@ int	cross_ray_cyl(t_ray_params params, t_cylinder *cyl, t_intersect_result *resu
 {
 	t_vector	bottom_center;
 	t_vector	top_center;
-	double	t_cap;
+	double		t_cap;
 
 	cap_centers(cyl, &bottom_center, &top_center);
 	handle_side_intersect(params, cyl, result);

@@ -1,39 +1,8 @@
 #include "minirt.h"
 
-void	add_light(t_color *result, t_light light, double intensity)
-{
-	result->red += intensity * light.red / 255.0;
-	result->green += intensity * light.green / 255.0;
-	result->blue += intensity * light.blue / 255.0;
-}
-
-void	ambient_light(t_color *result, t_light light)//added just for more clarity
-{
-	add_light(result, light, light.intensity);
-}
-
-t_vector	get_light_direction(t_light light, t_trace vars, double *t_max)
-{
-	t_vector	L;
-
-	if (light.type == 1) // Point
-	{
-		L = vector_sub(light.position, vars.p);
-		//*t_max = 1.0;
-		 *t_max = vector_length(L); // Set t_max to the distance to the light
-		L = vector_normalize(L);
-	}
-	else // Directional
-	{
-		L = light.direction;
-		*t_max = INFINITY;
-	}
-	return (L);
-}
-
 int	is_in_shadow(t_scene *scene, t_trace vars, t_vector L, double t_max)
 {
-	t_ray_params			shadow_params;
+	t_ray_params		shadow_params;
 	t_intersect_result	shadow_result;
 
 	shadow_params.o = vars.p;
@@ -60,11 +29,12 @@ void	diffuse_light(t_color *result, t_light light, t_trace vars, t_vector L)
 	}
 }
 
-void	specular_reflection(t_color *result, t_light light, t_trace vars, t_vector L)
+void	specular_reflection(t_color *result, t_light light,
+			t_trace vars, t_vector L)
 {
 	t_vector	vr;
-	double	r_dot_v;
-	double	specular_intensity;
+	double		r_dot_v;
+	double		specular_intensity;
 
 	if (vars.shape->specular > 5)
 	{
@@ -74,7 +44,7 @@ void	specular_reflection(t_color *result, t_light light, t_trace vars, t_vector 
 		{
 			specular_intensity = light.intensity
 				* pow(r_dot_v / (vector_length(vr) * vector_length(vars.v)),
-				vars.shape->specular);
+					vars.shape->specular);
 			add_light(result, light, specular_intensity);
 		}
 	}
@@ -82,7 +52,8 @@ void	specular_reflection(t_color *result, t_light light, t_trace vars, t_vector 
 
 t_color	color_init(double red, double green, double blue)
 {
-	t_color c;
+	t_color	c;
+
 	c.red = red;
 	c.green = green;
 	c.blue = blue;
@@ -91,11 +62,11 @@ t_color	color_init(double red, double green, double blue)
 
 t_color	compute_lighting(t_scene *scene, t_trace vars)
 {
-	t_color	result;
-	t_light	light;
-	double	t_max;
-	t_vector	L;
-	int		i;
+	t_color		result;
+	t_light		light;
+	double		t_max;
+	t_vector	l;
+	int			i;
 
 	result = color_init(0.0, 0.0, 0.0);
 	i = -1;
@@ -106,11 +77,11 @@ t_color	compute_lighting(t_scene *scene, t_trace vars)
 			ambient_light(&result, light);
 		else
 		{
-			L = get_light_direction(light, vars, &t_max);
-			if (is_in_shadow(scene, vars, L, t_max))
+			l = get_light_direction(light, vars, &t_max);
+			if (is_in_shadow(scene, vars, l, t_max))
 				continue; // In shadow, skip this light
-			diffuse_light(&result, light, vars, L);
-			specular_reflection(&result, light, vars, L);
+			diffuse_light(&result, light, vars, l);
+			specular_reflection(&result, light, vars, l);
 		}
 	}
 	// Ensure the values are within the 0-1 range

@@ -245,6 +245,20 @@ void				set_camera(t_scene *scene);
 
 //light_computation.c
 t_color				compute_lighting(t_scene *scene, t_trace vars);
+int					is_in_shadow(t_scene *scene, t_trace vars,
+						t_vector L, double t_max);
+void				diffuse_light(t_color *result, t_light light,
+						t_trace vars, t_vector L);
+void				specular_reflection(t_color *result, t_light light,
+						t_trace vars, t_vector L);
+t_color				color_init(double red, double green, double blue);
+t_color				compute_lighting(t_scene *scene, t_trace vars);
+
+//light_computation_utils.c
+void				add_light(t_color *result, t_light light, double intensity);
+void				ambient_light(t_color *result, t_light light);
+t_vector			get_light_direction(t_light light, t_trace vars,
+						double *t_max);
 
 //free_functions.c
 void				free_scene(t_scene *sc);

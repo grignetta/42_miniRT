@@ -3,8 +3,8 @@
 t_vector	cyl_normal(t_vector p, t_cylinder *cyl, int surface)
 {
 	t_vector	n;
-	t_vector	CP;
-	t_vector	N_perp;
+	t_vector	cp;
+	t_vector	n_perp;
 
 	n = (t_vector){0, 0, 0};
 	// double y_bottom = cyl->center.y;
@@ -25,10 +25,10 @@ t_vector	cyl_normal(t_vector p, t_cylinder *cyl, int surface)
 	if (surface == 0) // Side surface
 	{
 		// Compute the vector from the cylinder center to point p, projected onto the plane perpendicular to the axis
-		CP = vector_sub(p, cyl->center);
-		N_perp = vector_sub(CP, vector_scale(cyl->axis,
-				vector_dot(CP, cyl->axis)));
-		n = vector_normalize(N_perp);
+		cp = vector_sub(p, cyl->center);
+		n_perp = vector_sub(cp, vector_scale(cyl->axis,
+				vector_dot(cp, cyl->axis)));
+		n = vector_normalize(n_perp);
 	}
 	else if (surface == 1) // Bottom cap
 	{
