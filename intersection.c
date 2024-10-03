@@ -1,7 +1,7 @@
 #include "minirt.h"
 
-int	update_result(intersect_result *result, double t,
-	void *object, ray_params params)
+int	update_result(t_intersect_result *result, double t,
+	void *object, t_ray_params params)
 {
 	if (t < result->t && t > params.t_min)
 	{
@@ -13,17 +13,17 @@ int	update_result(intersect_result *result, double t,
 	return (0);
 }
 
-int	cross_ray_sphere(ray_params params, sphere *sphere,
-		intersect_result *result)
+int	cross_ray_sphere(t_ray_params params, t_sphere *sphere,
+		t_intersect_result *result)
 {
 	double			t1;
 	double			t2;
-	intersection	point;
+	t_intersection	point;
 
-	point.CO = vector_sub(params.O, sphere->center);
-	point.a = vector_dot(params.D, params.D);
-	point.b = 2 * vector_dot(point.CO, params.D);
-	point.c = vector_dot(point.CO, point.CO) - sphere->radius * sphere->radius;
+	point.co = vector_sub(params.o, sphere->center);
+	point.a = vector_dot(params.d, params.d);
+	point.b = 2 * vector_dot(point.co, params.d);
+	point.c = vector_dot(point.co, point.co) - sphere->radius * sphere->radius;
 	point.discriminant = point.b * point.b - 4 * point.a * point.c;
 	if (point.discriminant < 0)
 		return (0); // No intersection (return inf, inf)?
@@ -36,14 +36,14 @@ int	cross_ray_sphere(ray_params params, sphere *sphere,
 	return (1);
 }
 
-int	cross_ray_plane(ray_params params, plane *pl, double *t)
+int	cross_ray_plane(t_ray_params params, t_plane *pl, double *t)
 {
 	double	denom;
 
-	denom = vector_dot(pl->normal, params.D);
+	denom = vector_dot(pl->normal, params.d);
 	if (fabs(denom) > 1e-6) // Avoid division by zero and small values that might cause numerical instability
 	{
-		*t = vector_dot(vector_sub(pl->point, params.O), pl->normal) / denom;
+		*t = vector_dot(vector_sub(pl->point, params.o), pl->normal) / denom;
 		if (*t >= 0)
 			return (1); // intersection exists
 	}
@@ -51,9 +51,9 @@ int	cross_ray_plane(ray_params params, plane *pl, double *t)
 }
 
 // Closest intersection function
-intersect_result	closest_intersection(scene *scene, ray_params params)// vector O, vector D, double t_min, double t_max)
+t_intersect_result	closest_intersection(t_scene *scene, t_ray_params params)// vector o, vector d, double t_min, double t_max)
 {
-	intersect_result	result;
+	t_intersect_result	result;
 	int					i;
 	double				t;
 

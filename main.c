@@ -19,7 +19,7 @@ int	get_fd(char *filename, t_canvas *canvas)
 int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
-	scene		scene;
+	t_scene		scene;
 	int			fd;
 	//(void)argv;
 
@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 		canvas = init_mlx();
 		if (canvas == NULL)
 			return (1);
-		//scene scene = create_scene(); // change to parcing from .rt file
+		//t_scene scene = create_scene(); // change to parcing from .rt file
 		fd = get_fd(argv[1], canvas);
 		if (fd == -1)
 			return (1);

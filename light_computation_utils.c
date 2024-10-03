@@ -1,0 +1,32 @@
+#include "minirt.h"
+
+void	add_light(t_color *result, t_light light, double intensity)
+{
+	result->red += intensity * light.red / 255.0;
+	result->green += intensity * light.green / 255.0;
+	result->blue += intensity * light.blue / 255.0;
+}
+
+void	ambient_light(t_color *result, t_light light)//added just for more clarity
+{
+	add_light(result, light, light.intensity);
+}
+
+t_vector	get_light_direction(t_light light, t_trace vars, double *t_max)
+{
+	t_vector	l;
+
+	if (light.type == 1) // Point
+	{
+		l = vector_sub(light.position, vars.p);
+		//*t_max = 1.0;
+		*t_max = vector_length(l); // Set t_max to the distance to the light
+		l = vector_normalize(l);
+	}
+	else // Directional
+	{
+		l = light.direction;
+		*t_max = INFINITY;
+	}
+	return (l);
+}

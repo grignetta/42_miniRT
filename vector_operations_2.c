@@ -1,27 +1,27 @@
 #include "minirt.h"
 
-// Helper functions for vector operations
-vector	vector_sub(vector v1, vector v2)
+// Helper functions for t_vector operations
+t_vector	vector_sub(t_vector v1, t_vector v2)
 {
-	return ((vector){v1.x - v2.x, v1.y - v2.y, v1.z - v2.z});
+	return ((t_vector){v1.x - v2.x, v1.y - v2.y, v1.z - v2.z});
 }
 
-vector	vector_add(vector v1, vector v2)
+t_vector	vector_add(t_vector v1, t_vector v2)
 {
-	return ((vector){v1.x + v2.x, v1.y + v2.y, v1.z + v2.z});
+	return ((t_vector){v1.x + v2.x, v1.y + v2.y, v1.z + v2.z});
 }
 
-vector	vector_scale(vector v, double scalar)//ex: color intensity
+t_vector	vector_scale(t_vector v, double scalar)//ex: color intensity
 {
-	return ((vector){v.x * scalar, v.y * scalar, v.z * scalar});
+	return ((t_vector){v.x * scalar, v.y * scalar, v.z * scalar});
 }
 
-double	vector_dot(vector v1, vector v2)
+double	vector_dot(t_vector v1, t_vector v2)
 {
 	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
 
-double	vector_length(vector v)
+double	vector_length(t_vector v)
 {
 	return (sqrt(vector_dot(v, v)));
 }

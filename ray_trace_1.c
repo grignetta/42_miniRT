@@ -13,9 +13,9 @@
 	return vector_normalize(vector_scale(normal, 1.0 / cyl->radius));
 } */
 
-color	color_to_double(int color_int)
+t_color	color_to_double(int color_int)
 {
-	color	result;
+	t_color	result;
 
 	result.red = ((color_int >> 16) & 0xFF) / 255.0;
 	result.green = ((color_int >> 8) & 0xFF) / 255.0;
@@ -23,38 +23,38 @@ color	color_to_double(int color_int)
 	return (result);
 }
 
-base_shape	*get_base_shape(intersect_result result)
+t_base_shape	*get_base_shape(t_intersect_result result)
 {
-	base_shape	*shape;
+	t_base_shape	*shape;
 
-	shape = (base_shape *)result.object;
+	shape = (t_base_shape *)result.object;
 	if (result.type == SHAPE_SPHERE)
-		shape = &((sphere *)result.object)->base;
+		shape = &((t_sphere *)result.object)->base;
 	else if (result.type == SHAPE_CYLINDER)
-		shape = &((cylinder *)result.object)->base;
+		shape = &((t_cylinder *)result.object)->base;
 	else if (result.type == SHAPE_PLANE)
-		shape = &((plane *)result.object)->base;
+		shape = &((t_plane *)result.object)->base;
 	return (shape);
 }
 
-color	get_plane_color(vector P, plane *pl)
+t_color	get_plane_color(t_vector p, t_plane *pl)
 {
-	color	base_color;
-	color	inverse_color;
+	t_color	base_color;
+	t_color	inverse_color;
 	int		sum;
 	int		x_square;
 	int		z_square;
 
-	base_color = (color){
+	base_color = (t_color){
 		.red = pl->base.red / 255.0,
 		.green = pl->base.green / 255.0,
 		.blue = pl->base.blue / 255.0};
 	if (pl->square_size == 0)
 		return (base_color);
-	x_square = (int)floor(P.x / pl->square_size);
-	z_square = (int)floor(P.z / pl->square_size);
+	x_square = (int)floor(p.x / pl->square_size);
+	z_square = (int)floor(p.z / pl->square_size);
 	sum = x_square + z_square;
-	inverse_color = (color){
+	inverse_color = (t_color){
 		.red = 1.0 - base_color.red,
 		.green = 1.0 - base_color.green,
 		.blue = 1.0 - base_color.blue
@@ -65,31 +65,31 @@ color	get_plane_color(vector P, plane *pl)
 		return (inverse_color);
 }
 
-int	trace_ray(scene *scene, ray_params params, int depth)
+int	trace_ray(t_scene *t_scene, t_ray_params params, int depth)
 {
-	trace				vars;
-	intersect_result	result;
+	t_trace				vars;
+	t_intersect_result	result;
 	int					reflected_color_int;
-	plane				*pl;
-	color				checker_color;
+	t_plane				*pl;
+	t_color				checker_color;
 
-	result = closest_intersection(scene, params);
+	result = closest_intersection(t_scene, params);
 	if (result.t == params.t_max)
 		return (BACKGROUND_COLOR); // Background color
 	// Compute local color at the intersection point
-	vars.P = vector_add(params.O, vector_scale(params.D, result.t)); // Intersection point
-	vars.N = compute_normal(result, vars.P);
-	vars.V = vector_scale(params.D, -1); // View direction
-	//vars.V = vector_normalize(vars.V);//maybe not necessary
+	vars.p = vector_add(params.o, vector_scale(params.d, result.t)); // Intersection point
+	vars.n = compute_normal(result, vars.p);
+	vars.v = vector_scale(params.d, -1); // View direction
+	//vars.v = vector_normalize(vars.v);//maybe not necessary
 	// Determine the shape and compute lighting
 	vars.shape = get_base_shape(result);
 	// Compute lighting based on the specular value of the shape
-	vars.lighting = compute_lighting(scene, vars);//vars.P, vars.N, vars.V, vars.shape->specular);
+	vars.lighting = compute_lighting(t_scene, vars);//vars.p, vars.n, vars.v, vars.shape->specular);
 	// **Add Checkerboard Pattern for Planes**
 	if (result.type == SHAPE_PLANE)
 	{
-		pl = (plane *)result.object;
-		checker_color = get_plane_color(vars.P, pl);
+		pl = (t_plane *)result.object;
+		checker_color = get_plane_color(vars.p, pl);
 		vars.local_color.red = checker_color.red * vars.lighting.red;
 		vars.local_color.green = checker_color.green * vars.lighting.green;
 		vars.local_color.blue = checker_color.blue * vars.lighting.blue;
@@ -111,14 +111,14 @@ int	trace_ray(scene *scene, ray_params params, int depth)
 	vars.r = vars.shape->reflective;
 	if (depth <= 0 || vars.r <= 0)
 		return (color_to_int(vars.local_color));
-	// Compute reflection vector
-	vars.R = vector_reflect(vars.V, vars.N);
-	params.O = vars.P;
-	params.D = vars.R;
+	// Compute reflection t_vector
+	vars.vr = vector_reflect(vars.v, vars.n);
+	params.o = vars.p;
+	params.d = vars.vr;
 	params.t_min = 0.001;
 	params.t_max = INFINITY; //was declared in the beginning
 	// Trace the reflected ray
-	reflected_color_int = trace_ray(scene, params, depth - 1);
+	reflected_color_int = trace_ray(t_scene, params, depth - 1);
 	vars.reflected_color = color_to_double(reflected_color_int);
 	// Combine local color and reflected color based on reflectivity
 	vars.final_color.red = vars.local_color.red

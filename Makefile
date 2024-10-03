@@ -23,6 +23,7 @@ SOURCES = main.c \
 			intersection.c \
 			camera.c \
 			light_computation.c \
+			light_computation_utils.c \
 			intersect_cylinder_utils.c \
 			intersect_cylinder.c \
 			parsing.c \

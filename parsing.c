@@ -1,12 +1,12 @@
 #include "minirt.h"
 
-void	count_and_allocate(scene *sc, int fd)
+void	count_and_allocate(t_scene *sc, int fd)
 {
 	count_objects(fd, sc);
-	sc->spheres = malloc(sizeof(sphere) * sc->sphere_count);
-	sc->cylinders = malloc(sizeof(cylinder) * sc->cylinder_count);
-	sc->planes = malloc(sizeof(plane) * sc->plane_count);
-	sc->lights = malloc(sizeof(light) * sc->light_count);
+	sc->spheres = malloc(sizeof(t_sphere) * sc->sphere_count);
+	sc->cylinders = malloc(sizeof(t_cylinder) * sc->cylinder_count);
+	sc->planes = malloc(sizeof(t_plane) * sc->plane_count);
+	sc->lights = malloc(sizeof(t_light) * sc->light_count);
 	if (!sc->spheres || !sc->cylinders || !sc->planes || !sc->lights)
 	{
 		perror("Error\nMemory allocation failed:");
@@ -18,7 +18,7 @@ void	count_and_allocate(scene *sc, int fd)
 	return ;
 }
 
-void	parse_line(char *line, scene *sc)
+void	parse_line(char *line, t_scene *sc)
 {
 	if (line[0] == 'A')
 		parse_ambient(line, sc);
@@ -35,9 +35,9 @@ void	parse_line(char *line, scene *sc)
 	free(line);
 }
 
-scene	parse_rt(int fd, char *filename)
+t_scene	parse_rt(int fd, char *filename)
 {
-	scene	sc;
+	t_scene	sc;
 	char	*line;
 
 	sc.success = 0;
