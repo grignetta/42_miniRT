@@ -18,6 +18,7 @@
 # include <printf.h>
 # include <stdarg.h>
 # include <limits.h>
+# include <float.h>
 # include <fcntl.h>
 
 /* part one functions*/

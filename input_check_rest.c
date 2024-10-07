@@ -4,8 +4,14 @@ double	get_intensity(char *token, t_scene *sc)
 {
 	double	intensity;
 
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
+	{
 		intensity = ft_atof(token);
+		if (intensity == DBL_MAX || intensity == DBL_MIN)
+			return (sc->success = 1, -1);
+	}
 	else
 	{
 		perror("Error\nInvalid input for ambient light intensity");
@@ -25,8 +31,18 @@ double	get_position(char *token, t_scene *sc)
 {
 	double	position;
 
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
+	{
 		position = ft_atof(token);
+		if (position == DBL_MAX || position == DBL_MIN)
+		{
+			perror("Error\nPosition is out of range");
+			sc->success = 1;
+			return (-1);
+		}
+	}
 	else
 	{
 		perror("Error\nInvalid input for position");
@@ -40,8 +56,14 @@ double	get_fov(char *token, t_scene *sc)
 {
 	double	fov;
 
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
+	{
 		fov = ft_atof(token);
+		if (fov == DBL_MAX || fov == DBL_MIN)
+			return (sc->success = 1, -1);
+	}
 	else
 	{
 		perror("Error\nInvalid input for field of view");
@@ -59,8 +81,21 @@ double	get_fov(char *token, t_scene *sc)
 
 double	get_value(char *token, t_scene *sc)
 {
+	double value;
+
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
-		return (ft_atof(token));
+	{
+		value = ft_atof(token);
+		if (value == DBL_MAX || value == DBL_MIN)
+		{
+			perror("Error\nValue is out of range");
+			sc->success = 1;
+			return (-1);
+		}
+		return (value);
+	}
 	else
 	{
 		perror("Error\nInvalid input");

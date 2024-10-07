@@ -72,8 +72,14 @@ double	get_color(char *token, t_scene *sc)
 {
 	double	color;
 
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
+	{
 		color = ft_atof(token);
+		if (color == DBL_MAX || color == DBL_MIN)
+			return (sc->success = 1, -1);
+	}
 	else
 	{
 		sc->success = 1;

@@ -34,12 +34,16 @@ int	ft_atoi(const char *nptr)
 	move_spaces(&nptr, &minus);
 	if (ft_strcmp(nptr, "9223372036854775808") == 0 && minus == 1)
 		return (INT_MIN);
+	if (ft_strcmp(nptr, "9223372036854775807") == 0 && minus == 0)
+		return (INT_MAX);
 	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
 		return (0);
 	while (*nptr >= '0' && *nptr <= '9')
 	{
 		if (number > (LLONG_MAX - (*nptr - '0')) / 10)
 			return (INT_MAX);
+		if (number < (LLONG_MIN + (*nptr - '0')) / 10)
+			return (INT_MIN);
 		number = number * 10 + (*nptr - '0');
 		nptr++;
 	}
