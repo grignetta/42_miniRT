@@ -9,8 +9,9 @@ double	get_intensity(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		intensity = ft_atof(token);
-		if (intensity == DBL_MAX || intensity == DBL_MIN)
-			return (sc->success = 1, -1);
+		if (intensity == DBL_MAX || intensity == -DBL_MAX)
+			return (perror("Error\nOut of range"),
+					sc->success = 1, -1);
 	}
 	else
 	{
@@ -36,7 +37,7 @@ double	get_position(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		position = ft_atof(token);
-		if (position == DBL_MAX || position == DBL_MIN)
+		if (position == DBL_MAX || position == -DBL_MAX)
 		{
 			perror("Error\nPosition is out of range");
 			sc->success = 1;
@@ -61,8 +62,9 @@ double	get_fov(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		fov = ft_atof(token);
-		if (fov == DBL_MAX || fov == DBL_MIN)
-			return (sc->success = 1, -1);
+		if (fov == DBL_MAX || fov == -DBL_MAX)
+			return (perror("Error\nOut of range"),
+					sc->success = 1, -1);
 	}
 	else
 	{
@@ -88,7 +90,7 @@ double	get_value(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		value = ft_atof(token);
-		if (value == DBL_MAX || value == DBL_MIN)
+		if (value == DBL_MAX || value == -DBL_MAX)
 		{
 			perror("Error\nValue is out of range");
 			sc->success = 1;

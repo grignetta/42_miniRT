@@ -273,7 +273,7 @@ void				parse_line(char *line, t_scene *sc);
 void				count_and_allocate(t_scene *sc, int fd);
 
 //input_check_color.c
-double				get_color(char *token, t_scene *sc);
+int					get_color(char *token, t_scene *sc);
 int					parse_color_light(char *token, t_scene *sc,
 						t_light *point_light);
 int					parse_color_sphere(char *token, t_scene *sc,
