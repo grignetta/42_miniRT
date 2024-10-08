@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 17:32:32 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/10/03 16:01:17 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <limits.h>
 # include <float.h>
 # include <fcntl.h>
+# include <float.h>
 
 /* part one functions*/
 int		ft_atoi(const char *nptr);
