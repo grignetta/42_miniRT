@@ -68,12 +68,19 @@ int	parse_color_sphere(char *token, t_scene *sc, t_base_shape *base)
 	return (0);
 }
 
-double	get_color(char *token, t_scene *sc)
+int	get_color(char *token, t_scene *sc)
 {
 	double	color;
 
+	if (sc->success)
+		return (-1);
 	if (token && ft_isnum(token))
-		color = ft_atof(token);
+	{
+		color = ft_atoi(token);
+		if (color == INT_MAX || color == INT_MIN)
+			return (perror("Error\nOut of range"),
+					sc->success = 1, -1);
+	}
 	else
 	{
 		sc->success = 1;

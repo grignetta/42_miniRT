@@ -13,7 +13,7 @@ C 0.0,0,-5 0,0,0    100
 ***x,y,z coordinates of the light point***
 ***the light brightness ratio in range [0.0,1.0]***
 ***(unused in mandatory part)R,G,B colors in range [0-255]***
-L 1.5,2.0,0.0     0.6 255,255,255
+L 1.5,2.0,0.0     0.6 255           ,255,255
 
 **SPHERE**
 ***x,y,z coordinates of the sphere center***
@@ -33,6 +33,10 @@ pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,255,0
 ***the cylinder diameter***
 ***the cylinder height***
 ***R,G,B colors in range [0,255]***
-cy -1.0,-3.0,4.0 0.0,1.0,0.0 1.5 2.00 0,0,255
+cy 0.9,-3.0,4.0 0.0,1.0,0.0 1.5 2.00 0,0,255
 
-
+**SPHERE**
+***x,y,z coordinates of the sphere center***
+***the sphere diameter***
+***R,G,B colors in range [0-255]***
+sp 1.0,-1.0,3 1 15,164,0

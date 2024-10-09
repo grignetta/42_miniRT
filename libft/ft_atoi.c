@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static void	move_spaces(const char **nptr, int *minus)
+static void	move_spaces(char **nptr, int *minus)
 {
 	while (**nptr && (**nptr == 32 || (**nptr >= 9 && **nptr <= 13)))
 		(*nptr)++;
@@ -24,7 +24,7 @@ static void	move_spaces(const char **nptr, int *minus)
 		(*nptr)++;
 }
 
-int	ft_atoi(const char *nptr)
+int	ft_atoi(char *nptr)
 {
 	int				minus;
 	long long int	number;
@@ -32,18 +32,20 @@ int	ft_atoi(const char *nptr)
 	number = 0;
 	minus = 0;
 	move_spaces(&nptr, &minus);
-	if (ft_strcmp(nptr, "9223372036854775808") == 0 && minus == 1)
-		return (INT_MIN);
-	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
-		return (0);
 	while (*nptr >= '0' && *nptr <= '9')
 	{
 		if (number > (LLONG_MAX - (*nptr - '0')) / 10)
 			return (INT_MAX);
+		if (number < (LLONG_MIN + (*nptr - '0')) / 10)
+			return (INT_MIN);
 		number = number * 10 + (*nptr - '0');
 		nptr++;
 	}
 	if (minus == 1 && number != 0)
 		return (-number);
-	return (number);
+	if (number > INT_MAX)
+		return (INT_MAX);
+	if (number < INT_MIN)
+		return (INT_MIN);
+	return (int)(number);
 }
