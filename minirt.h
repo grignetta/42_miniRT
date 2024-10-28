@@ -268,9 +268,9 @@ void				free_everything(t_scene scene, t_canvas *canvas, int fd);
 void				free_close(t_canvas *canvas, int fd);
 
 //parsing.c
-t_scene				parse_rt(int fd, char *filename);
-void				parse_line(char *line, t_scene *sc);
-void				count_and_allocate(t_scene *sc, int fd);
+t_scene				parse_rt(int fd, char *filename, int bonus);
+void				parse_line(char *line, t_scene *sc, int bonus);
+void				count_and_allocate(t_scene *sc, int fd, int bonus);
 
 //input_check_color.c
 int					get_color(char *token, t_scene *sc);
@@ -288,22 +288,24 @@ double				get_intensity(char *token, t_scene *sc);
 double				get_position(char *token, t_scene *sc);
 double				get_fov(char *token, t_scene *sc);
 double				get_value(char *token, t_scene *sc);
+int					get_value_int(char *token, t_scene *sc);
 
 //parsing_objects.c
-void				parse_cylinder(char *line, t_scene *sc);
-void				parse_plane(char *line, t_scene *sc);
-void				parse_sphere(char *line, t_scene *sc);
+void				parse_cylinder(char *line, t_scene *sc, int bonus);
+void				parse_plane(char *line, t_scene *sc, int bonus);
+void				parse_sphere(char *line, t_scene *sc, int bonus);
 void				parse_camera(char *line, t_scene *sc);
 
 //parsing_lights.c
 void				parse_ambient(char *line, t_scene *sc);
 void				parse_light(char *line, t_scene *sc);
+void				parse_directional(char *line, t_scene *sc);
 void				count_lights(char *line, t_scene *sc,
 						int *a_light, int *p_light);
 
 //parsing_utils.c
 void				reset_count(t_scene *sc);
-void				count_objects(int fd, t_scene *sc);
+void				count_objects(int fd, t_scene *sc, int bonus);
 void				initiate_count(t_scene *sc);
 
 #endif

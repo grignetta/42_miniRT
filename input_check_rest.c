@@ -74,7 +74,7 @@ double	get_fov(char *token, t_scene *sc)
 	}
 	if (fov < 0 || fov > 180)
 	{
-		perror("Error\nField of view must be between 0 and 180 degrees");
+		perror("Error\nField of view must be between 0 and 180 degrees");//can be 0 or 180?
 		sc->success = 1;
 		return (-1);
 	}
@@ -91,6 +91,31 @@ double	get_value(char *token, t_scene *sc)
 	{
 		value = ft_atof(token);
 		if (value == DBL_MAX || value == -DBL_MAX)
+		{
+			perror("Error\nValue is out of range");
+			sc->success = 1;
+			return (-1);
+		}
+		return (value);
+	}
+	else
+	{
+		perror("Error\nInvalid input");
+		sc->success = 1;
+		return (-1);
+	}
+}
+
+int	get_value_int(char *token, t_scene *sc)
+{
+	int value;
+
+	if (sc->success)
+		return (-1);
+	if (token && ft_isnum(token))
+	{
+		value = ft_atoi(token);
+		if (value == INT_MAX || value == -INT_MAX)
 		{
 			perror("Error\nValue is out of range");
 			sc->success = 1;

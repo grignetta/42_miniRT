@@ -1,23 +1,13 @@
+sp 0.0,-1.0,3 1.2 255,0,0 100 0.5 # Red sphere
 # Ambient Lighting
 A 0.3 200,200,200
-
 # Camera Settings
-C 0.0,0,-7 0,0,0 90
-
+  C 0.0,0,-7 0,0,0 90
 # Light Sources
-L 2.0,3.0,-2.0 0.8 255,255,255
-
+   L 2.0,3.0,-2.0 0.8 255,255,255
 # Spheres
-sp 0.0,-1.0,3 1.2 255,0,0   # Red sphere
-sp 2.0,0.0,5 0.8 0,255,0    # Green sphere
-sp -2.0,0.0,4 1 0,0,255     # Blue sphere
-sp 1.0,-2.0,2.5 1.5 255,255,0 # Yellow sphere
-sp -1.5,1.0,6 0.5 0,255,255 # Cyan sphere
-
+sp 2.0,0.0,5 0.8 0,255,0 0 0.5   # Green sphere
 # Plane
-pl 0.0,-3.0,0.0 0.0,1.0,0.0 100,100,100  # Grey floor
-
+pl 0.0,-3.0,0.0 0.0,1.0,0.0 100,100,100 100 0.1 # Grey floor
 # Cylinder
-cy -1.0,-2.5,4.0 0.0,1.0,0.0 1 2 255,0,255  # Magenta cylinder
-
-
+  cy -1.0,-2.5,4.0 0.0,1.0,0.0 1 2 255,0,255 0 0.3 # Magenta cylinder
