@@ -21,14 +21,12 @@ int	main(int argc, char **argv)
 	t_canvas	*canvas;
 	t_scene		scene;
 	int			fd;
-	//(void)argv;
 
 	if (argc == 2)
 	{
 		canvas = init_mlx();
 		if (canvas == NULL)
 			return (1);
-		//t_scene scene = create_scene(); // change to parcing from .rt file
 		fd = get_fd(argv[1], canvas);
 		if (fd == -1)
 			return (1);

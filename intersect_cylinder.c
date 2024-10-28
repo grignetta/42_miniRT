@@ -1,6 +1,7 @@
 #include "minirt.h"
 
-void	cap_centers(t_cylinder *cyl, t_vector *bottom_center, t_vector *top_center)
+void	cap_centers(t_cylinder *cyl, t_vector *bottom_center,
+		t_vector *top_center)
 {
 	t_vector	half_h_v;
 
@@ -23,10 +24,10 @@ int	cross_ray_cap(t_ray_params params, t_cylinder *cyl, double *t)
 		p = vector_add(params.o, vector_scale(params.d, *t));
 		dist_vec = vector_sub(p, cyl->cap_center);
 		dist_sq = vector_dot(dist_vec, dist_vec);
-		if (dist_sq <= cyl->radius * cyl->radius) //different?
-			return (1); // Intersection with cap
+		if (dist_sq <= cyl->radius * cyl->radius)
+			return (1);
 	}
-	return (0); // No intersection with cap
+	return (0);
 }
 
 void	update_cyl_result(t_intersect_result *result, int surface)
@@ -35,7 +36,8 @@ void	update_cyl_result(t_intersect_result *result, int surface)
 	result->surface = surface;
 }
 
-int	cross_ray_cyl(t_ray_params params, t_cylinder *cyl, t_intersect_result *result)
+void	cross_ray_cyl(t_ray_params params, t_cylinder *cyl,
+		t_intersect_result *result)
 {
 	t_vector	bottom_center;
 	t_vector	top_center;
@@ -43,19 +45,14 @@ int	cross_ray_cyl(t_ray_params params, t_cylinder *cyl, t_intersect_result *resu
 
 	cap_centers(cyl, &bottom_center, &top_center);
 	handle_side_intersect(params, cyl, result);
-	// Intersect with bottom cap
 	cyl->cap_center = bottom_center;
 	cyl->cap_normal = vector_scale(cyl->axis, -1);
 	if (cross_ray_cap(params, cyl, &t_cap))
 		if (update_result(result, t_cap, cyl, params))
-			update_cyl_result(result, 1); // Bottom cap
-	// Intersect with top cap
+			update_cyl_result(result, 1);
 	cyl->cap_center = top_center;
 	cyl->cap_normal = cyl->axis;
 	if (cross_ray_cap(params, cyl, &t_cap))
 		if (update_result(result, t_cap, cyl, params))
-			update_cyl_result(result, 2); // Top cap
-	// Determine if any valid intersections were found
-	//return (result->t < INFINITY);
-	return (1);
+			update_cyl_result(result, 2);
 }
