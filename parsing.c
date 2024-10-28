@@ -20,18 +20,23 @@ void	count_and_allocate(t_scene *sc, int fd)
 
 void	parse_line(char *line, t_scene *sc)
 {
-	if (line[0] == 'A')
-		parse_ambient(line, sc);
-	else if (line[0] == 'C')
-		parse_camera(line, sc);
-	else if (line[0] == 'L')
-		parse_light(line, sc);
-	else if (ft_strncmp(line, "sp", 2) == 0)
-		parse_sphere(line, sc);
-	else if (ft_strncmp(line, "pl", 2) == 0)
-		parse_plane(line, sc);
-	else if (ft_strncmp(line, "cy", 2) == 0)
-		parse_cylinder(line, sc);
+	char *trimmed_line;
+
+	trimmed_line = line;
+	while (*trimmed_line && ft_isspace(*trimmed_line))
+		trimmed_line++;
+	if (*trimmed_line == 'A')
+		parse_ambient(trimmed_line, sc);
+	else if (*trimmed_line == 'C')
+		parse_camera(trimmed_line, sc);
+	else if (*trimmed_line == 'L')
+		parse_light(trimmed_line, sc);
+	else if (ft_strncmp(trimmed_line, "sp", 2) == 0)
+		parse_sphere(trimmed_line, sc);
+	else if (ft_strncmp(trimmed_line, "pl", 2) == 0)
+		parse_plane(trimmed_line, sc);
+	else if (ft_strncmp(trimmed_line, "cy", 2) == 0)
+		parse_cylinder(trimmed_line, sc);
 	free(line);
 }
 

@@ -23,11 +23,24 @@ void	count_check(char *line, t_scene *sc, int *a_light, int *p_light)
 	}
 }
 
+void add_count(char *trimmed_line, t_scene *sc)
+{
+	if (*trimmed_line == 'C')
+		sc->camera_count++;
+	else if (ft_strncmp(trimmed_line, "sp", 2) == 0)
+		sc->sphere_count++;
+	else if (ft_strncmp(trimmed_line, "pl", 2) == 0)
+		sc->plane_count++;
+	else if (ft_strncmp(trimmed_line, "cy", 2) == 0)
+		sc->cylinder_count++;
+}
+
 void	count_objects(int fd, t_scene *sc)
 {
 	char	*line;
 	int		a_light;
 	int		p_light;
+	char	*trimmed_line;
 
 	a_light = 0;
 	p_light = 0;
@@ -35,15 +48,11 @@ void	count_objects(int fd, t_scene *sc)
 	line = get_next_line(fd);
 	while (line)
 	{
-		count_lights(line, sc, &a_light, &p_light);
-		if (line[0] == 'C')
-			sc->camera_count++;
-		else if (ft_strncmp(line, "sp", 2) == 0)
-			sc->sphere_count++;
-		else if (ft_strncmp(line, "pl", 2) == 0)
-			sc->plane_count++;
-		else if (ft_strncmp(line, "cy", 2) == 0)
-			sc->cylinder_count++;
+		trimmed_line = line;
+		while (*trimmed_line && ft_isspace(*trimmed_line))
+			trimmed_line++;
+		count_lights(trimmed_line, sc, &a_light, &p_light);
+		add_count(trimmed_line, sc);
 		free(line);
 		line = get_next_line(fd);
 	}
