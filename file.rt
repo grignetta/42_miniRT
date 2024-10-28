@@ -25,7 +25,7 @@ sp 0.0,-1.0,3 1 255,255,0
 ***x,y,z coordinates of a point in the plane***
 ***3d normalized normal vector. In range [-1,1] for each x,y,z axis***
 ***R,G,B colors in range [0-255]***
-pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,255,0
+pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,125,0
 
 **CYLINDER**
 ***x,y,z coordinates of the center of the cylindee***
@@ -39,4 +39,5 @@ cy 0.9,-3.0,4.0 0.0,1.0,0.0 1.5 2.00 0,0,255
 ***x,y,z coordinates of the sphere center***
 ***the sphere diameter***
 ***R,G,B colors in range [0-255]***
-sp 1.0,-1.0,3 1 15,164,0
+# sp 1.0,-1.0,3 1 15,164,0
+sp 0, 0, 0  1 15,164,0

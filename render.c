@@ -34,7 +34,7 @@ void	render(t_canvas *canvas, t_scene *scene, t_camera *camera)
 			d = vector_add(d, camera->orientation);  // Align with camera's orientation
 			params.o = camera->position;
 			params.d = d;
-			params.t_min = 1.0;
+			params.t_min = 1; //camera->projection_plane_d;
 			params.t_max = INFINITY;
 			color = trace_ray(scene, params, 5);//5 is better for mirror effect
 			put_pixel(canvas, x + canvas->win_width / 2, canvas->win_height / 2 - y, color);
