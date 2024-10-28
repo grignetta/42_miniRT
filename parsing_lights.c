@@ -49,12 +49,12 @@ void	parse_light(char *line, t_scene *sc)
 
 void	count_lights(char *line, t_scene *sc, int *a_light, int *p_light)
 {
-	if (line[0] == 'A')
+	if (*line == 'A')
 	{
 		sc->light_count++;
 		(*a_light)++;
 	}
-	else if (line[0] == 'L')
+	else if (*line == 'L')
 	{
 		sc->light_count++;
 		(*p_light)++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/03 16:01:17 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:42:43 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include <printf.h>
 # include <stdarg.h>
 # include <limits.h>
-# include <float.h>
 # include <fcntl.h>
 # include <float.h>
 

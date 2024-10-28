@@ -6,18 +6,13 @@ void	init_canvas(t_canvas *canvas)
 	canvas->win_height = 600;
 }
 
-t_canvas	*initialize_matrix(void)//char *filename)
+t_canvas	*initialize_matrix(void)
 {
 	t_canvas	*canvas;
 
-	canvas = (t_canvas *)malloc(sizeof(t_canvas));//do we need it on heap?
+	canvas = (t_canvas *)malloc(sizeof(t_canvas));
 	if (!canvas)
 		return (NULL);
-	//if (read_file(filename, canvas)) //read geometry
-	//{
-	//	write(1, "error\n", 6);
-	//	return (free(canvas), NULL);
-	//}
 	init_canvas(canvas);
 	return (canvas);
 }

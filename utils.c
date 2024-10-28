@@ -1,6 +1,5 @@
 #include "minirt.h"
 
-// Function to draw pixels on the canvas
 void	put_pixel(t_canvas *canvas, int x, int y, int color)
 {
 	char	*dst;

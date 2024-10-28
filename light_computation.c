@@ -73,86 +73,18 @@ t_color	compute_lighting(t_scene *scene, t_trace vars)
 	while (++i < scene->light_count)
 	{
 		light = scene->lights[i];
-		if (light.type == 0) // Ambient
+		if (light.type == 0)
 			ambient_light(&result, light);
 		else
 		{
 			l = get_light_direction(light, vars, &t_max);
 			if (is_in_shadow(scene, vars, l, t_max))
-				continue; // In shadow, skip this light
+				continue ;
 			diffuse_light(&result, light, vars, l);
 			specular_reflection(&result, light, vars, l);
 		}
 	}
-	// Ensure the values are within the 0-1 range
-	check_limit_double(&result.red, 1.0);
-	check_limit_double(&result.green, 1.0);
-	check_limit_double(&result.blue, 1.0);
-	return (result);
+	return (check_limit_double(&result.red, 1.0),
+		check_limit_double(&result.green, 1.0),
+		check_limit_double(&result.blue, 1.0), result);
 }
-
-/* color compute_lighting(scene *scene, trace vars)//vector p, vector n, vector v, int specular)
-{
-	ray_params shadow_params;
-	int i;
-
-	color result = {0.0, 0.0, 0.0};
-	i = -1;
-	while (++i < scene->light_count)
-	{
-		light light = scene->lights[i];
-
-		if (light.type == 0) // Ambient
-			add_light(&result, light, light.intensity);
-		else
-		{
-			vector L;
-			double t_max;
-			if (light.type == 1)
-			{ // Point
-				L = vector_sub(light.position, vars.p);
-				t_max = 1.0; //left in case we add directional light
-			}
-			else
-			{ // Directional
-			   L = light.direction;
-			   t_max = INFINITY;
-			}
-			//Check for shadows
-			shadow_params.o = vars.p;
-			shadow_params.d = L;
-			shadow_params.t_min = 0.001;
-			shadow_params.t_max = t_max;
-
-			intersect_result shadow_result = closest_intersection(scene, shadow_params);
-			//if (shadow_sphere != NULL) continue;
-			if (shadow_result.t < shadow_params.t_max)
-				continue; // In shadow, skip this light
-			// Diffuse lighting
-			double n_dot_l = vector_dot(vars.n, L);
-			if (n_dot_l > 0)
-			{
-				double diffuse_intensity = light.intensity * n_dot_l / (vector_length(vars.n) * vector_length(L));
-				add_light(&result, t_light, diffuse_intensity);
-			}
-			// Specular reflection
-			//if (specular != -1) {
-			if (vars.shape->specular > 5) //maybe make if specular > 5
-			{
-				vector vr = vector_reflect(L, vars.n);
-				double r_dot_v = vector_dot(vr, vars.v);
-				if (r_dot_v > 0)
-				{
-					double specular_intensity = light.intensity * pow(r_dot_v / (vector_length(vr) * vector_length(vars.v)), vars.shape->specular);
-					add_light(&result, light, specular_intensity);
-				}
-			}
-		}
-	}
-
-	// Ensure the values are within the 0-1 range
-	check_limit_double(&result.red, 1.0);
-	check_limit_double(&result.green, 1.0);
-	check_limit_double(&result.blue, 1.0);
-	return (result);
-} */
