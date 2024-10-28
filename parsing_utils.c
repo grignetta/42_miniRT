@@ -23,7 +23,7 @@ void	count_check(char *line, t_scene *sc, int *a_light, int *p_light)
 	}
 }
 
-void add_count(char *trimmed_line, t_scene *sc)
+void add_count(char *trimmed_line, t_scene *sc, int bonus, int *d_light)
 {
 	if (*trimmed_line == 'C')
 		sc->camera_count++;
@@ -33,17 +33,24 @@ void add_count(char *trimmed_line, t_scene *sc)
 		sc->plane_count++;
 	else if (ft_strncmp(trimmed_line, "cy", 2) == 0)
 		sc->cylinder_count++;
+	if (bonus && *trimmed_line == 'A')
+	{
+		sc->light_count++;
+		(*d_light)++;
+	}
 }
 
-void	count_objects(int fd, t_scene *sc)
+void	count_objects(int fd, t_scene *sc, int bonus)
 {
 	char	*line;
 	int		a_light;
 	int		p_light;
+	int		d_light;
 	char	*trimmed_line;
 
 	a_light = 0;
 	p_light = 0;
+	d_light = 0;
 	initiate_count(sc);
 	line = get_next_line(fd);
 	while (line)
@@ -52,11 +59,11 @@ void	count_objects(int fd, t_scene *sc)
 		while (*trimmed_line && ft_isspace(*trimmed_line))
 			trimmed_line++;
 		count_lights(trimmed_line, sc, &a_light, &p_light);
-		add_count(trimmed_line, sc);
+		add_count(trimmed_line, sc, bonus, &d_light);
 		free(line);
 		line = get_next_line(fd);
 	}
-	count_check(line, sc, &a_light, &p_light);
+	count_check(line, sc, &a_light, &p_light);//might be changed if bonus
 }
 
 void	reset_count(t_scene *sc)

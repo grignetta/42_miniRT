@@ -1,4 +1,4 @@
-NAME = miniRT
+NAME = miniRT_bonus
 HEADER = minirt.h
 CC = cc
 #CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
