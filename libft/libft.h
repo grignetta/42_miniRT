@@ -3,22 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/28 17:42:43 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:36:39 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <stdarg.h>
 # include <limits.h>
 # include <fcntl.h>
-# include <float.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 5
+# endif
 
 /* part one functions*/
 int		ft_atoi(char *nptr);
@@ -76,14 +80,6 @@ int		ft_printf_fd(unsigned int fd, const char *print, ...);
 int		ft_vprintf_fd(unsigned int fd, const char *print, va_list args);
 
 /* get_next_line added*/
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
-# endif
-
-//# include <stdio.h>
-//# include <stdlib.h>
-//# include <unistd.h>
-
 size_t	ft_strlen_gnl(char *str);
 void	my_free_gnl(char **str);
 char	*ft_strjoin_gnl(char *read_str, char *buff);

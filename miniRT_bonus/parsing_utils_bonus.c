@@ -23,7 +23,7 @@ void	count_check(char *line, t_scene *sc, int *a_light, int *p_light)
 	}
 }
 
-void add_count(char *trimmed_line, t_scene *sc, int bonus, int *d_light)
+void	add_count(char *trimmed_line, t_scene *sc, int bonus, int *d_light)
 {
 	if (*trimmed_line == 'C')
 		sc->camera_count++;
@@ -63,7 +63,7 @@ void	count_objects(int fd, t_scene *sc, int bonus)
 		free(line);
 		line = get_next_line(fd);
 	}
-	count_check(line, sc, &a_light, &p_light);//might be changed if bonus
+	count_check(line, sc, &a_light, &p_light);
 }
 
 void	reset_count(t_scene *sc)
