@@ -1,26 +1,21 @@
-# Ambient Lighting
-A 0.5 240,240,240
+#Ambient Lighting
+A 0.1 255,255,255
 
-# Camera Settings
-C 2.0,3.0,-10 0,0,0 70
+#Camera Settings
+C 2.0,2.0,-10 0,0,0 80
 
-# Light Sources
-L 5.0,5.0,-5.0 1.0 255,255,204  # Soft Yellow light
+#Light Sources
+L 4.0,5.0,-4.0 0.5 255,255,0    # Bright Yellow light
 
-# Spheres (main structure and roof)
-sp 0.0,-1.0,1 1.5 255,165,0        # Large orange sphere (main building)
-sp 0.0,1.5,1 1.2 255,0,0          # Red sphere (roof)
+#Spheres
+sp 0.0,-1.0,4 1.5 255,0,0        # Bright Red sphere
+sp 3.0,0.0,6 0.8 0,255,0         # Bright Green sphere
+sp 2.0,0.0,5 1 0,0,255           # Bright Blue sphere
+sp 1.5,-2.0,3 1.2 255,165,0       # Bright Orange sphere
+sp -2.0,2.0,7 0.6 255,192,203     # Light Pink sphere
 
-# Cylinders (pillars and supports)
-cy 1.5,-1.0,0.5 0.0,1.0,0.0 0.2 2.0 0,255,0   # Green pillar
-cy -1.5,-1.0,0.5 0.0,1.0,0.0 0.2 2.0 0,0,255   # Blue pillar
-cy 1.5,-1.0,2 0.0,1.0,0.0 0.2 1.5 255,255,0    # Yellow pillar
-cy -1.5,-1.0,2 0.0,1.0,0.0 0.2 1.5 255,0,255   # Magenta pillar
+#Plane
+pl 0.0,-4.0,0.0 0.0,1.0,0.0 200,200,200  # Light Grey floor
 
-# Decorative spheres
-sp 0.5,-1.0,3 0.5 0,255,255        # Cyan sphere (decorative)
-sp -0.5,-1.0,3 0.5 255,192,203     # Light Pink sphere (decorative)
-
-# Plane
-pl 0.0,-3.0,0.0 0.0,1.0,0.0 150,200,150  # Grass-like floor
-
+#Cylinder
+cy -2.0,-3.0,5.0 0.0,1.0,0.0 1 3 255,255,255  # White cylinder
