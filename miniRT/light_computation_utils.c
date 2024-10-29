@@ -26,6 +26,7 @@ t_vector	get_light_direction(t_light light, t_trace vars, double *t_max)
 	{
 		l = light.direction;
 		*t_max = INFINITY;
+		l = vector_normalize(l);
 	}
 	return (l);
 }

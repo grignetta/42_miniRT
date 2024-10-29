@@ -1,0 +1,25 @@
+#Ambient Lighting
+#A 0.4 150,150,255
+A 0.2 255,255,255
+
+#Camera Settings
+C 0.0,2,-10 0,0,0 10
+#Light Sources
+#L -2.5,1.0,3.0 0.9 255,150,150
+L -2.5,1.0,-3.0 0.6 255,255,255
+#Basic Shapes to Test
+#Sphere
+sp 0.0,0.0,0.0 3 255,255,255 100 0.2  # White sphere at origin (0, 0, 0), radius 1
+sp 0.0,0.0,0.0 3 255, 192, 203 10 0.3 # Light Pink sphere at origin (0, 0, 0), radius 1 /overlaping with white sphere
+sp 0.0,0.0,-1 1 255, 192, 203 100 0.0 #Light Pink sphere moved down by 1 unit
+sp 3.0,0.0,0.0 3 0,0,255 200 0.5
+
+#Plane
+pl 0.0,-0.5,0.0 0.0,1.0,0.0 169,169,169 0 0 # Dark grey plane at z=null, horizontal
+#pl 0,0,0.0 0.0,1.0,0.0 169,169,169
+#Cylinder
+#cy 0.9,1.5,0.0 0.0,1.0,0.0 0.5 3 0,191,255  # Deep sky blue cylinder along y-axis, height 3
+#cy -3.0,0.0,0.0 0.0,1.0,0.0   2 3 0,191,255  # basic cylinder Deep sky blue along y-axis, height 3
+#cy -2.0,2.0,0.0 1.0,1.0,-1.0        2 3 0,191,255 100 0.3 # Deep sky blue cylinder, rotated to extend along x-axis
+cy -2.0,2.0,0.0 1.0,1.0,0.0        2 3 0,191,255 100 0.3 # Deep sky blue cylinder, rotated to extend along x-axis
+D 1,4,-4 0.2 255,255,255
