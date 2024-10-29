@@ -4,7 +4,7 @@ CC = cc
 #CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
 CFLAGS = -g -Wall -Wextra -Werror -I$(MLX_PATH)
 
-LIBDIR = ./libft #check whose libft
+LIBDIR = ../libft #check whose libft
 OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
@@ -13,27 +13,27 @@ MLX_NAME = mlx
 MLX = $(MLX_PATH)$(MLX_NAME)
 MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd #added for linux on mac
 
-SOURCES = main.c \
-			render.c \
-			vector_operations_1.c \
-			vector_operations_2.c \
-			utils.c \
-			ray_trace.c \
-			intersection.c \
-			camera.c \
-			light_computation.c \
-			light_computation_utils.c \
-			intersect_cylinder_utils.c \
-			intersect_cylinder.c \
-			parsing.c \
-			parsing_objects.c \
-			parsing_lights.c \
-			parsing_utils.c \
-			input_check_rest.c \
-			free_functions.c \
-			input_check_color.c \
-			init.c \
-			color_handling.c \
+SOURCES = main_bonus.c \
+			render_bonus.c \
+			vector_operations_1_bonus.c \
+			vector_operations_2_bonus.c \
+			utils_bonus.c \
+			ray_trace_bonus.c \
+			intersection_bonus.c \
+			camera_bonus.c \
+			light_computation_bonus.c \
+			light_computation_utils_bonus.c \
+			intersect_cylinder_utils_bonus.c \
+			intersect_cylinder_bonus.c \
+			parsing_bonus.c \
+			parsing_objects_bonus.c \
+			parsing_lights_bonus.c \
+			parsing_utils_bonus.c \
+			input_check_rest_bonus.c \
+			free_functions_bonus.c \
+			input_check_color_bonus.c \
+			init_bonus.c \
+			color_handling_bonus.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
