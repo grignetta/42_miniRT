@@ -48,7 +48,7 @@ typedef struct s_vector
 
 typedef struct s_light
 {
-	int			type; // 0 for ambient, 1 for point, 2 for directional - no directional
+	int			type; // 0 ambient, 1 point, 2 directional
 	double		intensity;
 	t_vector	position;
 	t_vector	direction;
@@ -100,8 +100,8 @@ typedef struct s_camera
 	t_vector	position;// Camera position (x, y, z)
 	t_vector	orientation;// Camera direction (normalized t_vector)
 	double		fov;// Field of view in degrees
-	double		viewport_size;
-	double		projection_plane_d;
+	double		vp_size;
+	double		vp_d;
 }	t_camera;
 
 typedef struct s_scene
@@ -211,18 +211,18 @@ int					initialize_image(t_canvas *canvas);
 void				render(t_canvas *app, t_scene *t_scene, t_camera *camera);
 t_scene				create_scene(void);//temporary
 
-//ray_trace_1.c
-int					trace_ray(t_scene *scene, t_ray_params params, int depth);
+//ray_trace.c
 t_vector			vector_init(double x, double y, double z);
-t_color				color_to_double(int color_int);
+
 t_base_shape		*get_base_shape(t_intersect_result result);
 t_color				get_plane_color(t_vector p, t_plane *pl);
 int					trace_ray(t_scene *scene, t_ray_params params, int depth);
 
-//ray_trace_2.c
-t_vector			cyl_normal(t_vector p, t_cylinder *cyl, int surface);
-t_vector			compute_normal(t_intersect_result result, t_vector p);
+//color_handling.c
+void				color_and_light(t_trace *vars, t_intersect_result result);
+int					final_color(t_trace *vars, int reflected_color_int);
 int					color_to_int(t_color local_color);
+t_color				color_to_double(int color_int);
 
 //intersection.c
 t_intersect_result	closest_intersection(t_scene *scene, t_ray_params params);
@@ -231,9 +231,10 @@ int					update_result(t_intersect_result *result, double t,
 void				update_cyl_result(t_intersect_result *result, int surface);
 void				handle_side_intersect(t_ray_params params, t_cylinder *cyl,
 						t_intersect_result *result);
-int					cross_ray_cyl(t_ray_params params, t_cylinder *cyl,
+void				cross_ray_cyl(t_ray_params params, t_cylinder *cyl,
 						t_intersect_result *result);
-int					cross_ray_plane(t_ray_params params, t_plane *pl, double *t);
+int					cross_ray_plane(t_ray_params params, t_plane *pl,
+						double *t);
 
 //utils.c
 void				put_pixel(t_canvas *app, int x, int y, int t_color);
@@ -244,7 +245,6 @@ void				check_limit_int(int *value, int limit);
 void				set_camera(t_scene *scene);
 
 //light_computation.c
-t_color				compute_lighting(t_scene *scene, t_trace vars);
 int					is_in_shadow(t_scene *scene, t_trace vars,
 						t_vector L, double t_max);
 void				diffuse_light(t_color *result, t_light light,
@@ -268,9 +268,9 @@ void				free_everything(t_scene scene, t_canvas *canvas, int fd);
 void				free_close(t_canvas *canvas, int fd);
 
 //parsing.c
-t_scene				parse_rt(int fd, char *filename);
-void				parse_line(char *line, t_scene *sc);
-void				count_and_allocate(t_scene *sc, int fd);
+t_scene				parse_rt(int fd, char *filename, int bonus);
+void				parse_line(char *line, t_scene *sc, int bonus);
+void				count_and_allocate(t_scene *sc, int fd, int bonus);
 
 //input_check_color.c
 int					get_color(char *token, t_scene *sc);
@@ -288,22 +288,24 @@ double				get_intensity(char *token, t_scene *sc);
 double				get_position(char *token, t_scene *sc);
 double				get_fov(char *token, t_scene *sc);
 double				get_value(char *token, t_scene *sc);
+int					get_value_int(char *token, t_scene *sc);
 
 //parsing_objects.c
-void				parse_cylinder(char *line, t_scene *sc);
-void				parse_plane(char *line, t_scene *sc);
-void				parse_sphere(char *line, t_scene *sc);
+void				parse_cylinder(char *line, t_scene *sc, int bonus);
+void				parse_plane(char *line, t_scene *sc, int bonus);
+void				parse_sphere(char *line, t_scene *sc, int bonus);
 void				parse_camera(char *line, t_scene *sc);
 
 //parsing_lights.c
 void				parse_ambient(char *line, t_scene *sc);
 void				parse_light(char *line, t_scene *sc);
+void				parse_directional(char *line, t_scene *sc);
 void				count_lights(char *line, t_scene *sc,
 						int *a_light, int *p_light);
 
 //parsing_utils.c
 void				reset_count(t_scene *sc);
-void				count_objects(int fd, t_scene *sc);
+void				count_objects(int fd, t_scene *sc, int bonus);
 void				initiate_count(t_scene *sc);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atof.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:14:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/03 16:22:32 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:37:14 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ double	return_float_part(char *s, double float_part)
 	d = 1.0;
 	while (ft_isdigit(*s))
 	{
-        d /= 10.0;
-        float_part += (*s++ - '0') * d;
+		d /= 10.0;
+		float_part += (*s++ - '0') * d;
 	}
 	return (float_part);
 }

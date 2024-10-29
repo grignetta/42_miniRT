@@ -1,8 +1,8 @@
 #include "minirt.h"
 
-void	count_and_allocate(t_scene *sc, int fd)
+void	count_and_allocate(t_scene *sc, int fd, int bonus)
 {
-	count_objects(fd, sc);
+	count_objects(fd, sc, bonus);
 	sc->spheres = malloc(sizeof(t_sphere) * sc->sphere_count);
 	sc->cylinders = malloc(sizeof(t_cylinder) * sc->cylinder_count);
 	sc->planes = malloc(sizeof(t_plane) * sc->plane_count);
@@ -18,19 +18,13 @@ void	count_and_allocate(t_scene *sc, int fd)
 	return ;
 }
 
-void	parse_line(char *line, t_scene *sc)
+void	parse_line(char *line, t_scene *sc, int bonus)
 {
-	char	*trimmed_line;
+	char *trimmed_line;
 
 	trimmed_line = line;
-	while (*trimmed_line && !ft_strcmp(trimmed_line, " "))
+	while (*trimmed_line && ft_isspace(*trimmed_line))
 		trimmed_line++;
-	if (*trimmed_line == '\0')
-    {
-        free(line);
-        return ;
-    }
-	printf("trimmed_line: %s\n", trimmed_line);
 	if (*trimmed_line == 'A')
 		parse_ambient(trimmed_line, sc);
 	else if (*trimmed_line == 'C')
@@ -38,21 +32,23 @@ void	parse_line(char *line, t_scene *sc)
 	else if (*trimmed_line == 'L')
 		parse_light(trimmed_line, sc);
 	else if (ft_strncmp(trimmed_line, "sp", 2) == 0)
-		parse_sphere(trimmed_line, sc);
+		parse_sphere(trimmed_line, sc, bonus);
 	else if (ft_strncmp(trimmed_line, "pl", 2) == 0)
-		parse_plane(trimmed_line, sc);
+		parse_plane(trimmed_line, sc, bonus);
 	else if (ft_strncmp(trimmed_line, "cy", 2) == 0)
-		parse_cylinder(trimmed_line, sc);
+		parse_cylinder(trimmed_line, sc, bonus);
+	if (bonus && *trimmed_line == 'D')
+		parse_directional(trimmed_line, sc);
 	free(line);
 }
 
-t_scene	parse_rt(int fd, char *filename)
+t_scene	parse_rt(int fd, char *filename, int bonus)
 {
 	t_scene	sc;
 	char	*line;
 
 	sc.success = 0;
-	count_and_allocate(&sc, fd);
+	count_and_allocate(&sc, fd, bonus);
 	if (sc.success)
 		return (sc);
 	reset_count(&sc);
@@ -62,7 +58,7 @@ t_scene	parse_rt(int fd, char *filename)
 	line = get_next_line(fd);
 	while (line)
 	{
-		parse_line(line, &sc);
+		parse_line(line, &sc, bonus);
 		line = get_next_line(fd);
 	}
 	close(fd);

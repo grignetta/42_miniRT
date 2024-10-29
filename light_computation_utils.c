@@ -7,7 +7,7 @@ void	add_light(t_color *result, t_light light, double intensity)
 	result->blue += intensity * light.blue / 255.0;
 }
 
-void	ambient_light(t_color *result, t_light light)//added just for more clarity
+void	ambient_light(t_color *result, t_light light)
 {
 	add_light(result, light, light.intensity);
 }
@@ -16,14 +16,13 @@ t_vector	get_light_direction(t_light light, t_trace vars, double *t_max)
 {
 	t_vector	l;
 
-	if (light.type == 1) // Point
+	if (light.type == 1)
 	{
 		l = vector_sub(light.position, vars.p);
-		//*t_max = 1.0;
-		*t_max = vector_length(l); // Set t_max to the distance to the light
+		*t_max = vector_length(l);
 		l = vector_normalize(l);
 	}
-	else // Directional
+	else
 	{
 		l = light.direction;
 		*t_max = INFINITY;

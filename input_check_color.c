@@ -79,7 +79,7 @@ int	get_color(char *token, t_scene *sc)
 		color = ft_atoi(token);
 		if (color == INT_MAX || color == INT_MIN)
 			return (perror("Error\nOut of range"),
-					sc->success = 1, -1);
+				sc->success = 1, -1);
 	}
 	else
 	{

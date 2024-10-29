@@ -21,18 +21,21 @@ int	main(int argc, char **argv)
 	t_canvas	*canvas;
 	t_scene		scene;
 	int			fd;
-	//(void)argv;
+	int			bonus;
 
 	if (argc == 2)
 	{
 		canvas = init_mlx();
 		if (canvas == NULL)
 			return (1);
-		//t_scene scene = create_scene(); // change to parcing from .rt file
+		if (ft_strcmp(argv[0], "./miniRT_bonus") == 0)
+			bonus = 1;
+		else
+			bonus = 0;
 		fd = get_fd(argv[1], canvas);
 		if (fd == -1)
 			return (1);
-		scene = parse_rt(fd, argv[1]);
+		scene = parse_rt(fd, argv[1], bonus);
 		if (scene.success)
 			return (free_everything(scene, canvas, fd), 1);
 		set_camera(&scene);

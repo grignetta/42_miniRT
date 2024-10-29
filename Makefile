@@ -1,4 +1,4 @@
-NAME = miniRT
+NAME = miniRT_bonus
 HEADER = minirt.h
 CC = cc
 #CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
@@ -18,8 +18,7 @@ SOURCES = main.c \
 			vector_operations_1.c \
 			vector_operations_2.c \
 			utils.c \
-			ray_trace_1.c \
-			ray_trace_2.c \
+			ray_trace.c \
 			intersection.c \
 			camera.c \
 			light_computation.c \
@@ -34,6 +33,7 @@ SOURCES = main.c \
 			free_functions.c \
 			input_check_color.c \
 			init.c \
+			color_handling.c \
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
