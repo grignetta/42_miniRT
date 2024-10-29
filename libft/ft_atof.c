@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atof.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:14:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/28 17:37:14 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:39:08 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,14 @@ double	ft_atof(char *s)
 			minus = -1;
 	int_part = return_int_part(&s, int_part);
 	if (int_part == INT_MAX)
-		return (DBL_MAX);
+		return (1.7976931348623158e+308);
 	if (*s == '.')
 		++s;
 	float_part = return_float_part(s, float_part);
 	result = (int_part + float_part) * minus;
-	if (result > DBL_MAX)
-		return (DBL_MAX);
-	if (result < -DBL_MAX)
-		return (-DBL_MAX);
+	if (result > 1.7976931348623158e+308)
+		return (1.7976931348623158e+308);
+	if (result < -1.7976931348623158e+308)
+		return (-1.7976931348623158e+308);
 	return (result);
 }
