@@ -1,4 +1,4 @@
-#include "minirt.h"
+#include "minirt_bonus.h"
 
 void	parse_camera(char *line, t_scene *sc)
 {
@@ -54,16 +54,12 @@ void	parse_sphere(char *line, t_scene *sc, int bonus)
 	token = ft_strtok(NULL, " ");
 	new_sphere.center.z = get_position(token, sc);
 	token = ft_strtok(NULL, " ");
-	new_sphere.radius = get_value(token, sc) / 2;//get_value takes nagatives?
+	new_sphere.radius = get_value(token, sc) / 2;
 	if (sc->success)
 		return ;
-	if (parse_color_sphere(token, sc, &new_sphere.base))//it was without if
-		return ;
-	//token = ft_strtok(NULL, " ");//not sure if needed in case of no bonus maybe move into sphere_bonus
+	parse_color_sphere(token, sc, &new_sphere.base);
 	if (sphere_bonus(token, sc, &new_sphere, bonus))
 		return ;
-	//new_sphere.base.specular = 100;
-	//new_sphere.base.reflective = 0.5;
 	sc->spheres[sc->sphere_count++] = new_sphere;
 }
 
@@ -107,8 +103,6 @@ void	parse_plane(char *line, t_scene *sc, int bonus)
 	if (sc->success)
 		return ;
 	parse_color_plane(token, sc, &new_plane.base);
-	//new_plane.base.specular = 100;
-	//new_plane.base.reflective = 0.5;
 	if (plane_bonus(token, sc, &new_plane, bonus))
 		return ;
 	new_plane.square_size = 0;
@@ -155,10 +149,6 @@ void	parse_cylinder(char *line, t_scene *sc, int bonus)
 	token = ft_strtok(NULL, " ");
 	new_cylinder.height = get_value(token, sc);
 	parse_color_cylinder(token, sc, &new_cylinder.base);
-	if (sc->success)
-		return ;
-	//new_cylinder.base.specular = 100;
-	//new_cylinder.base.reflective = 0.5;
 	if (cylinder_bonus(token, sc, &new_cylinder, bonus))
 		return ;
 	sc->cylinders[sc->cylinder_count++] = new_cylinder;

@@ -9,7 +9,7 @@
 # include <X11/keysym.h>
 # include <X11/X.h>
 # include <X11/Xlib.h>
-# include "./libft/libft.h"
+# include "../libft/libft.h"
 
 # ifndef M_PI
 #  define M_PI 3.14159265358979323846
