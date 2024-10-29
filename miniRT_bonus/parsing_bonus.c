@@ -1,4 +1,4 @@
-#include "minirt.h"
+#include "minirt_bonus.h"
 
 void	count_and_allocate(t_scene *sc, int fd, int bonus)
 {
@@ -61,5 +61,7 @@ t_scene	parse_rt(int fd, char *filename, int bonus)
 		parse_line(line, &sc, bonus);
 		line = get_next_line(fd);
 	}
+	close(fd);
+	fd = -1;
 	return (sc);
 }
