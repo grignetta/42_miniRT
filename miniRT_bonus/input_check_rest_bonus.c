@@ -9,9 +9,10 @@ double	get_intensity(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		intensity = ft_atof(token);
-		if (intensity == DBL_MAX || intensity == -DBL_MAX)
+		if (intensity == 1.7976931348623158e+308
+			|| intensity == -1.7976931348623158e+308)
 			return (perror("Error\nOut of range"),
-					sc->success = 1, -1);
+				sc->success = 1, -1);
 	}
 	else
 	{
@@ -37,7 +38,8 @@ double	get_position(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		position = ft_atof(token);
-		if (position == DBL_MAX || position == -DBL_MAX)
+		if (position == 1.7976931348623158e+308
+			|| position == -1.7976931348623158e+308)
 		{
 			perror("Error\nPosition is out of range");
 			sc->success = 1;
@@ -62,9 +64,9 @@ double	get_fov(char *token, t_scene *sc)
 	if (token && ft_isnum(token))
 	{
 		fov = ft_atof(token);
-		if (fov == DBL_MAX || fov == -DBL_MAX)
+		if (fov == 1.7976931348623158e+308 || fov == -1.7976931348623158e+308)
 			return (perror("Error\nOut of range"),
-					sc->success = 1, -1);
+				sc->success = 1, -1);
 	}
 	else
 	{
@@ -83,14 +85,15 @@ double	get_fov(char *token, t_scene *sc)
 
 double	get_value(char *token, t_scene *sc)
 {
-	double value;
+	double	value;
 
 	if (sc->success)
 		return (-1);
 	if (token && ft_isnum(token))
 	{
 		value = ft_atof(token);
-		if (value == DBL_MAX || value == -DBL_MAX || value < 0)
+		if (value == 1.7976931348623158e+308
+			|| value == -1.7976931348623158e+308 || value < 0)
 		{
 			perror("Error\nValue is out of range");
 			sc->success = 1;
@@ -108,7 +111,7 @@ double	get_value(char *token, t_scene *sc)
 
 int	get_value_int(char *token, t_scene *sc)
 {
-	int value;
+	int	value;
 
 	if (sc->success)
 		return (-1);

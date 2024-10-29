@@ -20,7 +20,7 @@ void	count_and_allocate(t_scene *sc, int fd, int bonus)
 
 void	parse_line(char *line, t_scene *sc, int bonus)
 {
-	char *trimmed_line;
+	char	*trimmed_line;
 
 	trimmed_line = line;
 	while (*trimmed_line && ft_isspace(*trimmed_line))
