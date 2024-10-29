@@ -64,6 +64,7 @@ typedef struct s_base_shape
 	int		blue;
 	int		specular; //when low 0 or 1 the picture is very bad
 	double	reflective;
+	double	square_size;
 }	t_base_shape; //to handle shades and reflections regardless of shape
 
 typedef struct s_sphere

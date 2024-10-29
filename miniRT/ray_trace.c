@@ -27,10 +27,10 @@ t_color	get_plane_color(t_vector p, t_plane *pl)
 		.red = pl->base.red / 255.0,
 		.green = pl->base.green / 255.0,
 		.blue = pl->base.blue / 255.0};
-	if (pl->square_size == 0)
+	if (pl->base.square_size == 0)
 		return (base_color);
-	x_square = (int)floor(p.x / pl->square_size);
-	z_square = (int)floor(p.z / pl->square_size);
+	x_square = (int)floor(p.x / pl->base.square_size);
+	z_square = (int)floor(p.z / pl->base.square_size);
 	sum = x_square + z_square;
 	inverse_color = (t_color){
 		.red = 1.0 - base_color.red,

@@ -67,6 +67,7 @@ int	plane_bonus(char *token, t_scene *sc, t_plane *new_plane, int bonus)
 {
 	new_plane->base.specular = 0;
 	new_plane->base.reflective = 0;
+	new_plane->base.square_size = 0;
 	if (bonus)
 	{
 		token = ft_strtok(NULL, " ");
@@ -75,6 +76,10 @@ int	plane_bonus(char *token, t_scene *sc, t_plane *new_plane, int bonus)
 			return (1);
 		token = ft_strtok(NULL, " ");
 		new_plane->base.reflective = get_value(token, sc);
+		if (sc->success)
+			return (1);
+		token = ft_strtok(NULL, " ");
+		new_plane->base.square_size = get_value(token, sc);
 		if (sc->success)
 			return (1);
 	}
@@ -105,6 +110,5 @@ void	parse_plane(char *line, t_scene *sc, int bonus)
 	parse_color_plane(token, sc, &new_plane.base);
 	if (plane_bonus(token, sc, &new_plane, bonus))
 		return ;
-	new_plane.square_size = 0;
 	sc->planes[sc->plane_count++] = new_plane;
 }
