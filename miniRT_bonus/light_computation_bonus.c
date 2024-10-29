@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   light_computation_bonus.c                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 16:48:35 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/10/29 16:48:36 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt_bonus.h"
 
 int	is_in_shadow(t_scene *scene, t_trace vars, t_vector L, double t_max)

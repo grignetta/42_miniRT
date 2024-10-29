@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   intersect_cylinder_bonus.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 16:48:22 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/10/29 16:51:34 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt_bonus.h"
 
 void	cap_centers(t_cylinder *cyl, t_vector *bottom_center,
@@ -43,7 +55,7 @@ void	cross_ray_cyl(t_ray_params params, t_cylinder *cyl,
 	t_vector	top_center;
 	double		t_cap;
 
-	cyl->axis = vector_normalize(cyl->axis);//added
+	cyl->axis = vector_normalize(cyl->axis);
 	cap_centers(cyl, &bottom_center, &top_center);
 	handle_side_intersect(params, cyl, result);
 	cyl->cap_center = bottom_center;
