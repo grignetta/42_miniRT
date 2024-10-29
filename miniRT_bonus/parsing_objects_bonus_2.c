@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_objects_bonus_2.c                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 16:49:06 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/10/29 16:51:23 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt_bonus.h"
 
-
-int	cylinder_bonus(char *token, t_scene *sc, t_cylinder *new_cylinder, int bonus)
+int	cylinder_bonus(char *token, t_scene *sc,
+		t_cylinder *new_cylinder, int bonus)
 {
 	new_cylinder->base.specular = 0;
 	new_cylinder->base.reflective = 0;

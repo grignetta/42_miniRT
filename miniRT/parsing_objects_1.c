@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_objects_1.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 16:47:03 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/10/29 16:50:39 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt.h"
 
 void	parse_camera(char *line, t_scene *sc)
@@ -45,7 +57,7 @@ int	sphere_bonus(char *token, t_scene *sc, t_sphere *new_sphere, int bonus)
 void	parse_sphere(char *line, t_scene *sc, int bonus)
 {
 	t_sphere	new_sphere;
-	char	*token;
+	char		*token;
 
 	token = ft_strtok(line + 3, ",");
 	new_sphere.center.x = get_position(token, sc);
