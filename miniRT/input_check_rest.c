@@ -11,7 +11,7 @@ double	get_intensity(char *token, t_scene *sc)
 		intensity = ft_atof(token);
 		if (intensity == DBL_MAX || intensity == -DBL_MAX)
 			return (perror("Error\nOut of range"),
-					sc->success = 1, -1);
+				sc->success = 1, -1);
 	}
 	else
 	{
@@ -64,7 +64,7 @@ double	get_fov(char *token, t_scene *sc)
 		fov = ft_atof(token);
 		if (fov == DBL_MAX || fov == -DBL_MAX)
 			return (perror("Error\nOut of range"),
-					sc->success = 1, -1);
+				sc->success = 1, -1);
 	}
 	else
 	{
@@ -83,7 +83,7 @@ double	get_fov(char *token, t_scene *sc)
 
 double	get_value(char *token, t_scene *sc)
 {
-	double value;
+	double	value;
 
 	if (sc->success)
 		return (-1);
@@ -108,7 +108,7 @@ double	get_value(char *token, t_scene *sc)
 
 int	get_value_int(char *token, t_scene *sc)
 {
-	int value;
+	int	value;
 
 	if (sc->success)
 		return (-1);
