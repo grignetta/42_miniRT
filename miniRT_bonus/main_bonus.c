@@ -16,6 +16,21 @@ int	get_fd(char *filename, t_canvas *canvas)
 	return (fd);
 }
 
+int	is_bonus(char **argv)
+{
+	if (ft_strcmp(argv[0], "./miniRT_bonus") == 0)
+		return (1);
+	else
+		return (0);
+}
+
+void	mlx_helper(t_canvas *canvas)
+{
+	mlx_hook(canvas->win_ptr, KeyPress, KeyPressMask, key_handle, canvas);
+	mlx_hook(canvas->win_ptr, 17, 0, close_event, canvas);
+	mlx_loop(canvas->mlx_ptr);
+}
+
 int	main(int argc, char **argv)
 {
 	t_canvas	*canvas;
@@ -28,10 +43,7 @@ int	main(int argc, char **argv)
 		canvas = init_mlx();
 		if (canvas == NULL)
 			return (1);
-		if (ft_strcmp(argv[0], "./miniRT_bonus") == 0)
-			bonus = 1;
-		else
-			bonus = 0;
+		bonus = is_bonus(argv);
 		fd = get_fd(argv[1], canvas);
 		if (fd == -1)
 			return (1);
@@ -41,9 +53,7 @@ int	main(int argc, char **argv)
 		set_camera(&scene);
 		canvas->scene = &scene;
 		render(canvas, &scene, &scene.camera);
-		mlx_hook(canvas->win_ptr, KeyPress, KeyPressMask, key_handle, canvas);
-		mlx_hook(canvas->win_ptr, 17, 0, close_event, canvas);
-		mlx_loop(canvas->mlx_ptr);
+		mlx_helper(canvas);
 	}
 	else
 		return (write(1, "Error\n", 6), 1);

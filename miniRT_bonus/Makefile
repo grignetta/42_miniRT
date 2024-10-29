@@ -27,6 +27,7 @@ SOURCES = main_bonus.c \
 			intersect_cylinder_bonus.c \
 			parsing_bonus.c \
 			parsing_objects_bonus.c \
+			parsing_spheres_bonus.c \
 			parsing_lights_bonus.c \
 			parsing_utils_bonus.c \
 			input_check_rest_bonus.c \
