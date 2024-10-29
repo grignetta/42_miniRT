@@ -43,6 +43,7 @@ void	cross_ray_cyl(t_ray_params params, t_cylinder *cyl,
 	t_vector	top_center;
 	double		t_cap;
 
+	cyl->axis = vector_normalize(cyl->axis);//added
 	cap_centers(cyl, &bottom_center, &top_center);
 	handle_side_intersect(params, cyl, result);
 	cyl->cap_center = bottom_center;
