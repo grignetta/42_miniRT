@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 16:47:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/29 16:50:39 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/10/30 12:26:38 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	plane_bonus(char *token, t_scene *sc, t_plane *new_plane, int bonus)
 {
 	new_plane->base.specular = 0;
 	new_plane->base.reflective = 0;
-	new_plane->square_size = 0;
+	new_plane->base.square_size = 0.0;
 	if (bonus)
 	{
 		token = ft_strtok(NULL, " ");

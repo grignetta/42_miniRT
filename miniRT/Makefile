@@ -1,17 +1,17 @@
 NAME = miniRT
 HEADER = minirt.h
 CC = cc
-#CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
-CFLAGS = -g -Wall -Wextra -Werror -I$(MLX_PATH)
+CFLAGS = -g -Wall -Wextra -Werror -I/usr/local/lib #-fsanitize=thread
+#CFLAGS = -g -Wall -Wextra -Werror -I$(MLX_PATH)
 
-LIBDIR = ../libft #check whose libft
+LIBDIR = ../libft
 OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
-MLX_PATH = ./minilibx-linux #added for linux on mac
+MLX_PATH = ./minilibx-linux
 MLX_NAME = mlx
 MLX = $(MLX_PATH)$(MLX_NAME)
-MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd #added for linux on mac
+MLX_LIBS = -L$(MLX_PATH) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd
 
 SOURCES = main.c \
 			render.c \
