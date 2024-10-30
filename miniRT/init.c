@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 16:46:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/29 16:46:04 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:03:34 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	init_canvas(t_canvas *canvas)
 {
-	canvas->win_width = 600;
-	canvas->win_height = 600;
+	canvas->win_width = 1000;
+	canvas->win_height = 1000;
 }
 
 t_canvas	*initialize_matrix(void)
