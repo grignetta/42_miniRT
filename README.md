@@ -3,7 +3,7 @@
 Small ray tracer written with MiniLibX for 42 school. Written in a group together with https://github.com/michaela811.
 
 <p align="center">
-  <img src="assets/miniRT_preview.png" width="720" alt="miniRT preview">
+  <img src="assets/miniRT_preview.png" width="400" alt="miniRT preview">
 </p>
 
 > Mandatory and bonus share the **same code paths**; bonus behaviour is toggled at runtime by the executable name. We keep a doubled file layout to satisfy 42’s project rules.
