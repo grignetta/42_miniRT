@@ -1,0 +1,9 @@
+[submodule "lib/libft"]
+	path = lib/libft
+	url = git@github.com:grignetta/42_libft.git
+[submodule "lib/minilibx_linux"]
+	path = lib/minilibx_linux
+	url = https://github.com/42paris/minilibx-linux.git
+[submodule "lib/getnextline"]
+	path = lib/getnextline
+	url = git@github.com:grignetta/42_getnextline.git
