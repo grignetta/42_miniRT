@@ -1,6 +1,6 @@
 # miniRT (42)
 
-Small ray tracer written with MiniLibX for 42 school.
+Small ray tracer written with MiniLibX for 42 school. Written in a group together with https://github.com/michaela811.
 
 > Mandatory and bonus share the **same code paths**; bonus behaviour is toggled at runtime by the executable name. We keep a doubled file layout to satisfy 42’s project rules.
 
