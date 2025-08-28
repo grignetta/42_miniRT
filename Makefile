@@ -12,10 +12,10 @@ GNL_DIR  = lib/getnextline/gnl_mandatory
 LIBS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lXext -lX11 -lm #-lz
 
 M_ROOT = miniRT_mandatory/src/
-B_ROOT = miniRT_bonus/src/
+B_ROOT = miniRT_BONUS/src/
 
 M_SRCS = $(shell find $(M_ROOT) -type f -name '*.c')
-B_SRCS = $(shell find $(B_ROOT) -type f -name '*_bonus.c')
+B_SRCS = $(shell find $(B_ROOT) -type f -name '*.c')
 
 BUILD_M = build/mandatory
 BUILD_B = build/bonus
