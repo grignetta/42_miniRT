@@ -1,2 +1,7 @@
-/.vscode
-*.o
+/build/
+/*.o
+/*.a
+*.out
+miniRT/miniRT
+miniRT_bonus/miniRT_bonus
+.vscode/

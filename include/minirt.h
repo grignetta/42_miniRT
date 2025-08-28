@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt_bonus.h                                     :+:      :+:    :+:   */
+/*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 16:48:49 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/10/29 16:48:50 by mmasarov         ###   ########.fr       */
+/*   Created: 2024/10/29 16:46:52 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/10/29 16:46:53 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIRT_BONUS_H
-# define MINIRT_BONUS_H
+#ifndef MINIRT_H
+# define MINIRT_H
 
 # include <mlx.h>
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 # include <X11/keysym.h>
 # include <X11/X.h>
 # include <X11/Xlib.h>
-# include "../libft/libft.h"
+# include "libft.h"
+# include "get_next_line.h"
 
 # ifndef M_PI
 #  define M_PI 3.14159265358979323846
